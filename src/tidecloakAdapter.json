@@ -1,0 +1,8 @@
+{
+  "realm": "demo-realm",
+  "auth-server-url": "https://demo-keycloak.tidecloak.com/auth/",
+  "ssl-required": "external",
+  "resource": "demo-client",
+  "public-client": true,
+  "confidential-port": 0
+}

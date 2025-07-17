@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-security",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -18,6 +18,11 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Security-focused variants
+        encrypted: "bg-encrypted text-encrypted-foreground hover:bg-encrypted/90 shadow-encrypted animate-pulse-glow",
+        decrypted: "bg-decrypted text-decrypted-foreground hover:bg-decrypted/90 shadow-decrypted",
+        warning: "bg-warning text-warning-foreground hover:bg-warning/90",
+        vault: "bg-gradient-security text-primary-foreground hover:opacity-90 shadow-security border border-primary-glow/20",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -51,6 +52,21 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				encrypted: {
+					DEFAULT: 'hsl(var(--encrypted))',
+					foreground: 'hsl(var(--encrypted-foreground))',
+					bg: 'hsl(var(--encrypted-bg))'
+				},
+				decrypted: {
+					DEFAULT: 'hsl(var(--decrypted))',
+					foreground: 'hsl(var(--decrypted-foreground))',
+					bg: 'hsl(var(--decrypted-bg))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))',
+					bg: 'hsl(var(--warning-bg))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -84,11 +100,44 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-glow': {
+					'0%, 100%': { 
+						boxShadow: '0 0 20px hsl(var(--primary-glow) / 0.3)' 
+					},
+					'50%': { 
+						boxShadow: '0 0 30px hsl(var(--primary-glow) / 0.6)' 
+					}
+				},
+				'secure-fade': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translateY(10px) scale(0.95)' 
+					},
+					'100%': { 
+						opacity: '1', 
+						transform: 'translateY(0) scale(1)' 
+					}
+				},
+				'decrypt-reveal': {
+					'0%': { 
+						opacity: '0', 
+						filter: 'blur(8px)',
+						transform: 'scale(0.9)' 
+					},
+					'100%': { 
+						opacity: '1', 
+						filter: 'blur(0)',
+						transform: 'scale(1)' 
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+				'secure-fade': 'secure-fade 0.3s ease-out',
+				'decrypt-reveal': 'decrypt-reveal 0.5s ease-out'
 			}
 		}
 	},
