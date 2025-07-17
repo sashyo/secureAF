@@ -1,8 +1,23 @@
 {
-  "realm": "demo-realm",
-  "auth-server-url": "https://demo-keycloak.tidecloak.com/auth/",
+  "realm": "sasha-vibing-again",
+  "auth-server-url": "https://login.dauth.me",
   "ssl-required": "external",
-  "resource": "demo-client",
+  "resource": "vault",
   "public-client": true,
-  "confidential-port": 0
+  "confidential-port": 0,
+  "jwk": {
+    "keys": [
+      {
+        "kid": "gtlNJeW5dhJpuzBYMXyrcRUG-rOVeAXweJGQfONXuhI",
+        "kty": "OKP",
+        "alg": "EdDSA",
+        "use": "sig",
+        "crv": "Ed25519",
+        "x": "KGlSArRL0PFWFW4s3sAxs_UsPBUC6Ski3qUbeDJKfYo"
+      }
+    ]
+  },
+  "vendorId": "2131868475024908671264532119971741310618810111263292227414641263254933361601",
+  "homeOrkUrl": "https://ork1.tideprotocol.com",
+  "client-origin-auth-https://tidecloak-data-haven.lovable.app": "WIjq3cY4OauzvynyRQErE6mCN6iwNaSSIFxsTo+DcFhkS+hcMt6CxgjHyb5TKgI4KNukNRnAioDpfNKz8n71CQ=="
 }
