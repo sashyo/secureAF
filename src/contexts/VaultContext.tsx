@@ -325,12 +325,17 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       const fileData = await fileToUint8Array(file);
       const encryptResult = await encryptionService.encryptBinary(fileData);
       
+      // Only save if encryption succeeded
+      if (!encryptResult.success) {
+        throw new Error(encryptResult.error || 'Encryption failed - file not saved');
+      }
+      
       const vaultFile: Omit<VaultFile, 'id' | 'createdAt' | 'updatedAt'> = {
         name: file.name,
         type: file.type,
         size: file.size,
         data: encryptResult.encryptedData as Uint8Array,
-        encrypted: encryptResult.success,
+        encrypted: true, // Always true since we only save if encryption succeeded
         tags,
         userId: userId
       };
@@ -343,7 +348,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         refreshData(); // Refresh to update tags
         toast({
           title: "Success",
-          description: `File "${file.name}" uploaded and ${encryptResult.success ? 'encrypted' : 'saved'}.`
+          description: `File "${file.name}" uploaded and encrypted successfully.`
         });
       }
     } catch (error) {

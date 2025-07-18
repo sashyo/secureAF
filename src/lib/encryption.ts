@@ -116,12 +116,23 @@ export class VaultEncryption {
         };
       }
 
-      // Pass raw binary data directly to TideCloak (let it handle conversion)
-      // TideCloak should handle Uint8Array natively
+      // Convert binary to base64 string for TideCloak (it requires string data)
+      const blob = new Blob([data]);
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          // Remove the data URL prefix to get just the base64 content
+          const base64 = result.split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = () => reject(new Error('Failed to convert to base64'));
+        reader.readAsDataURL(blob);
+      });
       
-      // TideCloak encryption expects array of objects with data and tags
+      // TideCloak encryption expects array of objects with data as string and tags
       const encryptionArray = await this.doEncrypt([{
-        data: data, // Pass raw Uint8Array directly
+        data: base64Data, // Pass as base64 string
         tags: ['vault-file']
       }]);
       
