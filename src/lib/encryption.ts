@@ -116,8 +116,13 @@ export class VaultEncryption {
         };
       }
 
-      // Convert binary to base64 for encryption
-      const base64Data = btoa(String.fromCharCode(...data));
+      // Convert binary to base64 for encryption (handle large files)
+      let base64Data = '';
+      const chunkSize = 8192;
+      for (let i = 0; i < data.length; i += chunkSize) {
+        const chunk = data.slice(i, i + chunkSize);
+        base64Data += btoa(String.fromCharCode.apply(null, Array.from(chunk)));
+      }
       
       // TideCloak encryption expects array of objects with data and tags
       const encryptionArray = await this.doEncrypt([{

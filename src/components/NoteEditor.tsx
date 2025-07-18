@@ -26,7 +26,13 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
   useEffect(() => {
     if (note) {
       setTitle(note.title);
-      if (note.encrypted) {
+      
+      // Check if content is already decrypted in context
+      const decryptedContent = state.decryptedContents.get(`note-${note.id}`);
+      if (decryptedContent && typeof decryptedContent === 'string') {
+        setContent(decryptedContent);
+        setIsDecrypting(false);
+      } else if (note.encrypted) {
         // If editing an encrypted note, decrypt it first
         setIsDecrypting(true);
         decryptNote(note.id!).then((decrypted) => {
@@ -46,7 +52,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
       setContent('');
       setIsDecrypting(false);
     }
-  }, [note, decryptNote]);
+  }, [note?.id, note?.title, note?.content, note?.encrypted]);
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) return;
