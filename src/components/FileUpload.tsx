@@ -19,11 +19,11 @@ export function FileUpload({ onClose }: FileUploadProps) {
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const maxFileSize = 10 * 1024 * 1024; // 10MB limit (TideCloak limitation)
+  const maxFileSize = 50 * 1024 * 1024; // 50MB limit
 
   const handleFileSelect = (file: File) => {
     if (file.size > maxFileSize) {
-      alert('File size must be less than 10MB due to encryption limitations');
+      alert('File size must be less than 50MB');
       return;
     }
     setSelectedFile(file);
@@ -127,7 +127,7 @@ export function FileUpload({ onClose }: FileUploadProps) {
                 or click to browse files
               </p>
               <p className="text-xs text-muted-foreground">
-                Maximum file size: 10MB (encryption limit)
+                Maximum file size: 50MB
               </p>
               
               <input
@@ -170,7 +170,7 @@ export function FileUpload({ onClose }: FileUploadProps) {
                 <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
                   <AlertCircle className="w-4 h-4 text-destructive" />
                   <span className="text-sm text-destructive">
-                    File size exceeds 10MB encryption limit
+                    File size exceeds 50MB limit
                   </span>
                 </div>
               )}

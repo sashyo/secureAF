@@ -116,41 +116,36 @@ export class VaultEncryption {
         };
       }
 
-      // TideCloak has issues with large files, limit to 10MB
-      const maxSize = 10 * 1024 * 1024; // 10MB
-      if (data.length > maxSize) {
-        return {
-          encryptedData: data,
-          success: false,
-          error: 'File too large for encryption (max 10MB)'
-        };
-      }
-
-      // Convert binary to base64 string for TideCloak (it requires string data)
-      const blob = new Blob([data]);
-      const base64Data = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const result = reader.result;
-          if (typeof result === 'string' && result.includes(',')) {
-            // Remove the data URL prefix to get just the base64 content
-            const base64 = result.split(',')[1];
-            resolve(base64);
-          } else {
-            reject(new Error('Invalid FileReader result'));
-          }
-        };
-        reader.onerror = () => reject(new Error('Failed to convert to base64'));
-        reader.readAsDataURL(blob);
-      });
+      // Step 1: Split the input Uint8Array into manageable chunks (~32KB)
+      // This prevents stack overflow when calling String.fromCharCode(...array)
+      const chunkSize = 32 * 1024; // 32KB chunks to avoid call stack issues
+      const chunks: string[] = [];
       
-      // TideCloak encryption expects array of objects with data as string and tags
+      // Step 2: Convert each chunk to string via String.fromCharCode
+      // Process data in chunks to avoid "Maximum call stack size exceeded"
+      for (let i = 0; i < data.length; i += chunkSize) {
+        const chunk = data.slice(i, i + chunkSize);
+        // Convert chunk to array first, then spread to fromCharCode
+        const chunkString = String.fromCharCode(...Array.from(chunk));
+        chunks.push(chunkString);
+      }
+      
+      // Step 3: Concatenate chunk-strings and convert to base64 via btoa
+      // Join all chunk strings into one continuous binary string
+      const concatenatedString = chunks.join('');
+      // Convert the entire binary string to base64 for TideCloak
+      const base64Data = btoa(concatenatedString);
+      
+      // Step 4: Call doEncrypt with the base64 string
+      // TideCloak requires string data, so we pass the base64-encoded content
       const encryptionArray = await this.doEncrypt([{
-        data: base64Data, // Pass as base64 string
+        data: base64Data,
         tags: ['vault-file']
       }]);
       
       if (encryptionArray && encryptionArray.length > 0) {
+        // Step 5: Pack the result back into Uint8Array for EncryptionResult
+        // Serialize the encrypted payload and encode as Uint8Array for storage
         const encryptedString = JSON.stringify(encryptionArray[0]);
         return {
           encryptedData: new TextEncoder().encode(encryptedString),
