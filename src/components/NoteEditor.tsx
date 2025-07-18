@@ -27,22 +27,24 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
     if (note) {
       setTitle(note.title);
       
-      // Check if content is already decrypted in context
-      const decryptedContent = state.decryptedContents.get(`note-${note.id}`);
-      if (decryptedContent && typeof decryptedContent === 'string') {
-        setContent(decryptedContent);
-        setIsDecrypting(false);
-      } else if (note.encrypted) {
-        // If editing an encrypted note, decrypt it first
-        setIsDecrypting(true);
-        decryptNote(note.id!).then((decrypted) => {
-          if (decrypted) {
-            setContent(decrypted);
-          } else {
-            setContent('Unable to decrypt content');
-          }
+      if (note.encrypted) {
+        // Check if content is already decrypted in context
+        const decryptedContent = state.decryptedContents.get(`note-${note.id}`);
+        if (decryptedContent && typeof decryptedContent === 'string') {
+          setContent(decryptedContent);
           setIsDecrypting(false);
-        });
+        } else {
+          // If editing an encrypted note, decrypt it first
+          setIsDecrypting(true);
+          decryptNote(note.id!).then((decrypted) => {
+            if (decrypted) {
+              setContent(decrypted);
+            } else {
+              setContent('Unable to decrypt content');
+            }
+            setIsDecrypting(false);
+          });
+        }
       } else {
         setContent(note.content);
         setIsDecrypting(false);
@@ -52,7 +54,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
       setContent('');
       setIsDecrypting(false);
     }
-  }, [note?.id, note?.title, note?.content, note?.encrypted, state.decryptedContents, decryptNote]);
+  }, [note?.id, note?.encrypted]);
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) return;
