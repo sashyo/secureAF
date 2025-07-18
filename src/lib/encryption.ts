@@ -109,55 +109,38 @@ export class VaultEncryption {
   async encryptBinary(data: Uint8Array): Promise<EncryptionResult> {
     try {
       if (!this.authenticated || !this.doEncrypt) {
-        return {
-          encryptedData: data,
-          success: false,
-          error: 'Authentication required for encryption'
-        };
+        return { encryptedData: data, success: false, error: 'Authentication required for encryption' };
       }
 
-      // Step 1: Split the input Uint8Array into manageable chunks (~32KB)
-      // This prevents stack overflow when calling String.fromCharCode(...array)
-      const chunkSize = 32 * 1024; // 32KB chunks to avoid call stack issues
-      const chunks: string[] = [];
-      
-      // Step 2: Convert each chunk to string via String.fromCharCode
-      // Process data in chunks to avoid "Maximum call stack size exceeded"
-      for (let i = 0; i < data.length; i += chunkSize) {
-        const chunk = data.slice(i, i + chunkSize);
-        // Convert chunk to array first, then spread to fromCharCode
-        const chunkString = String.fromCharCode(...Array.from(chunk));
-        chunks.push(chunkString);
+      const CHUNK_SIZE = 32 * 1024;  // 32 KB per slice
+      const segments: Array<{ data: string; tags: string[] }> = [];
+
+      // 1) Slice into chunks, convert each to a small binary string, then base64‑encode
+      for (let offset = 0; offset < data.length; offset += CHUNK_SIZE) {
+        const slice = data.subarray(offset, offset + CHUNK_SIZE);
+        let bin = '';
+        for (const byte of slice) {
+          bin += String.fromCharCode(byte);
+        }
+        segments.push({
+          data: btoa(bin),
+          tags: ['vault-file']
+        });
       }
-      
-      // Step 3: Concatenate chunk-strings and convert to base64 via btoa
-      // Join all chunk strings into one continuous binary string
-      const concatenatedString = chunks.join('');
-      // Convert the entire binary string to base64 for TideCloak
-      const base64Data = btoa(concatenatedString);
-      
-      // Step 4: Call doEncrypt with the base64 string
-      // TideCloak requires string data, so we pass the base64-encoded content
-      const encryptionArray = await this.doEncrypt([{
-        data: base64Data,
-        tags: ['vault-file']
-      }]);
-      
-      if (encryptionArray && encryptionArray.length > 0) {
-        // Step 5: Pack the result back into Uint8Array for EncryptionResult
-        // Serialize the encrypted payload and encode as Uint8Array for storage
-        const encryptedString = JSON.stringify(encryptionArray[0]);
-        return {
-          encryptedData: new TextEncoder().encode(encryptedString),
-          success: true
-        };
-      } else {
-        return {
-          encryptedData: data,
-          success: false,
-          error: 'Binary encryption returned empty result'
-        };
+
+      // 2) Encrypt all base64 chunks at once
+      const encryptedChunks = await this.doEncrypt(segments);
+      if (!encryptedChunks?.length) {
+        return { encryptedData: data, success: false, error: 'Binary encryption returned empty result' };
       }
+
+      // 3) Pack the array of encrypted objects into one Uint8Array
+      const payload = JSON.stringify(encryptedChunks);
+      return {
+        encryptedData: new TextEncoder().encode(payload),
+        success: true
+      };
+
     } catch (error) {
       console.error('Binary encryption failed:', error);
       return {
@@ -172,43 +155,33 @@ export class VaultEncryption {
   async decryptBinary(encryptedData: Uint8Array): Promise<DecryptionResult> {
     try {
       if (!this.authenticated || !this.doDecrypt) {
-        return {
-          decryptedData: encryptedData,
-          success: false,
-          error: 'Authentication required for decryption'
-        };
+        return { decryptedData: encryptedData, success: false, error: 'Authentication required for decryption' };
       }
 
-      // Convert back to string for decryption
-      const encryptedString = new TextDecoder().decode(encryptedData);
-      const encryptedObject = JSON.parse(encryptedString);
-      
-      // TideCloak decryption expects array of objects with encrypted data and tags
-      const decryptionArray = await this.doDecrypt([{
-        encrypted: encryptedObject,
+      // 1) Decode and parse the JSON array of encrypted‑chunk objects
+      const str = new TextDecoder().decode(encryptedData);
+      const encryptedChunks: any[] = JSON.parse(str);
+
+      // 2) Decrypt each chunk
+      const decryptInputs = encryptedChunks.map(chunk => ({
+        encrypted: chunk,
         tags: ['vault-file']
-      }]);
-      
-      if (decryptionArray && decryptionArray.length > 0) {
-        // Convert base64 back to binary
-        const base64Data = decryptionArray[0];
-        const binaryString = atob(base64Data);
-        const uint8Array = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          uint8Array[i] = binaryString.charCodeAt(i);
-        }
-        
-        return {
-          decryptedData: uint8Array,
-          success: true
-        };
-      } else {
-        return {
-          decryptedData: encryptedData,
-          success: false,
-          error: 'Binary decryption returned empty result'
-        };
+      }));
+      const decryptedChunks: string[] = await this.doDecrypt(decryptInputs);
+      if (!decryptedChunks?.length) {
+        return { decryptedData: encryptedData, success: false, error: 'Binary decryption returned empty result' };
       }
+
+      // 3) Reassemble full base64 string, atob → Uint8Array
+      const fullB64 = decryptedChunks.join('');
+      const binStr = atob(fullB64);
+      const out = new Uint8Array(binStr.length);
+      for (let i = 0; i < binStr.length; i++) {
+        out[i] = binStr.charCodeAt(i);
+      }
+
+      return { decryptedData: out, success: true };
+
     } catch (error) {
       console.error('Binary decryption failed:', error);
       return {
