@@ -75,7 +75,8 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.ctrlKey && e.key === 'Enter') {
+    if (e.ctrlKey && e.key === 's') {
+      e.preventDefault();
       handleSave();
     }
   };
@@ -167,7 +168,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
         </div>
 
         <div className="text-xs text-muted-foreground mt-2">
-          Tip: Press Ctrl+Enter to save quickly
+          Tip: Press Ctrl+S to save quickly
         </div>
       </DialogContent>
     </Dialog>
