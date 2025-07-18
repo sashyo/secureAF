@@ -19,13 +19,10 @@
   },
   "vendorId": "2131868475024908671264532119971741310618810111263292227414641263254933361601",
   "homeOrkUrl": "https://ork1.tideprotocol.com",
-  "clientOriginAuth": {
-    "https://d79cbf3e-8e74-4b44-bb43-aae629e97c8b.lovableproject.com": "WIjq3cY4OauzvynyRQErE6mCN6iwNaSSIFxsTo+DcFhkS+hcMt6CxgjHyb5TKgI4KNukNRnAioDpfNKz8n71CQ==",
-    "https://tidecloak-data-haven.lovable.app": "Ol0+FfZoOvTDXvY0i9WAQrp/9e52jzgfOOuJmLuis4dAVOgSYodIXkyAERVzvSHbxVxGsMScUOs1HZNRWNgsCA==",
-    "https://sashyo.github.io": "IHIJOhCvyUNoffvRYAnrQza3YhonzxMNTbo1xj5l0TXeRoeoOs+rA7PN2o3MlZEjqIqWc32teFyNuyii6ZvDAQ==",
-    "https://echo-proof-locker.lovable.app": "Out/p0vhkSwFfWb7pQEDYUjVcXQ/cI29PRP44yzZTayehlAG/Z9VR+FoYvW8D964TtCHj+RXNFfmL2JbAHbjCw==",
-    "https://secret-keeper-vault-notes.lovable.app": "jlDhq1oMPqt+6MwSUi2DveDVgtEkn6OOiqaH26oMjaqWCEa7lwt3ajFwUQTKEj0uthcWeGaFRoYwdYkpEfOFCA==",
-    "https://cypher-note-haven.lovable.app": "hhIGGhAJndmeW7R51WCFNCZCEd+jiSl6zBVc4sIkYRbV43I+wwR5vWNtXCjymlHaVZS86aPs6keHcpbzoogsBg==",
-    "http://localhost:8080": "GBC46euT+ukmpnfB4tLlHzGL3KrHMPsTjroguj/V89BeJhn9PRjJsubd3JCwJWqRuh0+ub2Y/aq6U9gEvs+fCA=="
-  }
+  "client-origin-auth-https://tidecloak-data-haven.lovable.app": "mfGfy1ypK4bgBfhowz0KHQvSWqZvsmPUdm53BmPEzbMsKjWcEH0jP39MDdxW232y8EgZRO4BP6a4iI2hd7cKAQ==",
+  "client-origin-auth-https://sashyo.github.io": "WrAhAh8znYtYbqvCgr8wmop5oBVz5Dn6tAAri3WjvTgby/hQrKJQCRztBUIRZVauGzS31iZViWQ85IZEaa9xAA==",
+  "client-origin-auth-https://echo-proof-locker.lovable.app": "Out/p0vhkSwFfWb7pQEDYUjVcXQ/cI29PRP44yzZTayehlAG/Z9VR+FoYvW8D964TtCHj+RXNFfmL2JbAHbjCw==",
+  "client-origin-auth-https://secret-keeper-vault-notes.lovable.app": "jlDhq1oMPqt+6MwSUi2DveDVgtEkn6OOiqaH26oMjaqWCEa7lwt3ajFwUQTKEj0uthcWeGaFRoYwdYkpEfOFCA==",
+  "client-origin-auth-https://cypher-note-haven.lovable.app": "hhIGGhAJndmeW7R51WCFNCZCEd+jiSl6zBVc4sIkYRbV43I+wwR5vWNtXCjymlHaVZS86aPs6keHcpbzoogsBg==",
+  "client-origin-auth-http://localhost:8080": "WDRUp2uKoH8mlqid46ecNcXNu1HlFhfDRC90/QW4hvwV0dNPlzwlbH87fkNt65Vab+g/DEsg2mMUmd4ctju1Bw=="
 }
