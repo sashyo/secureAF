@@ -52,7 +52,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
       setContent('');
       setIsDecrypting(false);
     }
-  }, [note?.id, note?.title, note?.content, note?.encrypted]);
+  }, [note?.id, note?.title, note?.content, note?.encrypted, state.decryptedContents, decryptNote]);
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) return;
