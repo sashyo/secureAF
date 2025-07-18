@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut } from 'lucide-react';
+import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag } from 'lucide-react';
 import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useVault } from '@/contexts/VaultContext';
 import { VaultNote, VaultFile } from '@/lib/database';
 import { FileUtils } from '@/lib/encryption';
@@ -13,11 +16,24 @@ import { FileUpload } from './FileUpload';
 
 export function VaultDashboard() {
   const { logout } = useTideCloak();
-  const { state, deleteNote, deleteFile, downloadFile, decryptNote, decryptFile, isDecrypted } = useVault();
+  const { 
+    state, 
+    deleteNote, 
+    deleteFile, 
+    downloadFile, 
+    decryptNote, 
+    decryptFile, 
+    hideNote,
+    hideFile,
+    isDecrypted,
+    getDecryptedContent,
+    setSearchTerm,
+    setSelectedTags
+  } = useVault();
   const [selectedNote, setSelectedNote] = useState<VaultNote | null>(null);
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [showFileUpload, setShowFileUpload] = useState(false);
-  const [decryptedContents, setDecryptedContents] = useState<{ [key: string]: string }>({});
+  const [showTagFilter, setShowTagFilter] = useState(false);
 
   const handleDecryptNote = async (note: VaultNote) => {
     if (!note.id) return;
@@ -25,26 +41,42 @@ export function VaultDashboard() {
     const isCurrentlyDecrypted = isDecrypted('note', note.id);
     
     if (isCurrentlyDecrypted) {
-      // Re-encrypt (hide content)
-      const key = `note-${note.id}`;
-      const newContents = { ...decryptedContents };
-      delete newContents[key];
-      setDecryptedContents(newContents);
+      // Hide (re-encrypt)
+      hideNote(note.id);
     } else {
       // Decrypt
-      const decrypted = await decryptNote(note.id);
-      if (decrypted) {
-        setDecryptedContents(prev => ({
-          ...prev,
-          [`note-${note.id}`]: decrypted
-        }));
-      }
+      await decryptNote(note.id);
+    }
+  };
+
+  const handlePreviewFile = async (file: VaultFile) => {
+    if (!file.id) return;
+    
+    const isCurrentlyDecrypted = isDecrypted('file', file.id);
+    
+    if (isCurrentlyDecrypted) {
+      // Hide 
+      hideFile(file.id);
+    } else {
+      // Decrypt for preview
+      await decryptFile(file.id);
     }
   };
 
   const handleEditNote = (note: VaultNote) => {
     setSelectedNote(note);
     setShowNoteEditor(true);
+  };
+
+  const handleTagFilterChange = (tag: string, checked: boolean) => {
+    const newTags = checked 
+      ? [...state.selectedTags, tag]
+      : state.selectedTags.filter(t => t !== tag);
+    setSelectedTags(newTags);
+  };
+
+  const clearTagFilters = () => {
+    setSelectedTags([]);
   };
 
   const formatDate = (date: Date) => {
@@ -69,6 +101,21 @@ export function VaultDashboard() {
     }
     
     return <Badge className="encrypted-indicator">Encrypted</Badge>;
+  };
+
+  const renderTagBadges = (tags: string[]) => {
+    if (!tags || tags.length === 0) return null;
+    
+    return (
+      <div className="flex flex-wrap gap-1 mt-2">
+        {tags.map((tag, index) => (
+          <Badge key={index} variant="secondary" className="text-xs">
+            <Tag className="w-3 h-3 mr-1" />
+            {tag}
+          </Badge>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -112,6 +159,77 @@ export function VaultDashboard() {
                 Sign Out
               </Button>
             </div>
+          </div>
+        </div>
+
+        {/* Search and Filter Bar */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Search notes and files..."
+              value={state.searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          
+          <div className="flex gap-2">
+            <Popover open={showTagFilter} onOpenChange={setShowTagFilter}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="default">
+                  <Filter className="w-4 h-4 mr-2" />
+                  Tags
+                  {state.selectedTags.length > 0 && (
+                    <Badge className="ml-2 h-5 w-5 p-0 text-xs">
+                      {state.selectedTags.length}
+                    </Badge>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="end">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">Filter by Tags</h4>
+                    {state.selectedTags.length > 0 && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={clearTagFilters}
+                        className="h-8 px-2"
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {state.allTags.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No tags available</p>
+                  ) : (
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                      {state.allTags.map((tag) => (
+                        <div key={tag} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={tag}
+                            checked={state.selectedTags.includes(tag)}
+                            onCheckedChange={(checked) => 
+                              handleTagFilterChange(tag, checked as boolean)
+                            }
+                          />
+                          <label
+                            htmlFor={tag}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {tag}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
@@ -180,7 +298,7 @@ export function VaultDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {state.notes.map((note) => {
                   const decrypted = isDecrypted('note', note.id!);
-                  const content = decryptedContents[`note-${note.id}`];
+                  const content = getDecryptedContent('note', note.id!) as string;
                   
                   return (
                     <Card key={note.id} className="shadow-security animate-secure-fade">
@@ -192,6 +310,7 @@ export function VaultDashboard() {
                         <CardDescription>
                           {formatDate(note.updatedAt)}
                         </CardDescription>
+                        {renderTagBadges(note.tags)}
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="min-h-[60px] p-3 bg-muted rounded-md">
@@ -257,45 +376,84 @@ export function VaultDashboard() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {state.files.map((file) => (
-                  <Card key={file.id} className="shadow-security animate-secure-fade">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <CardTitle className="text-lg truncate">{file.name}</CardTitle>
-                        {getEncryptionBadge(file.encrypted, 'file', file.id!)}
-                      </div>
-                      <CardDescription>
-                        {FileUtils.formatFileSize(file.size)} • {formatDate(file.updatedAt)}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="p-3 bg-muted rounded-md">
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Shield className="w-4 h-4" />
-                          <span className="text-sm">{file.type || 'Unknown file type'}</span>
+                {state.files.map((file) => {
+                  const decrypted = isDecrypted('file', file.id!);
+                  const fileData = getDecryptedContent('file', file.id!) as Uint8Array;
+                  
+                  return (
+                    <Card key={file.id} className="shadow-security animate-secure-fade">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <CardTitle className="text-lg truncate">{file.name}</CardTitle>
+                          {getEncryptionBadge(file.encrypted, 'file', file.id!)}
                         </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          onClick={() => downloadFile(file.id!)}
-                          variant="decrypted"
-                          size="sm"
-                          className="flex-1"
-                        >
-                          <Download className="w-4 h-4 mr-1" />
-                          Download
-                        </Button>
-                        <Button
-                          onClick={() => deleteFile(file.id!)}
-                          variant="destructive"
-                          size="sm"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        <CardDescription>
+                          {FileUtils.formatFileSize(file.size)} • {formatDate(file.updatedAt)}
+                        </CardDescription>
+                        {renderTagBadges(file.tags)}
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="p-3 bg-muted rounded-md">
+                          {decrypted && fileData && file.type.startsWith('image/') ? (
+                            <div className="text-center">
+                              <img 
+                                src={URL.createObjectURL(new Blob([fileData], { type: file.type }))}
+                                alt={file.name}
+                                className="max-w-full max-h-32 object-contain mx-auto rounded animate-decrypt-reveal"
+                                onLoad={(e) => {
+                                  // Clean up the object URL after the image loads
+                                  setTimeout(() => {
+                                    URL.revokeObjectURL((e.target as HTMLImageElement).src);
+                                  }, 100);
+                                }}
+                              />
+                              <p className="text-xs text-muted-foreground mt-2">Preview</p>
+                            </div>
+                          ) : decrypted ? (
+                            <div className="flex items-center gap-2 text-decrypted animate-decrypt-reveal">
+                              <Eye className="w-4 h-4" />
+                              <span className="text-sm">File decrypted - ready to download</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Shield className="w-4 h-4" />
+                              <span className="text-sm">{file.type || 'Unknown file type'}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => handlePreviewFile(file)}
+                            variant={decrypted ? "decrypted" : "encrypted"}
+                            size="sm"
+                          >
+                            {decrypted ? (
+                              <><EyeOff className="w-4 h-4 mr-1" />Hide</>
+                            ) : (
+                              <><Eye className="w-4 h-4 mr-1" />Preview</>
+                            )}
+                          </Button>
+                          <Button
+                            onClick={() => downloadFile(file.id!)}
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                          >
+                            <Download className="w-4 h-4 mr-1" />
+                            Download
+                          </Button>
+                          <Button
+                            onClick={() => deleteFile(file.id!)}
+                            variant="destructive"
+                            size="sm"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </TabsContent>
