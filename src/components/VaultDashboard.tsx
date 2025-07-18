@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2 } from 'lucide-react';
+import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut } from 'lucide-react';
+import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,6 +12,7 @@ import { NoteEditor } from './NoteEditor';
 import { FileUpload } from './FileUpload';
 
 export function VaultDashboard() {
+  const { logout } = useTideCloak();
   const { state, deleteNote, deleteFile, downloadFile, decryptNote, decryptFile, isDecrypted } = useVault();
   const [selectedNote, setSelectedNote] = useState<VaultNote | null>(null);
   const [showNoteEditor, setShowNoteEditor] = useState(false);
@@ -100,6 +102,14 @@ export function VaultDashboard() {
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Upload File
+              </Button>
+              <Button
+                onClick={logout}
+                variant="outline"
+                size="lg"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
               </Button>
             </div>
           </div>
