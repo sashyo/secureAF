@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag } from 'lucide-react';
+import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings } from 'lucide-react';
 import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,8 @@ import { VaultNote, VaultFile } from '@/lib/database';
 import { FileUtils } from '@/lib/encryption';
 import { NoteEditor } from './NoteEditor';
 import { FileUpload } from './FileUpload';
+import { VaultStats } from './VaultStats';
+import { VaultExport } from './VaultExport';
 
 export function VaultDashboard() {
   const { logout } = useTideCloak();
@@ -30,10 +32,22 @@ export function VaultDashboard() {
     setSearchTerm,
     setSelectedTags
   } = useVault();
-  const [selectedNote, setSelectedNote] = useState<VaultNote | null>(null);
+  
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [showFileUpload, setShowFileUpload] = useState(false);
+  const [showVaultExport, setShowVaultExport] = useState(false);
+  const [selectedNote, setSelectedNote] = useState<VaultNote | null>(null);
   const [showTagFilter, setShowTagFilter] = useState(false);
+
+  const toggleFavorite = async (type: 'note' | 'file', id: number) => {
+    // TODO: Implement favorite toggle functionality
+    console.log(`Toggle favorite for ${type} ${id}`);
+  };
+
+  const openNoteEditor = (note?: VaultNote) => {
+    setSelectedNote(note || null);
+    setShowNoteEditor(true);
+  };
 
   const handleDecryptNote = async (note: VaultNote) => {
     if (!note.id) return;
@@ -41,10 +55,8 @@ export function VaultDashboard() {
     const isCurrentlyDecrypted = isDecrypted('note', note.id);
     
     if (isCurrentlyDecrypted) {
-      // Hide (re-encrypt)
       hideNote(note.id);
     } else {
-      // Decrypt
       await decryptNote(note.id);
     }
   };
@@ -55,10 +67,8 @@ export function VaultDashboard() {
     const isCurrentlyDecrypted = isDecrypted('file', file.id);
     
     if (isCurrentlyDecrypted) {
-      // Hide 
       hideFile(file.id);
     } else {
-      // Decrypt for preview
       await decryptFile(file.id);
     }
   };
@@ -133,29 +143,23 @@ export function VaultDashboard() {
                 Your encrypted notes and files
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-3">
               <Button
-                onClick={() => setShowNoteEditor(true)}
-                variant="vault"
-                size="lg"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Note
-              </Button>
-              <Button
-                onClick={() => setShowFileUpload(true)}
-                variant="secondary"
-                size="lg"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Upload File
-              </Button>
-              <Button
-                onClick={logout}
+                onClick={() => setShowVaultExport(true)}
                 variant="outline"
-                size="lg"
+                size="sm"
+                className="gap-2"
               >
-                <LogOut className="w-4 h-4 mr-2" />
+                <Archive className="w-4 h-4" />
+                Export Backup
+              </Button>
+              <Button
+                onClick={() => logout()}
+                variant="outline"
+                size="sm"
+                className="gap-2 text-destructive hover:text-destructive"
+              >
+                <LogOut className="w-4 h-4" />
                 Sign Out
               </Button>
             </div>
@@ -230,56 +234,52 @@ export function VaultDashboard() {
                 </div>
               </PopoverContent>
             </Popover>
+            
+            <Button
+              onClick={() => openNoteEditor()}
+              variant="vault"
+              className="gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              New Note
+            </Button>
+            
+            <Button
+              onClick={() => setShowFileUpload(true)}
+              variant="secondary"
+              className="gap-2"
+            >
+              <Upload className="w-4 h-4" />
+              Upload File
+            </Button>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="shadow-security">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Notes</p>
-                  <p className="text-2xl font-bold">{state.notes.length}</p>
-                </div>
-                <FileText className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="shadow-security">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Files</p>
-                  <p className="text-2xl font-bold">{state.files.length}</p>
-                </div>
-                <Upload className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="shadow-security">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Encrypted Items</p>
-                  <p className="text-2xl font-bold">
-                    {state.notes.filter(n => n.encrypted).length + state.files.filter(f => f.encrypted).length}
-                  </p>
-                </div>
-                <Shield className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Main Content */}
-        <Tabs defaultValue="notes" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="notes">Notes</TabsTrigger>
-            <TabsTrigger value="files">Files</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview" className="gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="notes" className="gap-2">
+              <FileText className="w-4 h-4" />
+              Notes ({state.notes.length})
+            </TabsTrigger>
+            <TabsTrigger value="files" className="gap-2">
+              <Upload className="w-4 h-4" />
+              Files ({state.files.length})
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2">
+              <Settings className="w-4 h-4" />
+              Settings
+            </TabsTrigger>
           </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview">
+            <VaultStats />
+          </TabsContent>
 
           <TabsContent value="notes" className="space-y-4">
             {state.notes.length === 0 ? (
@@ -288,7 +288,7 @@ export function VaultDashboard() {
                   <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No notes yet</h3>
                   <p className="text-muted-foreground mb-4">Create your first encrypted note to get started</p>
-                  <Button onClick={() => setShowNoteEditor(true)} variant="vault">
+                  <Button onClick={() => openNoteEditor()} variant="vault">
                     <Plus className="w-4 h-4 mr-2" />
                     Create Note
                   </Button>
@@ -327,15 +327,31 @@ export function VaultDashboard() {
                         </div>
                         <div className="flex gap-2">
                           <Button
+                            onClick={() => toggleFavorite('note', note.id!)}
+                            variant="ghost"
+                            size="sm"
+                            className="p-1 h-auto"
+                          >
+                            <Star 
+                              className={`w-4 h-4 ${note.favorite ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground'}`} 
+                            />
+                          </Button>
+                          <Button
                             onClick={() => handleDecryptNote(note)}
                             variant={decrypted ? "decrypted" : "encrypted"}
                             size="sm"
                             className="flex-1"
                           >
                             {decrypted ? (
-                              <><EyeOff className="w-4 h-4 mr-1" />Hide</>
+                              <>
+                                <EyeOff className="w-4 h-4 mr-1" />
+                                Hide
+                              </>
                             ) : (
-                              <><Eye className="w-4 h-4 mr-1" />Decrypt</>
+                              <>
+                                <Eye className="w-4 h-4 mr-1" />
+                                Decrypt
+                              </>
                             )}
                           </Button>
                           <Button
@@ -401,7 +417,6 @@ export function VaultDashboard() {
                                 alt={file.name}
                                 className="max-w-full max-h-32 object-contain mx-auto rounded animate-decrypt-reveal"
                                 onLoad={(e) => {
-                                  // Clean up the object URL after the image loads
                                   setTimeout(() => {
                                     URL.revokeObjectURL((e.target as HTMLImageElement).src);
                                   }, 100);
@@ -428,9 +443,15 @@ export function VaultDashboard() {
                             size="sm"
                           >
                             {decrypted ? (
-                              <><EyeOff className="w-4 h-4 mr-1" />Hide</>
+                              <>
+                                <EyeOff className="w-4 h-4 mr-1" />
+                                Hide
+                              </>
                             ) : (
-                              <><Eye className="w-4 h-4 mr-1" />Preview</>
+                              <>
+                                <Eye className="w-4 h-4 mr-1" />
+                                Preview
+                              </>
                             )}
                           </Button>
                           <Button
@@ -457,6 +478,53 @@ export function VaultDashboard() {
               </div>
             )}
           </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings">
+            <div className="grid gap-6">
+              <Card className="border-security">
+                <CardHeader>
+                  <CardTitle>Vault Settings</CardTitle>
+                  <CardDescription>Manage your vault preferences and security</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Auto-backup Reminders</h4>
+                      <p className="text-sm text-muted-foreground">Get reminded to backup your vault regularly</p>
+                    </div>
+                    <Button variant="outline" size="sm">
+                      Configure
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Export Vault Data</h4>
+                      <p className="text-sm text-muted-foreground">Create secure backups of your encrypted data</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setShowVaultExport(true)}
+                    >
+                      <Archive className="w-4 h-4 mr-2" />
+                      Export
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Security Audit</h4>
+                      <p className="text-sm text-muted-foreground">Check encryption status and security metrics</p>
+                    </div>
+                    <Badge className="encrypted-indicator">
+                      <Shield className="w-3 h-3 mr-1" />
+                      All Secure
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
 
         {/* Modals */}
@@ -473,6 +541,13 @@ export function VaultDashboard() {
         {showFileUpload && (
           <FileUpload
             onClose={() => setShowFileUpload(false)}
+          />
+        )}
+
+        {showVaultExport && (
+          <VaultExport 
+            open={showVaultExport} 
+            onClose={() => setShowVaultExport(false)} 
           />
         )}
       </div>

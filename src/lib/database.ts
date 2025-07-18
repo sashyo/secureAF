@@ -9,6 +9,9 @@ export interface VaultNote {
   createdAt: Date;
   updatedAt: Date;
   userId?: string;
+  favorite?: boolean;
+  lastAccessed?: Date;
+  category?: string;
 }
 
 export interface VaultFile {
@@ -22,6 +25,9 @@ export interface VaultFile {
   createdAt: Date;
   updatedAt: Date;
   userId?: string;
+  favorite?: boolean;
+  lastAccessed?: Date;
+  category?: string;
 }
 
 export class VaultDatabase extends Dexie {
