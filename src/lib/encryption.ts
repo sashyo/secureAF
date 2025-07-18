@@ -121,10 +121,14 @@ export class VaultEncryption {
       const base64Data = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
-          const result = reader.result as string;
-          // Remove the data URL prefix to get just the base64 content
-          const base64 = result.split(',')[1];
-          resolve(base64);
+          const result = reader.result;
+          if (typeof result === 'string' && result.includes(',')) {
+            // Remove the data URL prefix to get just the base64 content
+            const base64 = result.split(',')[1];
+            resolve(base64);
+          } else {
+            reject(new Error('Invalid FileReader result'));
+          }
         };
         reader.onerror = () => reject(new Error('Failed to convert to base64'));
         reader.readAsDataURL(blob);
