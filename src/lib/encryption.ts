@@ -158,29 +158,42 @@ export class VaultEncryption {
         return { decryptedData: encryptedData, success: false, error: 'Authentication required for decryption' };
       }
 
-      // 1) Decode and parse the JSON array of encrypted‑chunk objects
-      const str = new TextDecoder().decode(encryptedData);
-      const encryptedChunks: any[] = JSON.parse(str);
+      // 1) Decode the JSON payload into an array of encryption-result objects
+      const json = new TextDecoder().decode(encryptedData);
+      const encryptedChunks: any[] = JSON.parse(json);
 
-      // 2) Decrypt each chunk
+      // 2) Prepare inputs for doDecrypt
       const decryptInputs = encryptedChunks.map(chunk => ({
-        encrypted: chunk,
+        encrypted: chunk,      // entire encrypted-object as returned by doEncrypt
         tags: ['vault-file']
       }));
-      const decryptedChunks: string[] = await this.doDecrypt(decryptInputs);
-      if (!decryptedChunks?.length) {
+
+      // 3) Decrypt each chunk, getting back an array of base64 strings
+      const b64Chunks: string[] = await this.doDecrypt(decryptInputs);
+      if (!b64Chunks?.length) {
         return { decryptedData: encryptedData, success: false, error: 'Binary decryption returned empty result' };
       }
 
-      // 3) Reassemble full base64 string, atob → Uint8Array
-      const fullB64 = decryptedChunks.join('');
-      const binStr = atob(fullB64);
-      const out = new Uint8Array(binStr.length);
-      for (let i = 0; i < binStr.length; i++) {
-        out[i] = binStr.charCodeAt(i);
+      // 4) For each base64‑chunk: atob → binary string → Uint8Array
+      const outChunks: Uint8Array[] = b64Chunks.map(b64 => {
+        const binStr = atob(b64);
+        const arr = new Uint8Array(binStr.length);
+        for (let i = 0; i < binStr.length; i++) {
+          arr[i] = binStr.charCodeAt(i);
+        }
+        return arr;
+      });
+
+      // 5) Concatenate all the Uint8Arrays into one
+      const totalLen = outChunks.reduce((sum, c) => sum + c.length, 0);
+      const result = new Uint8Array(totalLen);
+      let pos = 0;
+      for (const chunk of outChunks) {
+        result.set(chunk, pos);
+        pos += chunk.length;
       }
 
-      return { decryptedData: out, success: true };
+      return { decryptedData: result, success: true };
 
     } catch (error) {
       console.error('Binary decryption failed:', error);
