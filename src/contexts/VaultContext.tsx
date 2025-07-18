@@ -10,10 +10,6 @@ export interface VaultState {
   loading: boolean;
   error: string | null;
   decryptedItems: Set<string>; // Track which items are currently decrypted
-  decryptedContents: Map<string, string | Uint8Array>; // Store decrypted content temporarily
-  searchTerm: string;
-  selectedTags: string[];
-  allTags: string[];
 }
 
 export type VaultAction =
@@ -27,23 +23,15 @@ export type VaultAction =
   | { type: 'ADD_FILE'; payload: VaultFile }
   | { type: 'UPDATE_FILE'; payload: VaultFile }
   | { type: 'DELETE_FILE'; payload: number }
-  | { type: 'SET_DECRYPTED_CONTENT'; payload: { key: string; content: string | Uint8Array } }
-  | { type: 'REMOVE_DECRYPTED_CONTENT'; payload: string }
-  | { type: 'CLEAR_DECRYPTED' }
-  | { type: 'SET_SEARCH'; payload: string }
-  | { type: 'SET_TAGS'; payload: string[] }
-  | { type: 'SET_ALL_TAGS'; payload: string[] };
+  | { type: 'TOGGLE_DECRYPTED'; payload: { type: 'note' | 'file'; id: string } }
+  | { type: 'CLEAR_DECRYPTED' };
 
 const initialState: VaultState = {
   notes: [],
   files: [],
   loading: false,
   error: null,
-  decryptedItems: new Set(),
-  decryptedContents: new Map(),
-  searchTerm: '',
-  selectedTags: [],
-  allTags: []
+  decryptedItems: new Set()
 };
 
 function vaultReducer(state: VaultState, action: VaultAction): VaultState {
@@ -84,28 +72,18 @@ function vaultReducer(state: VaultState, action: VaultAction): VaultState {
         ...state,
         files: state.files.filter(file => file.id !== action.payload)
       };
-    case 'SET_DECRYPTED_CONTENT': {
+    case 'TOGGLE_DECRYPTED': {
+      const key = `${action.payload.type}-${action.payload.id}`;
       const newDecrypted = new Set(state.decryptedItems);
-      const newContents = new Map(state.decryptedContents);
-      newDecrypted.add(action.payload.key);
-      newContents.set(action.payload.key, action.payload.content);
-      return { ...state, decryptedItems: newDecrypted, decryptedContents: newContents };
-    }
-    case 'REMOVE_DECRYPTED_CONTENT': {
-      const newDecrypted = new Set(state.decryptedItems);
-      const newContents = new Map(state.decryptedContents);
-      newDecrypted.delete(action.payload);
-      newContents.delete(action.payload);
-      return { ...state, decryptedItems: newDecrypted, decryptedContents: newContents };
+      if (newDecrypted.has(key)) {
+        newDecrypted.delete(key);
+      } else {
+        newDecrypted.add(key);
+      }
+      return { ...state, decryptedItems: newDecrypted };
     }
     case 'CLEAR_DECRYPTED':
-      return { ...state, decryptedItems: new Set(), decryptedContents: new Map() };
-    case 'SET_SEARCH':
-      return { ...state, searchTerm: action.payload };
-    case 'SET_TAGS':
-      return { ...state, selectedTags: action.payload };
-    case 'SET_ALL_TAGS':
-      return { ...state, allTags: action.payload };
+      return { ...state, decryptedItems: new Set() };
     default:
       return state;
   }
@@ -115,23 +93,17 @@ interface VaultContextType {
   state: VaultState;
   dispatch: React.Dispatch<VaultAction>;
   // Note operations
-  createNote: (title: string, content: string, tags?: string[]) => Promise<void>;
-  updateNote: (id: number, title: string, content: string, tags?: string[]) => Promise<void>;
+  createNote: (title: string, content: string) => Promise<void>;
+  updateNote: (id: number, title: string, content: string) => Promise<void>;
   deleteNote: (id: number) => Promise<void>;
   decryptNote: (id: number) => Promise<string | null>;
-  hideNote: (id: number) => void;
   // File operations
-  uploadFile: (file: File, tags?: string[]) => Promise<void>;
+  uploadFile: (file: File) => Promise<void>;
   deleteFile: (id: number) => Promise<void>;
   downloadFile: (id: number) => Promise<void>;
   decryptFile: (id: number) => Promise<Uint8Array | null>;
-  hideFile: (id: number) => void;
-  // Search and filtering
-  setSearchTerm: (term: string) => void;
-  setSelectedTags: (tags: string[]) => void;
   // Utility
   isDecrypted: (type: 'note' | 'file', id: number) => boolean;
-  getDecryptedContent: (type: 'note' | 'file', id: number) => string | Uint8Array | null;
   refreshData: () => Promise<void>;
 }
 
@@ -153,27 +125,15 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     }
   }, [isReady, authenticated, userId]);
 
-  // Clear decrypted content when navigating away (beforeunload)
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      dispatch({ type: 'CLEAR_DECRYPTED' });
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
-
   const refreshData = async () => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      const [notes, files, tags] = await Promise.all([
-        VaultStorage.getAllNotes(userId, state.searchTerm, state.selectedTags.length ? state.selectedTags : undefined),
-        VaultStorage.getAllFiles(userId, state.searchTerm, state.selectedTags.length ? state.selectedTags : undefined),
-        VaultStorage.getAllTags(userId)
+      const [notes, files] = await Promise.all([
+        VaultStorage.getAllNotes(userId),
+        VaultStorage.getAllFiles(userId)
       ]);
       dispatch({ type: 'SET_NOTES', payload: notes });
       dispatch({ type: 'SET_FILES', payload: files });
-      dispatch({ type: 'SET_ALL_TAGS', payload: tags });
       dispatch({ type: 'SET_ERROR', payload: null });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load data';
@@ -188,7 +148,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const createNote = async (title: string, content: string, tags: string[] = []) => {
+  const createNote = async (title: string, content: string) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
@@ -198,7 +158,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         title,
         content: encryptResult.encryptedData as string,
         encrypted: encryptResult.success,
-        tags,
         userId: userId
       };
 
@@ -207,7 +166,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       
       if (savedNote) {
         dispatch({ type: 'ADD_NOTE', payload: savedNote });
-        refreshData(); // Refresh to update tags
         toast({
           title: "Success",
           description: `Note "${title}" created and ${encryptResult.success ? 'encrypted' : 'saved'}.`
@@ -225,7 +183,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateNote = async (id: number, title: string, content: string, tags: string[] = []) => {
+  const updateNote = async (id: number, title: string, content: string) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
@@ -234,14 +192,12 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       await VaultStorage.updateNote(id, {
         title,
         content: encryptResult.encryptedData as string,
-        encrypted: encryptResult.success,
-        tags
+        encrypted: encryptResult.success
       });
 
       const updatedNote = await VaultStorage.getNote(id);
       if (updatedNote) {
         dispatch({ type: 'UPDATE_NOTE', payload: updatedNote });
-        refreshData(); // Refresh to update tags
         toast({
           title: "Success",
           description: `Note "${title}" updated and ${encryptResult.success ? 'encrypted' : 'saved'}.`
@@ -283,17 +239,13 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       if (!note) return null;
 
       if (!note.encrypted) {
-        const key = `note-${id}`;
-        dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content: note.content } });
         return note.content;
       }
 
       const decryptResult = await encryptionService.decryptText(note.content);
       if (decryptResult.success) {
-        const key = `note-${id}`;
-        const content = decryptResult.decryptedData as string;
-        dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content } });
-        return content;
+        dispatch({ type: 'TOGGLE_DECRYPTED', payload: { type: 'note', id: id.toString() } });
+        return decryptResult.decryptedData as string;
       } else {
         toast({
           title: "Decryption Failed",
@@ -313,12 +265,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const hideNote = (id: number) => {
-    const key = `note-${id}`;
-    dispatch({ type: 'REMOVE_DECRYPTED_CONTENT', payload: key });
-  };
-
-  const uploadFile = async (file: File, tags: string[] = []) => {
+  const uploadFile = async (file: File) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
@@ -331,7 +278,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         size: file.size,
         data: encryptResult.encryptedData as Uint8Array,
         encrypted: encryptResult.success,
-        tags,
         userId: userId
       };
 
@@ -340,7 +286,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       
       if (savedFile) {
         dispatch({ type: 'ADD_FILE', payload: savedFile });
-        refreshData(); // Refresh to update tags
         toast({
           title: "Success",
           description: `File "${file.name}" uploaded and ${encryptResult.success ? 'encrypted' : 'saved'}.`
@@ -382,17 +327,13 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       if (!file) return null;
 
       if (!file.encrypted) {
-        const key = `file-${id}`;
-        dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content: file.data } });
         return file.data;
       }
 
       const decryptResult = await encryptionService.decryptBinary(file.data);
       if (decryptResult.success) {
-        const key = `file-${id}`;
-        const content = decryptResult.decryptedData as Uint8Array;
-        dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content } });
-        return content;
+        dispatch({ type: 'TOGGLE_DECRYPTED', payload: { type: 'file', id: id.toString() } });
+        return decryptResult.decryptedData as Uint8Array;
       } else {
         toast({
           title: "Decryption Failed",
@@ -410,11 +351,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       });
       return null;
     }
-  };
-
-  const hideFile = (id: number) => {
-    const key = `file-${id}`;
-    dispatch({ type: 'REMOVE_DECRYPTED_CONTENT', payload: key });
   };
 
   const downloadFile = async (id: number) => {
@@ -456,33 +392,8 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const setSearchTerm = (term: string) => {
-    dispatch({ type: 'SET_SEARCH', payload: term });
-    // Refresh data will be called by useEffect watching searchTerm
-  };
-
-  const setSelectedTags = (tags: string[]) => {
-    dispatch({ type: 'SET_TAGS', payload: tags });
-    // Refresh data will be called by useEffect watching selectedTags
-  };
-
-  // Refresh data when search term or tags change
-  useEffect(() => {
-    if (isReady) {
-      const timeoutId = setTimeout(() => {
-        refreshData();
-      }, 300); // Debounce search
-      return () => clearTimeout(timeoutId);
-    }
-  }, [state.searchTerm, state.selectedTags, isReady]);
-
   const isDecrypted = (type: 'note' | 'file', id: number): boolean => {
     return state.decryptedItems.has(`${type}-${id}`);
-  };
-
-  const getDecryptedContent = (type: 'note' | 'file', id: number): string | Uint8Array | null => {
-    const key = `${type}-${id}`;
-    return state.decryptedContents.get(key) || null;
   };
 
   const contextValue: VaultContextType = {
@@ -492,16 +403,11 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     updateNote,
     deleteNote,
     decryptNote,
-    hideNote,
     uploadFile,
     deleteFile,
     downloadFile,
     decryptFile,
-    hideFile,
-    setSearchTerm,
-    setSelectedTags,
     isDecrypted,
-    getDecryptedContent,
     refreshData
   };
 

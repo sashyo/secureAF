@@ -5,7 +5,6 @@ export interface VaultNote {
   title: string;
   content: string; // Will be encrypted
   encrypted: boolean;
-  tags: string[];
   createdAt: Date;
   updatedAt: Date;
   userId?: string;
@@ -18,7 +17,6 @@ export interface VaultFile {
   size: number;
   data: Uint8Array; // Will be encrypted
   encrypted: boolean;
-  tags: string[];
   createdAt: Date;
   updatedAt: Date;
   userId?: string;
@@ -31,20 +29,9 @@ export class VaultDatabase extends Dexie {
   constructor() {
     super('SecureDataVault');
     
-    this.version(2).stores({
-      notes: '++id, title, encrypted, *tags, createdAt, updatedAt, userId',
-      files: '++id, name, type, size, encrypted, *tags, createdAt, updatedAt, userId'
-    });
-    
-    // Handle migrations
-    this.version(2).upgrade(tx => {
-      // Add tags field to existing records
-      tx.table('notes').toCollection().modify(note => {
-        if (!note.tags) note.tags = [];
-      });
-      tx.table('files').toCollection().modify(file => {
-        if (!file.tags) file.tags = [];
-      });
+    this.version(1).stores({
+      notes: '++id, title, encrypted, createdAt, updatedAt, userId',
+      files: '++id, name, type, size, encrypted, createdAt, updatedAt, userId'
     });
   }
 }
@@ -73,21 +60,11 @@ export class VaultStorage {
     await db.notes.delete(id);
   }
 
-  static async getAllNotes(userId?: string, searchTerm?: string, tags?: string[]): Promise<VaultNote[]> {
-    let query = userId ? db.notes.where('userId').equals(userId) : db.notes.toCollection();
-    
-    if (searchTerm || tags?.length) {
-      const allNotes = await query.toArray();
-      return allNotes.filter(note => {
-        const matchesSearch = !searchTerm || 
-          note.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesTags = !tags?.length || 
-          tags.some(tag => note.tags?.includes(tag));
-        return matchesSearch && matchesTags;
-      });
+  static async getAllNotes(userId?: string): Promise<VaultNote[]> {
+    if (userId) {
+      return await db.notes.where('userId').equals(userId).toArray();
     }
-    
-    return await query.toArray();
+    return await db.notes.toArray();
   }
 
   static async getNote(id: number): Promise<VaultNote | undefined> {
@@ -114,38 +91,15 @@ export class VaultStorage {
     await db.files.delete(id);
   }
 
-  static async getAllFiles(userId?: string, searchTerm?: string, tags?: string[]): Promise<VaultFile[]> {
-    let query = userId ? db.files.where('userId').equals(userId) : db.files.toCollection();
-    
-    if (searchTerm || tags?.length) {
-      const allFiles = await query.toArray();
-      return allFiles.filter(file => {
-        const matchesSearch = !searchTerm || 
-          file.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesTags = !tags?.length || 
-          tags.some(tag => file.tags?.includes(tag));
-        return matchesSearch && matchesTags;
-      });
+  static async getAllFiles(userId?: string): Promise<VaultFile[]> {
+    if (userId) {
+      return await db.files.where('userId').equals(userId).toArray();
     }
-    
-    return await query.toArray();
+    return await db.files.toArray();
   }
 
   static async getFile(id: number): Promise<VaultFile | undefined> {
     return await db.files.get(id);
-  }
-
-  static async getAllTags(userId?: string): Promise<string[]> {
-    const [notes, files] = await Promise.all([
-      this.getAllNotes(userId),
-      this.getAllFiles(userId)
-    ]);
-    
-    const allTags = new Set<string>();
-    notes.forEach(note => note.tags?.forEach(tag => allTags.add(tag)));
-    files.forEach(file => file.tags?.forEach(tag => allTags.add(tag)));
-    
-    return Array.from(allTags).sort();
   }
 
   static async clearAllData(): Promise<void> {
