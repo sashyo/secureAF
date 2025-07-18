@@ -116,6 +116,16 @@ export class VaultEncryption {
         };
       }
 
+      // TideCloak has issues with large files, limit to 10MB
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (data.length > maxSize) {
+        return {
+          encryptedData: data,
+          success: false,
+          error: 'File too large for encryption (max 10MB)'
+        };
+      }
+
       // Convert binary to base64 string for TideCloak (it requires string data)
       const blob = new Blob([data]);
       const base64Data = await new Promise<string>((resolve, reject) => {
