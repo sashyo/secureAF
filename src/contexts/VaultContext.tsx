@@ -16,7 +16,6 @@ export interface VaultState {
   searchTerm: string;
   selectedTags: string[];
   allTags: string[];
-  loadingOperations: Set<string>; // Track which items are currently being processed
 }
 
 export type VaultAction =
@@ -37,8 +36,7 @@ export type VaultAction =
   | { type: 'CLEAR_DECRYPTED' }
   | { type: 'SET_SEARCH'; payload: string }
   | { type: 'SET_TAGS'; payload: string[] }
-  | { type: 'SET_ALL_TAGS'; payload: string[] }
-  | { type: 'SET_OPERATION_LOADING'; payload: { key: string; loading: boolean } };
+  | { type: 'SET_ALL_TAGS'; payload: string[] };
 
 const initialState: VaultState = {
   notes: [],
@@ -51,8 +49,7 @@ const initialState: VaultState = {
   decryptedContents: new Map(),
   searchTerm: '',
   selectedTags: [],
-  allTags: [],
-  loadingOperations: new Set()
+  allTags: []
 };
 
 function vaultReducer(state: VaultState, action: VaultAction): VaultState {
@@ -135,14 +132,6 @@ function vaultReducer(state: VaultState, action: VaultAction): VaultState {
       return { ...state, selectedTags: action.payload };
     case 'SET_ALL_TAGS':
       return { ...state, allTags: action.payload };
-    case 'SET_OPERATION_LOADING':
-      const newOperations = new Set(state.loadingOperations);
-      if (action.payload.loading) {
-        newOperations.add(action.payload.key);
-      } else {
-        newOperations.delete(action.payload.key);
-      }
-      return { ...state, loadingOperations: newOperations };
     default:
       return state;
   }
@@ -171,7 +160,6 @@ interface VaultContextType {
   // Utility
   isDecrypted: (type: 'note' | 'file', id: number) => boolean;
   getDecryptedContent: (type: 'note' | 'file', id: number) => string | Uint8Array | null;
-  isOperationLoading: (type: 'note' | 'file', id: number) => boolean;
   refreshData: () => Promise<void>;
 }
 
@@ -350,20 +338,19 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   };
 
   const decryptNote = async (id: number): Promise<string | null> => {
-    const key = `note-${id}`;
     try {
-      dispatch({ type: 'SET_OPERATION_LOADING', payload: { key, loading: true } });
-      
       const note = state.notes.find(n => n.id === id);
       if (!note) return null;
 
       if (!note.encrypted) {
+        const key = `note-${id}`;
         dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content: note.content } });
         return note.content;
       }
 
       const decryptResult = await encryptionService.decryptText(note.content);
       if (decryptResult.success) {
+        const key = `note-${id}`;
         const content = decryptResult.decryptedData as string;
         dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content } });
         return content;
@@ -383,8 +370,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         variant: "destructive"
       });
       return null;
-    } finally {
-      dispatch({ type: 'SET_OPERATION_LOADING', payload: { key, loading: false } });
     }
   };
 
@@ -457,20 +442,19 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   };
 
   const decryptFile = async (id: number): Promise<Uint8Array | null> => {
-    const key = `file-${id}`;
     try {
-      dispatch({ type: 'SET_OPERATION_LOADING', payload: { key, loading: true } });
-      
       const file = state.files.find(f => f.id === id);
       if (!file) return null;
 
       if (!file.encrypted) {
+        const key = `file-${id}`;
         dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content: file.data } });
         return file.data;
       }
 
       const decryptResult = await encryptionService.decryptBinary(file.data);
       if (decryptResult.success) {
+        const key = `file-${id}`;
         const content = decryptResult.decryptedData as Uint8Array;
         dispatch({ type: 'SET_DECRYPTED_CONTENT', payload: { key, content } });
         return content;
@@ -490,8 +474,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         variant: "destructive"
       });
       return null;
-    } finally {
-      dispatch({ type: 'SET_OPERATION_LOADING', payload: { key, loading: false } });
     }
   };
 
@@ -607,10 +589,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     return state.decryptedItems.has(`${type}-${id}`);
   };
 
-  const isOperationLoading = (type: 'note' | 'file', id: number): boolean => {
-    return state.loadingOperations.has(`${type}-${id}`);
-  };
-
   const getDecryptedContent = (type: 'note' | 'file', id: number): string | Uint8Array | null => {
     const key = `${type}-${id}`;
     return state.decryptedContents.get(key) || null;
@@ -633,7 +611,6 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     setSelectedTags,
     isDecrypted,
     getDecryptedContent,
-    isOperationLoading,
     refreshData,
     toggleNoteFavorite,
     toggleFileFavorite
