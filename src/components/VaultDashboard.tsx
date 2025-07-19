@@ -282,6 +282,44 @@ export function VaultDashboard() {
           </TabsContent>
 
           <TabsContent value="notes" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input
+                    placeholder="Search notes..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 w-64"
+                  />
+                </div>
+                
+                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="personal">Personal</SelectItem>
+                    <SelectItem value="work">Work</SelectItem>
+                    <SelectItem value="ideas">Ideas</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Button
+                  variant={showFavorites ? "default" : "outline"}
+                  onClick={() => setShowFavorites(!showFavorites)}
+                >
+                  <Star className="w-4 h-4 mr-2" />
+                  Favorites
+                </Button>
+              </div>
+              
+              <Button onClick={() => setIsEditing(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                New Note
+              </Button>
+            </div>
             {state.notes.length === 0 ? (
               <Card className="shadow-security">
                 <CardContent className="p-12 text-center">
