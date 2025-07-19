@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings, FolderOpen } from 'lucide-react';
+import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings, FolderOpen, Bell, Calendar } from 'lucide-react';
 import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { useVault } from '@/contexts/VaultContext';
 import { VaultNote, VaultFile, VaultStorage } from '@/lib/database';
 import { FileUtils } from '@/lib/encryption';
@@ -46,6 +49,13 @@ export function VaultDashboard() {
   const [showVaultExport, setShowVaultExport] = useState(false);
   const [selectedNote, setSelectedNote] = useState<VaultNote | null>(null);
   const [showTagFilter, setShowTagFilter] = useState(false);
+  const [showBackupConfig, setShowBackupConfig] = useState(false);
+  const [backupFrequency, setBackupFrequency] = useState<string>(() => 
+    localStorage.getItem('vault-backup-frequency') || 'weekly'
+  );
+  const [backupEnabled, setBackupEnabled] = useState<boolean>(() => 
+    localStorage.getItem('vault-backup-enabled') === 'true'
+  );
 
   const toggleFavorite = async (type: 'note' | 'file', id: number) => {
     if (type === 'note') {
@@ -109,6 +119,79 @@ export function VaultDashboard() {
       minute: '2-digit'
     }).format(new Date(date));
   };
+
+  // Auto-backup reminder functionality
+  const setupBackupReminder = () => {
+    if (!backupEnabled) return;
+
+    const frequency = backupFrequency;
+    const lastBackup = localStorage.getItem('vault-last-backup');
+    const now = Date.now();
+    
+    let intervalMs = 0;
+    switch (frequency) {
+      case 'daily':
+        intervalMs = 24 * 60 * 60 * 1000; // 1 day
+        break;
+      case 'weekly':
+        intervalMs = 7 * 24 * 60 * 60 * 1000; // 7 days
+        break;
+      case 'monthly':
+        intervalMs = 30 * 24 * 60 * 60 * 1000; // 30 days
+        break;
+      default:
+        intervalMs = 7 * 24 * 60 * 60 * 1000; // Default to weekly
+    }
+
+    if (!lastBackup || (now - parseInt(lastBackup)) > intervalMs) {
+      // Show reminder
+      if (Notification.permission === 'granted') {
+        new Notification('SecureCore Backup Reminder', {
+          body: `It's time to backup your vault! Last backup was ${lastBackup ? new Date(parseInt(lastBackup)).toLocaleDateString() : 'never'}.`,
+          icon: '/favicon.ico'
+        });
+      }
+    }
+  };
+
+  const handleBackupConfigSave = () => {
+    localStorage.setItem('vault-backup-frequency', backupFrequency);
+    localStorage.setItem('vault-backup-enabled', backupEnabled.toString());
+    
+    if (backupEnabled && Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+    
+    setShowBackupConfig(false);
+  };
+
+  const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'application/json') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importData = JSON.parse(e.target?.result as string);
+          console.log('Import data:', importData);
+          // TODO: Implement actual import logic here
+          alert('Import functionality coming soon!');
+        } catch (error) {
+          alert('Invalid backup file format.');
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  // Set up backup reminder check on component mount
+  useEffect(() => {
+    if (backupEnabled) {
+      setupBackupReminder();
+      // Check every hour for backup reminders
+      const interval = setInterval(setupBackupReminder, 60 * 60 * 1000);
+      return () => clearInterval(interval);
+    }
+  }, [backupEnabled, backupFrequency]);
 
   const getEncryptionBadge = (encrypted: boolean, type: 'note' | 'file', id: number) => {
     const decrypted = isDecrypted(type, id);
@@ -577,10 +660,40 @@ export function VaultDashboard() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
+                      <h4 className="font-medium">Import Vault Data</h4>
+                      <p className="text-sm text-muted-foreground">Restore data from a previous backup</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => document.getElementById('settings-import-backup')?.click()}
+                        className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+                      >
+                        <FolderOpen className="w-4 h-4 mr-2" />
+                        Import
+                      </Button>
+                      <input
+                        id="settings-import-backup"
+                        type="file"
+                        accept=".json"
+                        style={{ display: 'none' }}
+                        onChange={handleImportFile}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
                       <h4 className="font-medium">Auto-backup Reminders</h4>
                       <p className="text-sm text-muted-foreground">Get reminded to backup your vault regularly</p>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setShowBackupConfig(true)}
+                      className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+                    >
+                      <Bell className="w-4 h-4 mr-2" />
                       Configure
                     </Button>
                   </div>
@@ -592,7 +705,12 @@ export function VaultDashboard() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => setShowVaultExport(true)}
+                      onClick={() => {
+                        setShowVaultExport(true);
+                        // Mark backup as done
+                        localStorage.setItem('vault-last-backup', Date.now().toString());
+                      }}
+                      className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
                     >
                       <Archive className="w-4 h-4 mr-2" />
                       Export
@@ -603,7 +721,7 @@ export function VaultDashboard() {
                       <h4 className="font-medium">Security Audit</h4>
                       <p className="text-sm text-muted-foreground">Check encryption status and security metrics</p>
                     </div>
-                    <Badge className="encrypted-indicator">
+                    <Badge className="bg-tidecloak-green/10 text-tidecloak-green border-tidecloak-green">
                       <Shield className="w-3 h-3 mr-1" />
                       All Secure
                     </Badge>
@@ -636,6 +754,74 @@ export function VaultDashboard() {
             open={showVaultExport} 
             onClose={() => setShowVaultExport(false)} 
           />
+        )}
+
+        {/* Backup Configuration Dialog */}
+        {showBackupConfig && (
+          <Dialog open={showBackupConfig} onOpenChange={setShowBackupConfig}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-tidecloak-blue rounded-lg flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-xl">Backup Reminders</DialogTitle>
+                    <DialogDescription>
+                      Configure automatic backup reminders
+                    </DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="backup-enabled" className="text-sm font-medium">
+                    Enable backup reminders
+                  </Label>
+                  <Switch
+                    id="backup-enabled"
+                    checked={backupEnabled}
+                    onCheckedChange={setBackupEnabled}
+                  />
+                </div>
+
+                {backupEnabled && (
+                  <div className="space-y-2">
+                    <Label htmlFor="backup-frequency" className="text-sm font-medium">
+                      Reminder frequency
+                    </Label>
+                    <Select value={backupFrequency} onValueChange={setBackupFrequency}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select frequency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                <div className="flex gap-2 pt-4">
+                  <Button
+                    onClick={() => setShowBackupConfig(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleBackupConfigSave}
+                    className="flex-1 bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white"
+                  >
+                    Save Settings
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
     </div>
