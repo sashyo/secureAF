@@ -295,7 +295,7 @@ export function VaultDashboard() {
             <Input
               placeholder="Search notes and files..."
               value={state.searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => contextSetSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -421,8 +421,8 @@ export function VaultDashboard() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
                     placeholder="Search notes..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    value={state.searchTerm}
+                    onChange={(e) => contextSetSearchTerm(e.target.value)}
                     className="pl-10 w-64"
                   />
                 </div>
