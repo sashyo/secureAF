@@ -223,28 +223,17 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    const handleBlur = () => {
-      console.log('Window blur - clearing decrypted content IMMEDIATELY');
-      dispatch({ type: 'CLEAR_DECRYPTED' });
-      toast({
-        title: "Security Lock Activated", 
-        description: "Decrypted content hidden for security"
-      });
-    };
-
     // Page unload events
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener('pagehide', handleBeforeUnload);
     
     // Visibility and focus events
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('blur', handleBlur);
     
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener('pagehide', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('blur', handleBlur);
     };
   }, [toast]);
 

@@ -22,13 +22,13 @@ import { VaultExport } from './VaultExport';
 
 export function VaultDashboard() {
   const { logout } = useTideCloak();
-  const { 
-    state, 
-    deleteNote, 
-    deleteFile, 
-    downloadFile, 
-    decryptNote, 
-    decryptFile, 
+  const {
+    state,
+    deleteNote,
+    deleteFile,
+    downloadFile,
+    decryptNote,
+    decryptFile,
     hideNote,
     hideFile,
     isDecrypted,
@@ -39,24 +39,36 @@ export function VaultDashboard() {
     toggleNoteFavorite,
     toggleFileFavorite
   } = useVault();
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [showFavorites, setShowFavorites] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [showVaultExport, setShowVaultExport] = useState(false);
   const [selectedNote, setSelectedNote] = useState<VaultNote | null>(null);
   const [showTagFilter, setShowTagFilter] = useState(false);
   const [showBackupConfig, setShowBackupConfig] = useState(false);
-  const [backupFrequency, setBackupFrequency] = useState<string>(() => 
+  const [backupFrequency, setBackupFrequency] = useState<string>(() =>
     localStorage.getItem('vault-backup-frequency') || 'weekly'
   );
-  const [backupEnabled, setBackupEnabled] = useState<boolean>(() => 
+  const [backupEnabled, setBackupEnabled] = useState<boolean>(() =>
     localStorage.getItem('vault-backup-enabled') === 'true'
   );
+  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'files' | 'settings'>('overview');
+
+  useEffect(() => {
+    // Re‑encrypt notes when leaving the Notes tab
+    if (activeTab !== 'notes') {
+      state.notes.forEach(n => isDecrypted('note', n.id!) && hideNote(n.id!));
+    }
+    // Re‑encrypt files when leaving the Files tab
+    if (activeTab !== 'files') {
+      state.files.forEach(f => isDecrypted('file', f.id!) && hideFile(f.id!));
+    }
+  }, [activeTab]);
 
   const toggleFavorite = async (type: 'note' | 'file', id: number) => {
     if (type === 'note') {
@@ -73,9 +85,9 @@ export function VaultDashboard() {
 
   const handleDecryptNote = async (note: VaultNote) => {
     if (!note.id) return;
-    
+
     const isCurrentlyDecrypted = isDecrypted('note', note.id);
-    
+
     if (isCurrentlyDecrypted) {
       hideNote(note.id);
     } else {
@@ -85,9 +97,9 @@ export function VaultDashboard() {
 
   const handlePreviewFile = async (file: VaultFile) => {
     if (!file.id) return;
-    
+
     const isCurrentlyDecrypted = isDecrypted('file', file.id);
-    
+
     if (isCurrentlyDecrypted) {
       hideFile(file.id);
     } else {
@@ -101,7 +113,7 @@ export function VaultDashboard() {
   };
 
   const handleTagFilterChange = (tag: string, checked: boolean) => {
-    const newTags = checked 
+    const newTags = checked
       ? [...state.selectedTags, tag]
       : state.selectedTags.filter(t => t !== tag);
     setSelectedTags(newTags);
@@ -128,7 +140,7 @@ export function VaultDashboard() {
     const frequency = backupFrequency;
     const lastBackup = localStorage.getItem('vault-last-backup');
     const now = Date.now();
-    
+
     let intervalMs = 0;
     switch (frequency) {
       case 'daily':
@@ -158,11 +170,11 @@ export function VaultDashboard() {
   const handleBackupConfigSave = () => {
     localStorage.setItem('vault-backup-frequency', backupFrequency);
     localStorage.setItem('vault-backup-enabled', backupEnabled.toString());
-    
+
     if (backupEnabled && Notification.permission !== 'granted') {
       Notification.requestPermission();
     }
-    
+
     setShowBackupConfig(false);
   };
 
@@ -197,7 +209,7 @@ export function VaultDashboard() {
   const getEncryptionBadge = (encrypted: boolean, type: 'note' | 'file', id: number) => {
     const decrypted = isDecrypted(type, id);
     const operationStatus = getOperationStatus(type, id);
-    
+
     if (operationStatus) {
       return (
         <Badge variant="outline" className="text-primary animate-pulse">
@@ -206,21 +218,21 @@ export function VaultDashboard() {
         </Badge>
       );
     }
-    
+
     if (!encrypted) {
       return <Badge variant="outline" className="text-warning">Unencrypted</Badge>;
     }
-    
+
     if (decrypted) {
       return <Badge className="decrypted-indicator">Decrypted</Badge>;
     }
-    
+
     return <Badge className="encrypted-indicator">Encrypted</Badge>;
   };
 
   const renderTagBadges = (tags: string[]) => {
     if (!tags || tags.length === 0) return null;
-    
+
     return (
       <div className="flex flex-wrap gap-1 mt-2">
         {tags.map((tag, index) => (
@@ -311,7 +323,7 @@ export function VaultDashboard() {
               className="pl-10 shadow-card border-0 bg-card/50 backdrop-blur-sm"
             />
           </div>
-          
+
           <div className="flex gap-2">
             <Popover open={showTagFilter} onOpenChange={setShowTagFilter}>
               <PopoverTrigger asChild>
@@ -330,9 +342,9 @@ export function VaultDashboard() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">Filter by Tags</h4>
                     {state.selectedTags.length > 0 && (
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={clearTagFilters}
                         className="h-8 px-2 hover:bg-destructive/10 hover:text-destructive"
                       >
@@ -341,7 +353,7 @@ export function VaultDashboard() {
                       </Button>
                     )}
                   </div>
-                  
+
                   {state.allTags.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No tags available</p>
                   ) : (
@@ -351,7 +363,7 @@ export function VaultDashboard() {
                           <Checkbox
                             id={tag}
                             checked={state.selectedTags.includes(tag)}
-                            onCheckedChange={(checked) => 
+                            onCheckedChange={(checked) =>
                               handleTagFilterChange(tag, checked as boolean)
                             }
                           />
@@ -368,7 +380,7 @@ export function VaultDashboard() {
                 </div>
               </PopoverContent>
             </Popover>
-            
+
             <Button
               onClick={() => openNoteEditor()}
               className="gap-2 bg-gradient-hero hover:bg-gradient-hero/90 text-white shadow-glow-primary hover-lift"
@@ -376,7 +388,7 @@ export function VaultDashboard() {
               <Plus className="w-4 h-4" />
               New Note
             </Button>
-            
+
             <Button
               onClick={() => setShowFileUpload(true)}
               variant="outline"
@@ -389,17 +401,18 @@ export function VaultDashboard() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs value={activeTab}
+          onValueChange={(v) => setActiveTab(v as 'overview' | 'notes' | 'files' | 'settings')} defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-card/50 backdrop-blur-sm rounded-2xl shadow-card border-0">
-            <TabsTrigger 
-              value="overview" 
+            <TabsTrigger
+              value="overview"
               className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <BarChart3 className="w-4 h-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger 
-              value="notes" 
+            <TabsTrigger
+              value="notes"
               className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <FileText className="w-4 h-4" />
@@ -408,8 +421,8 @@ export function VaultDashboard() {
                 {state.allNotes.length}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger 
-              value="files" 
+            <TabsTrigger
+              value="files"
               className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <Upload className="w-4 h-4" />
@@ -418,8 +431,8 @@ export function VaultDashboard() {
                 {state.allFiles.length}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger 
-              value="settings" 
+            <TabsTrigger
+              value="settings"
               className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <Settings className="w-4 h-4" />
@@ -427,530 +440,530 @@ export function VaultDashboard() {
             </TabsTrigger>
           </TabsList>
 
-            {/* Tab Content Container */}
-            <div className="w-full mt-8">
-              {/* Overview Tab */}
-              <TabsContent value="overview" className="space-y-6 mt-0">
-                <VaultStats />
-                
-                {state.searchTerm && (
-                  <Card className="border-tidecloak-blue/20">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Search className="w-5 h-5 text-tidecloak-blue" />
-                        Search Results for "{state.searchTerm}"
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {(() => {
-                        const filteredNotes = state.notes.filter(note => 
-                          note.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
-                          (note.content && note.content.toLowerCase().includes(state.searchTerm.toLowerCase())) ||
-                          (note.tags && note.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
-                        );
-                        
-                        const filteredFiles = state.files.filter(file => 
-                          file.name.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
-                          (file.tags && file.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
-                        );
-                        
-                        const totalResults = filteredNotes.length + filteredFiles.length;
-                        
-                        if (totalResults === 0) {
-                          return (
-                            <div className="text-center py-8">
-                              <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                              <h3 className="text-lg font-semibold mb-2">No results found</h3>
-                              <p className="text-muted-foreground">Try adjusting your search terms</p>
-                            </div>
-                          );
-                        }
-                        
+          {/* Tab Content Container */}
+          <div className="w-full mt-8">
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="space-y-6 mt-0">
+              <VaultStats />
+
+              {state.searchTerm && (
+                <Card className="border-tidecloak-blue/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Search className="w-5 h-5 text-tidecloak-blue" />
+                      Search Results for "{state.searchTerm}"
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {(() => {
+                      const filteredNotes = state.notes.filter(note =>
+                        note.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                        (note.content && note.content.toLowerCase().includes(state.searchTerm.toLowerCase())) ||
+                        (note.tags && note.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
+                      );
+
+                      const filteredFiles = state.files.filter(file =>
+                        file.name.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                        (file.tags && file.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
+                      );
+
+                      const totalResults = filteredNotes.length + filteredFiles.length;
+
+                      if (totalResults === 0) {
                         return (
-                          <div className="space-y-6">
-                            {filteredNotes.length > 0 && (
-                              <div>
-                                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                                  <FileText className="w-5 h-5 text-tidecloak-blue" />
-                                  Notes ({filteredNotes.length})
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                  {filteredNotes.slice(0, 6).map((note) => {
-                                    const decrypted = isDecrypted('note', note.id!);
-                                    const content = getDecryptedContent('note', note.id!) as string;
-                                    
-                                    return (
-                                      <Card key={note.id} className="shadow-security animate-secure-fade">
-                                        <CardHeader className="pb-3">
-                                          <div className="flex items-start justify-between">
-                                            <CardTitle className="text-lg truncate">{note.title}</CardTitle>
-                                            {getEncryptionBadge(note.encrypted, 'note', note.id!)}
-                                          </div>
-                                          <CardDescription>
-                                            {formatDate(note.updatedAt)}
-                                          </CardDescription>
-                                          {renderTagBadges(note.tags)}
-                                        </CardHeader>
-                                        <CardContent className="space-y-4">
-                                          <div className="min-h-[60px] p-3 bg-muted rounded-md">
-                                            {decrypted && content ? (
-                                              <p className="text-sm animate-decrypt-reveal">
-                                                {content.length > 100 ? `${content.substring(0, 100)}...` : content}
-                                              </p>
+                          <div className="text-center py-8">
+                            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                            <h3 className="text-lg font-semibold mb-2">No results found</h3>
+                            <p className="text-muted-foreground">Try adjusting your search terms</p>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="space-y-6">
+                          {filteredNotes.length > 0 && (
+                            <div>
+                              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                                <FileText className="w-5 h-5 text-tidecloak-blue" />
+                                Notes ({filteredNotes.length})
+                              </h3>
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {filteredNotes.slice(0, 6).map((note) => {
+                                  const decrypted = isDecrypted('note', note.id!);
+                                  const content = getDecryptedContent('note', note.id!) as string;
+
+                                  return (
+                                    <Card key={note.id} className="shadow-security animate-secure-fade">
+                                      <CardHeader className="pb-3">
+                                        <div className="flex items-start justify-between">
+                                          <CardTitle className="text-lg truncate">{note.title}</CardTitle>
+                                          {getEncryptionBadge(note.encrypted, 'note', note.id!)}
+                                        </div>
+                                        <CardDescription>
+                                          {formatDate(note.updatedAt)}
+                                        </CardDescription>
+                                        {renderTagBadges(note.tags)}
+                                      </CardHeader>
+                                      <CardContent className="space-y-4">
+                                        <div className="min-h-[60px] p-3 bg-muted rounded-md">
+                                          {decrypted && content ? (
+                                            <p className="text-sm animate-decrypt-reveal">
+                                              {content.length > 100 ? `${content.substring(0, 100)}...` : content}
+                                            </p>
+                                          ) : (
+                                            <div className="flex items-center gap-2 text-muted-foreground">
+                                              <Shield className="w-4 h-4" />
+                                              <span className="text-sm">Content encrypted</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="flex gap-2">
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handleDecryptNote(note)}
+                                            className="flex-1"
+                                            disabled={!!getOperationStatus('note', note.id!)}
+                                          >
+                                            {getOperationStatus('note', note.id!) ? (
+                                              <>
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                {getOperationStatus('note', note.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                              </>
+                                            ) : decrypted ? (
+                                              <>
+                                                <EyeOff className="w-4 h-4 mr-2" />
+                                                Hide
+                                              </>
                                             ) : (
-                                              <div className="flex items-center gap-2 text-muted-foreground">
-                                                <Shield className="w-4 h-4" />
-                                                <span className="text-sm">Content encrypted</span>
-                                              </div>
+                                              <>
+                                                <Eye className="w-4 h-4 mr-2" />
+                                                View
+                                              </>
                                             )}
-                                          </div>
-                                          <div className="flex gap-2">
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              onClick={() => handleDecryptNote(note)}
-                                              className="flex-1"
-                                              disabled={!!getOperationStatus('note', note.id!)}
-                                            >
-                                              {getOperationStatus('note', note.id!) ? (
-                                                <>
-                                                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                  {getOperationStatus('note', note.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
-                                                </>
-                                              ) : decrypted ? (
-                                                <>
-                                                  <EyeOff className="w-4 h-4 mr-2" />
-                                                  Hide
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <Eye className="w-4 h-4 mr-2" />
-                                                  View
-                                                </>
-                                              )}
-                                            </Button>
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              onClick={() => handleEditNote(note)}
-                                            >
-                                              Edit
-                                            </Button>
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              onClick={() => toggleFavorite('note', note.id!)}
-                                            >
-                                              <Star className={`w-4 h-4 ${note.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
-                                            </Button>
-                                          </div>
-                                        </CardContent>
-                                      </Card>
-                                    );
-                                  })}
-                                </div>
+                                          </Button>
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handleEditNote(note)}
+                                          >
+                                            Edit
+                                          </Button>
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => toggleFavorite('note', note.id!)}
+                                          >
+                                            <Star className={`w-4 h-4 ${note.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                                          </Button>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  );
+                                })}
                               </div>
-                            )}
-                            
-                            {filteredFiles.length > 0 && (
-                              <div>
-                                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                                  <Upload className="w-5 h-5 text-tidecloak-blue" />
-                                  Files ({filteredFiles.length})
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                  {filteredFiles.slice(0, 6).map((file) => {
-                                    const decrypted = isDecrypted('file', file.id!);
-                                    const content = getDecryptedContent('file', file.id!);
-                                    
-                                    return (
-                                      <Card key={file.id} className="shadow-security animate-secure-fade">
-                                        <CardHeader className="pb-3">
-                                          <div className="flex items-start justify-between">
-                                            <CardTitle className="text-lg truncate">{file.name}</CardTitle>
-                                            {getEncryptionBadge(file.encrypted, 'file', file.id!)}
-                                          </div>
-                                          <CardDescription>
-                                            {FileUtils.formatFileSize(file.size)} • {formatDate(file.createdAt)}
-                                          </CardDescription>
-                                          {renderTagBadges(file.tags)}
-                                        </CardHeader>
-                                        <CardContent className="space-y-4">
-                                          <div className="min-h-[60px] p-3 bg-muted rounded-md flex items-center justify-center">
-                                            {decrypted && content ? (
-                                              <div className="text-center">
-                                                <p className="text-sm text-green-600 font-medium">File decrypted</p>
-                                                <p className="text-xs text-muted-foreground mt-1">Ready for download</p>
-                                              </div>
+                            </div>
+                          )}
+
+                          {filteredFiles.length > 0 && (
+                            <div>
+                              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                                <Upload className="w-5 h-5 text-tidecloak-blue" />
+                                Files ({filteredFiles.length})
+                              </h3>
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {filteredFiles.slice(0, 6).map((file) => {
+                                  const decrypted = isDecrypted('file', file.id!);
+                                  const content = getDecryptedContent('file', file.id!);
+
+                                  return (
+                                    <Card key={file.id} className="shadow-security animate-secure-fade">
+                                      <CardHeader className="pb-3">
+                                        <div className="flex items-start justify-between">
+                                          <CardTitle className="text-lg truncate">{file.name}</CardTitle>
+                                          {getEncryptionBadge(file.encrypted, 'file', file.id!)}
+                                        </div>
+                                        <CardDescription>
+                                          {FileUtils.formatFileSize(file.size)} • {formatDate(file.createdAt)}
+                                        </CardDescription>
+                                        {renderTagBadges(file.tags)}
+                                      </CardHeader>
+                                      <CardContent className="space-y-4">
+                                        <div className="min-h-[60px] p-3 bg-muted rounded-md flex items-center justify-center">
+                                          {decrypted && content ? (
+                                            <div className="text-center">
+                                              <p className="text-sm text-green-600 font-medium">File decrypted</p>
+                                              <p className="text-xs text-muted-foreground mt-1">Ready for download</p>
+                                            </div>
+                                          ) : (
+                                            <div className="flex items-center gap-2 text-muted-foreground">
+                                              <Shield className="w-4 h-4" />
+                                              <span className="text-sm">File encrypted</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="flex gap-2">
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handlePreviewFile(file)}
+                                            className="flex-1"
+                                            disabled={!!getOperationStatus('file', file.id!)}
+                                          >
+                                            {getOperationStatus('file', file.id!) ? (
+                                              <>
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                {getOperationStatus('file', file.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                              </>
+                                            ) : decrypted ? (
+                                              <>
+                                                <EyeOff className="w-4 h-4 mr-2" />
+                                                Hide
+                                              </>
                                             ) : (
-                                              <div className="flex items-center gap-2 text-muted-foreground">
-                                                <Shield className="w-4 h-4" />
-                                                <span className="text-sm">File encrypted</span>
-                                              </div>
+                                              <>
+                                                <Eye className="w-4 h-4 mr-2" />
+                                                Decrypt
+                                              </>
                                             )}
-                                          </div>
-                                          <div className="flex gap-2">
+                                          </Button>
+                                          {decrypted && (
                                             <Button
                                               size="sm"
                                               variant="outline"
-                                              onClick={() => handlePreviewFile(file)}
-                                              className="flex-1"
-                                              disabled={!!getOperationStatus('file', file.id!)}
+                                              onClick={() => downloadFile(file.id!)}
                                             >
-                                              {getOperationStatus('file', file.id!) ? (
-                                                <>
-                                                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                  {getOperationStatus('file', file.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
-                                                </>
-                                              ) : decrypted ? (
-                                                <>
-                                                  <EyeOff className="w-4 h-4 mr-2" />
-                                                  Hide
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <Eye className="w-4 h-4 mr-2" />
-                                                  Decrypt
-                                                </>
-                                              )}
+                                              <Download className="w-4 h-4" />
                                             </Button>
-                                            {decrypted && (
-                                              <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => downloadFile(file.id!)}
-                                              >
-                                                <Download className="w-4 h-4" />
-                                              </Button>
-                                            )}
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              onClick={() => toggleFavorite('file', file.id!)}
-                                            >
-                                              <Star className={`w-4 h-4 ${file.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
-                                            </Button>
-                                          </div>
-                                        </CardContent>
-                                      </Card>
-                                    );
-                                  })}
-                                </div>
+                                          )}
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => toggleFavorite('file', file.id!)}
+                                          >
+                                            <Star className={`w-4 h-4 ${file.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                                          </Button>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* Notes Tab */}
+            <TabsContent value="notes" className="space-y-6 mt-0">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant={showFavorites ? "default" : "outline"}
+                    onClick={() => setShowFavorites(!showFavorites)}
+                    className={showFavorites ? "bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white" : ""}
+                  >
+                    <Star className="w-4 h-4 mr-2" />
+                    Favorites Only
+                  </Button>
+                </div>
+              </div>
+
+              {state.notes.length === 0 ? (
+                <Card className="shadow-security">
+                  <CardContent className="p-12 text-center">
+                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">No notes yet</h3>
+                    <p className="text-muted-foreground mb-4">Create your first encrypted note to get started</p>
+                    <Button onClick={() => openNoteEditor()} className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Note
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {(showFavorites ? state.notes.filter(note => note.favorite) : state.notes).map((note) => {
+                    const decrypted = isDecrypted('note', note.id!);
+                    const content = getDecryptedContent('note', note.id!) as string;
+
+                    return (
+                      <Card key={note.id} className="shadow-security animate-secure-fade">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between">
+                            <CardTitle className="text-lg truncate">{note.title}</CardTitle>
+                            {getEncryptionBadge(note.encrypted, 'note', note.id!)}
+                          </div>
+                          <CardDescription>
+                            {formatDate(note.updatedAt)}
+                          </CardDescription>
+                          {renderTagBadges(note.tags)}
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="min-h-[60px] p-3 bg-muted rounded-md">
+                            {decrypted && content ? (
+                              <p className="text-sm animate-decrypt-reveal">
+                                {content.length > 100 ? `${content.substring(0, 100)}...` : content}
+                              </p>
+                            ) : (
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Shield className="w-4 h-4" />
+                                <span className="text-sm">Content encrypted</span>
                               </div>
                             )}
                           </div>
-                        );
-                      })()}
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              {/* Notes Tab */}
-              <TabsContent value="notes" className="space-y-6 mt-0">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Button
-                      variant={showFavorites ? "default" : "outline"}
-                      onClick={() => setShowFavorites(!showFavorites)}
-                      className={showFavorites ? "bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white" : ""}
-                    >
-                      <Star className="w-4 h-4 mr-2" />
-                      Favorites Only
-                    </Button>
-                  </div>
-                </div>
-                
-                {state.notes.length === 0 ? (
-                  <Card className="shadow-security">
-                    <CardContent className="p-12 text-center">
-                      <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No notes yet</h3>
-                      <p className="text-muted-foreground mb-4">Create your first encrypted note to get started</p>
-                      <Button onClick={() => openNoteEditor()} className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create Note
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {(showFavorites ? state.notes.filter(note => note.favorite) : state.notes).map((note) => {
-                      const decrypted = isDecrypted('note', note.id!);
-                      const content = getDecryptedContent('note', note.id!) as string;
-                      
-                      return (
-                        <Card key={note.id} className="shadow-security animate-secure-fade">
-                          <CardHeader className="pb-3">
-                            <div className="flex items-start justify-between">
-                              <CardTitle className="text-lg truncate">{note.title}</CardTitle>
-                              {getEncryptionBadge(note.encrypted, 'note', note.id!)}
-                            </div>
-                            <CardDescription>
-                              {formatDate(note.updatedAt)}
-                            </CardDescription>
-                            {renderTagBadges(note.tags)}
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div className="min-h-[60px] p-3 bg-muted rounded-md">
-                              {decrypted && content ? (
-                                <p className="text-sm animate-decrypt-reveal">
-                                  {content.length > 100 ? `${content.substring(0, 100)}...` : content}
-                                </p>
-                              ) : (
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                  <Shield className="w-4 h-4" />
-                                  <span className="text-sm">Content encrypted</span>
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                onClick={() => toggleFavorite('note', note.id!)}
-                                variant="ghost"
-                                size="sm"
-                                className="p-1 h-auto"
-                              >
-                                <Star 
-                                  className={`w-4 h-4 ${note.favorite ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground'}`} 
-                                />
-                              </Button>
-                              <Button
-                                onClick={() => handleDecryptNote(note)}
-                                className={`flex-1 ${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
-                                size="sm"
-                                disabled={!!getOperationStatus('note', note.id!)}
-                              >
-                                {getOperationStatus('note', note.id!) ? (
-                                  <>
-                                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                                    {getOperationStatus('note', note.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
-                                  </>
-                                ) : decrypted ? (
-                                  <>
-                                    <EyeOff className="w-4 h-4 mr-1" />
-                                    Hide
-                                  </>
-                                ) : (
-                                  <>
-                                    <Eye className="w-4 h-4 mr-1" />
-                                    Decrypt
-                                  </>
-                                )}
-                              </Button>
-                              <Button
-                                onClick={() => handleEditNote(note)}
-                                variant="outline"
-                                size="sm"
-                              >
-                                Edit
-                              </Button>
-                              <Button
-                                onClick={() => deleteNote(note.id!)}
-                                variant="destructive"
-                                size="sm"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                )}
-              </TabsContent>
-
-              {/* Files Tab */}
-              <TabsContent value="files" className="space-y-6 mt-0">
-                {state.files.length === 0 ? (
-                  <Card className="shadow-security">
-                    <CardContent className="p-12 text-center">
-                      <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No files uploaded</h3>
-                      <p className="text-muted-foreground mb-4">Upload your first encrypted file to get started</p>
-                      <Button onClick={() => setShowFileUpload(true)} className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white">
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload File
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {state.files.map((file) => {
-                      const decrypted = isDecrypted('file', file.id!);
-                      const fileData = getDecryptedContent('file', file.id!) as Uint8Array;
-                      
-                      return (
-                        <Card key={file.id} className="shadow-security animate-secure-fade">
-                          <CardHeader className="pb-3">
-                            <div className="flex items-start justify-between">
-                              <CardTitle className="text-lg truncate">{file.name}</CardTitle>
-                              {getEncryptionBadge(file.encrypted, 'file', file.id!)}
-                            </div>
-                            <CardDescription>
-                              {FileUtils.formatFileSize(file.size)} • {formatDate(file.updatedAt)}
-                            </CardDescription>
-                            {renderTagBadges(file.tags)}
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div className="p-3 bg-muted rounded-md">
-                              {decrypted && fileData && file.type.startsWith('image/') ? (
-                                <div className="text-center">
-                                  <img 
-                                    src={URL.createObjectURL(new Blob([fileData], { type: file.type }))}
-                                    alt={file.name}
-                                    className="max-w-full max-h-32 object-contain mx-auto rounded animate-decrypt-reveal"
-                                    onLoad={(e) => {
-                                      setTimeout(() => {
-                                        URL.revokeObjectURL((e.target as HTMLImageElement).src);
-                                      }, 100);
-                                    }}
-                                  />
-                                  <p className="text-xs text-muted-foreground mt-2">Preview</p>
-                                </div>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => toggleFavorite('note', note.id!)}
+                              variant="ghost"
+                              size="sm"
+                              className="p-1 h-auto"
+                            >
+                              <Star
+                                className={`w-4 h-4 ${note.favorite ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground'}`}
+                              />
+                            </Button>
+                            <Button
+                              onClick={() => handleDecryptNote(note)}
+                              className={`flex-1 ${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
+                              size="sm"
+                              disabled={!!getOperationStatus('note', note.id!)}
+                            >
+                              {getOperationStatus('note', note.id!) ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                                  {getOperationStatus('note', note.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                </>
                               ) : decrypted ? (
-                                <div className="flex items-center gap-2 text-decrypted animate-decrypt-reveal">
-                                  <Eye className="w-4 h-4" />
-                                  <span className="text-sm">File decrypted - ready to download</span>
-                                </div>
+                                <>
+                                  <EyeOff className="w-4 h-4 mr-1" />
+                                  Hide
+                                </>
                               ) : (
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                  <Shield className="w-4 h-4" />
-                                  <span className="text-sm">{file.type || 'Unknown file type'}</span>
-                                </div>
+                                <>
+                                  <Eye className="w-4 h-4 mr-1" />
+                                  Decrypt
+                                </>
                               )}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                onClick={() => handlePreviewFile(file)}
-                                className={`${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
-                                size="sm"
-                                disabled={!!getOperationStatus('file', file.id!)}
-                              >
-                                {getOperationStatus('file', file.id!) ? (
-                                  <>
-                                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                                    {getOperationStatus('file', file.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
-                                  </>
-                                ) : decrypted ? (
-                                  <>
-                                    <EyeOff className="w-4 h-4 mr-1" />
-                                    Hide
-                                  </>
-                                ) : (
-                                  <>
-                                    <Eye className="w-4 h-4 mr-1" />
-                                    Preview
-                                  </>
-                                )}
-                              </Button>
-                              <Button
-                                onClick={() => downloadFile(file.id!)}
-                                variant="outline"
-                                size="sm"
-                                className="flex-1"
-                              >
-                                <Download className="w-4 h-4 mr-1" />
-                                Download
-                              </Button>
-                              <Button
-                                onClick={() => deleteFile(file.id!)}
-                                variant="destructive"
-                                size="sm"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                )}
-              </TabsContent>
-
-              {/* Settings Tab */}
-              <TabsContent value="settings" className="mt-0">
-                <div className="grid gap-6">
-                  <Card className="border-security">
-                    <CardHeader>
-                      <CardTitle>Vault Settings</CardTitle>
-                      <CardDescription>Manage your vault preferences and security</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">Export Vault Data</h4>
-                          <p className="text-sm text-muted-foreground">Create secure backups of your encrypted data</p>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            setShowVaultExport(true);
-                            localStorage.setItem('vault-last-backup', Date.now().toString());
-                          }}
-                          className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
-                        >
-                          <Archive className="w-4 h-4 mr-2" />
-                          Export
-                        </Button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">Import Vault Data</h4>
-                          <p className="text-sm text-muted-foreground">Restore data from a previous backup</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => document.getElementById('settings-import-backup')?.click()}
-                            className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
-                          >
-                            <FolderOpen className="w-4 h-4 mr-2" />
-                            Import
-                          </Button>
-                          <input
-                            id="settings-import-backup"
-                            type="file"
-                            accept=".json"
-                            style={{ display: 'none' }}
-                            onChange={handleImportFile}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">Auto-backup Reminders</h4>
-                          <p className="text-sm text-muted-foreground">Get reminded to backup your vault regularly</p>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setShowBackupConfig(true)}
-                          className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
-                        >
-                          <Bell className="w-4 h-4 mr-2" />
-                          Configure
-                        </Button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">Security Audit</h4>
-                          <p className="text-sm text-muted-foreground">Check encryption status and security metrics</p>
-                        </div>
-                        <Badge className="bg-tidecloak-green/10 text-tidecloak-green border-tidecloak-green">
-                          <Shield className="w-3 h-3 mr-1" />
-                          All Secure
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
+                            </Button>
+                            <Button
+                              onClick={() => handleEditNote(note)}
+                              variant="outline"
+                              size="sm"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              onClick={() => deleteNote(note.id!)}
+                              variant="destructive"
+                              size="sm"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
-              </TabsContent>
-            </div>
+              )}
+            </TabsContent>
+
+            {/* Files Tab */}
+            <TabsContent value="files" className="space-y-6 mt-0">
+              {state.files.length === 0 ? (
+                <Card className="shadow-security">
+                  <CardContent className="p-12 text-center">
+                    <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">No files uploaded</h3>
+                    <p className="text-muted-foreground mb-4">Upload your first encrypted file to get started</p>
+                    <Button onClick={() => setShowFileUpload(true)} className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload File
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {state.files.map((file) => {
+                    const decrypted = isDecrypted('file', file.id!);
+                    const fileData = getDecryptedContent('file', file.id!) as Uint8Array;
+
+                    return (
+                      <Card key={file.id} className="shadow-security animate-secure-fade">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between">
+                            <CardTitle className="text-lg truncate">{file.name}</CardTitle>
+                            {getEncryptionBadge(file.encrypted, 'file', file.id!)}
+                          </div>
+                          <CardDescription>
+                            {FileUtils.formatFileSize(file.size)} • {formatDate(file.updatedAt)}
+                          </CardDescription>
+                          {renderTagBadges(file.tags)}
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="p-3 bg-muted rounded-md">
+                            {decrypted && fileData && file.type.startsWith('image/') ? (
+                              <div className="text-center">
+                                <img
+                                  src={URL.createObjectURL(new Blob([fileData], { type: file.type }))}
+                                  alt={file.name}
+                                  className="max-w-full max-h-32 object-contain mx-auto rounded animate-decrypt-reveal"
+                                  onLoad={(e) => {
+                                    setTimeout(() => {
+                                      URL.revokeObjectURL((e.target as HTMLImageElement).src);
+                                    }, 100);
+                                  }}
+                                />
+                                <p className="text-xs text-muted-foreground mt-2">Preview</p>
+                              </div>
+                            ) : decrypted ? (
+                              <div className="flex items-center gap-2 text-decrypted animate-decrypt-reveal">
+                                <Eye className="w-4 h-4" />
+                                <span className="text-sm">File decrypted - ready to download</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Shield className="w-4 h-4" />
+                                <span className="text-sm">{file.type || 'Unknown file type'}</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => handlePreviewFile(file)}
+                              className={`${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
+                              size="sm"
+                              disabled={!!getOperationStatus('file', file.id!)}
+                            >
+                              {getOperationStatus('file', file.id!) ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                                  {getOperationStatus('file', file.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                </>
+                              ) : decrypted ? (
+                                <>
+                                  <EyeOff className="w-4 h-4 mr-1" />
+                                  Hide
+                                </>
+                              ) : (
+                                <>
+                                  <Eye className="w-4 h-4 mr-1" />
+                                  Preview
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              onClick={() => downloadFile(file.id!)}
+                              variant="outline"
+                              size="sm"
+                              className="flex-1"
+                            >
+                              <Download className="w-4 h-4 mr-1" />
+                              Download
+                            </Button>
+                            <Button
+                              onClick={() => deleteFile(file.id!)}
+                              variant="destructive"
+                              size="sm"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Settings Tab */}
+            <TabsContent value="settings" className="mt-0">
+              <div className="grid gap-6">
+                <Card className="border-security">
+                  <CardHeader>
+                    <CardTitle>Vault Settings</CardTitle>
+                    <CardDescription>Manage your vault preferences and security</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">Export Vault Data</h4>
+                        <p className="text-sm text-muted-foreground">Create secure backups of your encrypted data</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setShowVaultExport(true);
+                          localStorage.setItem('vault-last-backup', Date.now().toString());
+                        }}
+                        className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+                      >
+                        <Archive className="w-4 h-4 mr-2" />
+                        Export
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">Import Vault Data</h4>
+                        <p className="text-sm text-muted-foreground">Restore data from a previous backup</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => document.getElementById('settings-import-backup')?.click()}
+                          className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+                        >
+                          <FolderOpen className="w-4 h-4 mr-2" />
+                          Import
+                        </Button>
+                        <input
+                          id="settings-import-backup"
+                          type="file"
+                          accept=".json"
+                          style={{ display: 'none' }}
+                          onChange={handleImportFile}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">Auto-backup Reminders</h4>
+                        <p className="text-sm text-muted-foreground">Get reminded to backup your vault regularly</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowBackupConfig(true)}
+                        className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+                      >
+                        <Bell className="w-4 h-4 mr-2" />
+                        Configure
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">Security Audit</h4>
+                        <p className="text-sm text-muted-foreground">Check encryption status and security metrics</p>
+                      </div>
+                      <Badge className="bg-tidecloak-green/10 text-tidecloak-green border-tidecloak-green">
+                        <Shield className="w-3 h-3 mr-1" />
+                        All Secure
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </div>
         </Tabs>
 
         {/* Modals */}
@@ -971,9 +984,9 @@ export function VaultDashboard() {
         )}
 
         {showVaultExport && (
-          <VaultExport 
-            open={showVaultExport} 
-            onClose={() => setShowVaultExport(false)} 
+          <VaultExport
+            open={showVaultExport}
+            onClose={() => setShowVaultExport(false)}
           />
         )}
 
