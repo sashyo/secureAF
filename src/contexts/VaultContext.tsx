@@ -212,7 +212,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     };
 
     const handleVisibilityChange = () => {
-      console.log('Visibility change - hidden:', document.hidden);
+      console.log('Visibility change - hidden:', document.hidden, 'decrypted items:', state.decryptedItems.size);
       if (document.hidden) {
         console.log('Tab hidden - clearing decrypted content');
         dispatch({ type: 'CLEAR_DECRYPTED' });
