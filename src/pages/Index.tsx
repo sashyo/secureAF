@@ -31,32 +31,32 @@ const NexusVaultLanding = () => {
         <div className="absolute inset-0 bg-gradient-gundam opacity-10"></div>
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge variant="outline" className="mb-6 px-4 py-2 text-gundam-red border-gundam-red bg-gundam-red/10 animate-armor-glow">
+            <Badge variant="outline" className="mb-6 px-4 py-2 text-gundam-blue border-gundam-blue bg-gundam-blue/10 animate-armor-glow">
               <Zap className="w-4 h-4 mr-2" />
-              Powered by TideCloak's Keyless Protocol
+              Powered by TideCloak Keyless Security
             </Badge>
             
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gundam-white">
-              NEXUS VAULT
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="bg-gradient-gundam bg-clip-text text-transparent">NEXUS VAULT</span>
             </h1>
-            <h2 className="text-2xl md:text-3xl font-medium mb-8 text-gundam-grey">
-              Next-Gen Mecha Security System
+            <h2 className="text-2xl md:text-3xl font-medium mb-8 text-foreground/90">
+              Revolutionary Keyless Data Vault
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              Deploy your data with <strong className="text-gundam-white">unstealable quantum armor</strong>. 
-              No keys to breach, no core to target, no single point of system failure.
+              Experience the future of security with <strong className="text-gundam-yellow">TideCloak's breakthrough keyless technology</strong>. 
+              No passwords, no private keys, no single point of failure. Just unbreakable security.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button size="lg" className="bg-gradient-gundam hover:shadow-glow-gundam text-lg px-8 py-6" onClick={handleTryVault}>
                 <Shield className="w-5 h-5 mr-2" />
-                Activate NEXUS
+                Try SecureVault Demo
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" size="lg" className="border-gundam-red text-gundam-red hover:bg-gundam-red/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
+              <Button variant="outline" size="lg" className="border-gundam-blue text-gundam-blue hover:bg-gundam-blue/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
                 <Github className="w-5 h-5 mr-2" />
-                Access Blueprints
+                View on GitHub
               </Button>
             </div>
 
