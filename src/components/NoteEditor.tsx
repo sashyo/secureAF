@@ -83,12 +83,12 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
 
   return (
     <Dialog open={true} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-security">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-security rounded-lg flex items-center justify-center">
-                <Edit3 className="w-5 h-5 text-primary-foreground" />
+              <div className="w-10 h-10 bg-tidecloak-blue rounded-lg flex items-center justify-center">
+                <Edit3 className="w-5 h-5 text-white" />
               </div>
               <div>
                 <DialogTitle className="text-xl">
@@ -99,7 +99,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
                 </DialogDescription>
               </div>
             </div>
-            <Badge className="encrypted-indicator">
+            <Badge className="bg-tidecloak-blue/10 text-tidecloak-blue border-tidecloak-blue">
               <Shield className="w-3 h-3 mr-1" />
               Encrypted
             </Badge>
@@ -143,7 +143,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
 
         <div className="flex items-center justify-between pt-4 border-t">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Shield className="w-4 h-4 text-primary" />
+            <Shield className="w-4 h-4 text-tidecloak-blue" />
             <span>Content will be encrypted automatically</span>
           </div>
           
@@ -152,13 +152,14 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
               onClick={onClose}
               variant="outline"
               disabled={loading}
+              className="border-foreground text-foreground hover:bg-muted"
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
             <Button
               onClick={handleSave}
-              variant="vault"
+              className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white"
               disabled={loading || !title.trim() || !content.trim() || isDecrypting}
             >
               <Save className="w-4 h-4 mr-2" />
