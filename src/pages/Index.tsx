@@ -26,11 +26,11 @@ const LandingContent = () => {
   const { login } = useTideCloak();
 
   const handleViewGitHub = () => {
-    window.open('https://github.com/tidecloak/secure-vault-demo', '_blank');
+    window.open('https://github.com/tide-foundation', '_blank');
   };
 
   const handleReadDocs = () => {
-    window.open('https://docs.tidecloak.com/security-whitepaper', '_blank');
+    window.open('https://tide.org/blog/splintering-password-authentication-encryption', '_blank');
   };
 
   const vaultFeatures = [
@@ -63,35 +63,35 @@ const LandingContent = () => {
   const securityFeatures = [
     {
       icon: Key,
-      title: "Keyless by Design",
-      description: "Your vault's key is mathematically impossible to steal — it's never created in full, anywhere.",
+      title: "Splintered Authentication",
+      description: "Tide's unique approach fragments your authentication across a decentralized network, making breaches impossible.",
       gradient: "bg-gradient-hero"
     },
     {
       icon: Shield,
-      title: "Provable Security",
-      description: "Cryptographic proof that your data cannot be accessed without proper authorization. Mathematical certainty.",
+      title: "Decentralized Encryption",
+      description: "Your data is encrypted using Tide's distributed key generation - no single point of failure exists.",
       gradient: "bg-gradient-secure"
     },
     {
       icon: Server,
-      title: "Distributed Protection",
-      description: "Key fragments scattered across secure nodes. No single point can compromise your vault.",
+      title: "Secure Decryption",
+      description: "Access your data through Tide's threshold cryptography - mathematically proven security.",
       gradient: "bg-gradient-feature"
     },
     {
       icon: Zap,
-      title: "Zero-Weakness Architecture",
-      description: "Advanced threshold cryptography eliminates traditional attack vectors. Unhackable by design.",
+      title: "Tide-Powered Security",
+      description: "Built on Tide Foundation's breakthrough platform that makes traditional cybersecurity obsolete.",
       gradient: "bg-gradient-cta"
     }
   ];
 
   const benefits = [
-    "Mathematically proven: your key cannot be reconstructed by attackers",
-    "Even we cannot access your data — true zero-knowledge security", 
-    "First vault with cryptographic immunity to traditional hacking methods",
-    "Breakthrough technology that makes data breaches physically impossible"
+    "Authentication powered by Tide's splintering mechanism - 14 million percent harder to hack",
+    "Encryption keys generated in fragmented state across decentralized network", 
+    "Decryption through threshold cryptography - mathematically immune to breaches",
+    "Built on Tide Foundation's platform that makes traditional cybersecurity obsolete"
   ];
 
   return (
@@ -102,19 +102,19 @@ const LandingContent = () => {
           <div className="text-center max-w-4xl mx-auto">
             <Badge variant="outline" className="mb-6 px-4 py-2 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/10 animate-glow-pulse">
               <Shield className="w-4 h-4 mr-2" />
-              World's Most Secure Data Vault
+              Secured with Tide
             </Badge>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
               VibeVault
             </h1>
             <h2 className="text-2xl md:text-3xl font-medium mb-8 text-tidecloak-blue">
-              Mathematically Unbreakable Security
+              Advanced Authentication, Encryption & Decryption
             </h2>
             
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              The only data vault with <strong className="text-tidecloak-purple">provable security</strong>. 
-              Our private key never exists in full — making your data mathematically impossible to steal.
+              Your data vault powered by <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-tidecloak-purple hover:underline font-semibold">Tide Foundation's</a> breakthrough security technology. 
+              Experience authentication, encryption, and decryption that's mathematically immune to traditional attacks.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -125,7 +125,7 @@ const LandingContent = () => {
               </Button>
               <Button variant="outline" size="lg" className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 text-lg px-8 py-6" onClick={handleReadDocs}>
                 <BookOpen className="w-5 h-5 mr-2" />
-                Security Whitepaper
+                Learn About Tide
               </Button>
               <Button variant="outline" size="lg" className="border-foreground text-foreground hover:bg-muted text-lg px-8 py-6" onClick={handleViewGitHub}>
                 <Github className="w-5 h-5 mr-2" />
@@ -158,10 +158,10 @@ const LandingContent = () => {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-6">
-              The World's Most <span className="text-tidecloak-purple">Secure Vault</span>
+              Your <span className="text-tidecloak-purple">Secure Vault</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Store, manage, and share your most sensitive data with absolute confidence. Zero compromise.
+              Built on <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-tidecloak-blue hover:underline">Tide's revolutionary platform</a> for next-generation data protection.
             </p>
           </div>
 
@@ -189,10 +189,10 @@ const LandingContent = () => {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-6">
-              Why This Vault is <span className="text-tidecloak-blue">Unbreakable</span>
+              How <span className="text-tidecloak-blue">Tide</span> Secures Your Data
             </h2>
             <p className="text-xl text-muted-foreground">
-              Powered by TideCloak's revolutionary cryptography. The technology that makes traditional hacking impossible.
+              Powered by <a href="https://tide.org/tideprotocol" target="_blank" rel="noopener noreferrer" className="text-tidecloak-blue hover:underline">Tide's splintering technology</a> that makes traditional hacking impossible.
             </p>
           </div>
 
@@ -289,9 +289,9 @@ const LandingContent = () => {
       {/* Developer CTA Section */}
       <section className="py-20 bg-gradient-hero text-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">The Most Secure Vault Ever Built</h2>
+          <h2 className="text-4xl font-bold mb-6">Experience Tide-Powered Security</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-            VibeVault represents a breakthrough in data security. Experience unbreakable protection for your most sensitive information.
+            VibeVault demonstrates the future of data security. See how <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-white hover:underline font-semibold">Tide Foundation's technology</a> can secure your applications.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
@@ -300,7 +300,7 @@ const LandingContent = () => {
             </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
               <BookOpen className="w-5 h-5 mr-2" />
-              Security Whitepaper
+              Learn About Tide
             </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
               <Github className="w-5 h-5 mr-2" />
