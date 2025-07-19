@@ -26,7 +26,7 @@ const LandingContent = () => {
   const { login } = useTideCloak();
 
   const handleViewGitHub = () => {
-    window.open('https://github.com/tidecloak/secure-vault-demo', '_blank');
+    window.open('https://github.com/sashyo/sashyo.github.io', '_blank');
   };
 
   const handleReadDocs = () => {
