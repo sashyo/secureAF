@@ -203,32 +203,27 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     };
 
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        // Hide all decrypted content when tab becomes hidden
+      console.log('Visibility change:', document.hidden, 'Decrypted items:', state.decryptedItems.size);
+      if (document.hidden && state.decryptedItems.size > 0) {
         console.log('Tab hidden - clearing decrypted content');
         dispatch({ type: 'CLEAR_DECRYPTED' });
         toast({
           title: "Security Lock Activated",
-          description: "Decrypted content hidden for security",
-          variant: "default"
+          description: "Decrypted content hidden for security"
         });
       }
     };
 
     const handleBlur = () => {
-      // Hide all decrypted content when window loses focus  
-      console.log('Window blur - clearing decrypted content');
-      dispatch({ type: 'CLEAR_DECRYPTED' });
-      toast({
-        title: "Security Lock Activated", 
-        description: "Decrypted content hidden for security",
-        variant: "default"
-      });
-    };
-
-    const handleFocus = () => {
-      // Optional: Log when window regains focus
-      console.log('Window focus regained');
+      console.log('Window blur - decrypted items:', state.decryptedItems.size);
+      if (state.decryptedItems.size > 0) {
+        console.log('Window blur - clearing decrypted content');
+        dispatch({ type: 'CLEAR_DECRYPTED' });
+        toast({
+          title: "Security Lock Activated", 
+          description: "Decrypted content hidden for security"
+        });
+      }
     };
 
     // Page unload events
@@ -238,16 +233,14 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     // Visibility and focus events
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
     
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener('pagehide', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
     };
-  }, [toast]);
+  }, [state.decryptedItems.size, toast]);
 
   const refreshData = async () => {
     try {
@@ -614,18 +607,18 @@ export function VaultProvider({ children }: { children: ReactNode }) {
 
   // Auto-hide decrypted content after inactivity
   useEffect(() => {
+    if (state.decryptedItems.size === 0) return;
+
     let inactivityTimer: NodeJS.Timeout;
     
     const resetTimer = () => {
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(() => {
-        // Hide all decrypted content after 5 minutes of inactivity
         console.log('Inactivity timeout - clearing decrypted content');
         dispatch({ type: 'CLEAR_DECRYPTED' });
         toast({
           title: "Auto-Lock Activated",
-          description: "Decrypted content hidden due to inactivity",
-          variant: "default"
+          description: "Decrypted content hidden due to inactivity"
         });
       }, 5 * 60 * 1000); // 5 minutes
     };
@@ -644,7 +637,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         document.removeEventListener(event, resetTimer, true);
       });
     };
-  }, [toast]);
+  }, [state.decryptedItems.size, toast]);
 
   const toggleNoteFavorite = async (id: number) => {
     try {
