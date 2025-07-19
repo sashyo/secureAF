@@ -8,62 +8,72 @@ Vibe-focused design for developers who want to code, not worry about crypto.
 
 @layer base {
   :root {
-    /* GUNDAM RX-78 THEME - White, Blue, Red, Yellow */
-    --background: 220 15% 8%;
-    --foreground: 0 0% 98%;
-    --card: 220 15% 12%;
-    --card-foreground: 0 0% 98%;
-    --popover: 220 15% 12%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 220 90% 56%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 220 15% 20%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 220 15% 16%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 220 15% 20%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 220 90% 56%;
+    /* TIDECLOAK BRIGHT THEME - Light, Clean, Professional */
+    --background: 0 0% 100%;
+    --foreground: 222 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 98%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
 
-    /* GUNDAM RX-78 Colors */
-    --gundam-white: 0 0% 98%;
-    --gundam-blue: 220 90% 56%;
-    --gundam-red: 0 85% 55%;
-    --gundam-yellow: 45 95% 58%;
-    --gundam-grey: 220 15% 40%;
-    --gundam-dark: 220 15% 8%;
-    --gundam-black: 220 20% 4%;
+    /* TIDECLOAK Brand Colors */
+    --tidecloak-blue: 221.2 83.2% 53.3%;
+    --tidecloak-purple: 262.1 83.3% 57.8%;
+    --tidecloak-cyan: 186 100% 50%;
+    --tidecloak-green: 142.1 76.2% 36.3%;
+    --tidecloak-orange: 24.6 95% 53.1%;
+    --tidecloak-pink: 330.4 81.2% 60.4%;
+    --tidecloak-grey: 215.4 16.3% 46.9%;
+    --tidecloak-light: 210 40% 98%;
     
-    /* Mecha Status Colors */
-    --armed: 0 85% 55%;
-    --shield: 220 90% 56%;
-    --boost: 45 95% 58%;
-    --stealth: 220 15% 40%;
-    --critical: 0 100% 50%;
+    /* Security Status Colors */
+    --secure: 142.1 76.2% 36.3%;
+    --encrypted: 221.2 83.2% 53.3%;
+    --protected: 262.1 83.3% 57.8%;
+    --verified: 186 100% 50%;
+    --critical: 0 84.2% 60.2%;
 
-    /* Gundam RX-78 Gradients */
-    --gradient-gundam: linear-gradient(135deg, hsl(220 90% 56%), hsl(0 0% 98%));
-    --gradient-beam: linear-gradient(135deg, hsl(45 95% 58%), hsl(0 85% 55%));
-    --gradient-shield: linear-gradient(135deg, hsl(220 90% 56%), hsl(220 15% 8%));
-    --gradient-boost: linear-gradient(135deg, hsl(0 0% 98%), hsl(45 95% 58%));
+    /* TideCloak Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(221.2 83.2% 53.3%), hsl(262.1 83.3% 57.8%));
+    --gradient-secure: linear-gradient(135deg, hsl(142.1 76.2% 36.3%), hsl(186 100% 50%));
+    --gradient-feature: linear-gradient(135deg, hsl(186 100% 50%), hsl(330.4 81.2% 60.4%));
+    --gradient-cta: linear-gradient(135deg, hsl(24.6 95% 53.1%), hsl(330.4 81.2% 60.4%));
 
-    /* Mecha Effects */
-    --glow-gundam: 0 0 25px hsl(220 90% 56% / 0.4);
-    --glow-beam: 0 0 20px hsl(45 95% 58% / 0.3);
-    --glow-critical: 0 0 30px hsl(0 85% 55% / 0.5);
-    --shadow-mecha: 0 20px 40px -10px hsl(220 90% 56% / 0.3);
+    /* TideCloak Effects */
+    --glow-primary: 0 0 25px hsl(221.2 83.2% 53.3% / 0.3);
+    --glow-secure: 0 0 20px hsl(142.1 76.2% 36.3% / 0.3);
+    --glow-feature: 0 0 30px hsl(186 100% 50% / 0.3);
+    --shadow-card: 0 4px 6px -1px hsl(220 22% 5% / 0.1), 0 2px 4px -2px hsl(220 22% 5% / 0.1);
 
     --radius: 0.5rem;
   }
 
   .dark {
-    /* Enhanced for Gundam theme */
-    --background: 220 15% 8%;
-    --foreground: 0 0% 98%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
   }
 }
 
@@ -74,134 +84,132 @@ Vibe-focused design for developers who want to code, not worry about crypto.
 
   body {
     @apply bg-background text-foreground font-sans;
-    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--gundam-dark)));
+    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--tidecloak-light)));
   }
 
   html {
-    @apply dark;
+    /* Light theme by default */
   }
 }
 
 @layer utilities {
-  /* GUNDAM RX-78 Gradient Utilities */
-  .bg-gradient-gundam {
-    background: var(--gradient-gundam);
+  /* TideCloak Gradient Utilities */
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
   }
   
-  .bg-gradient-beam {
-    background: var(--gradient-beam);
+  .bg-gradient-secure {
+    background: var(--gradient-secure);
   }
   
-  .bg-gradient-shield {
-    background: var(--gradient-shield);
+  .bg-gradient-feature {
+    background: var(--gradient-feature);
   }
   
-  .bg-gradient-boost {
-    background: var(--gradient-boost);
+  .bg-gradient-cta {
+    background: var(--gradient-cta);
   }
 
-  /* GUNDAM Shadow Utilities */
-  .shadow-glow-gundam {
-    box-shadow: var(--glow-gundam);
+  /* TideCloak Shadow Utilities */
+  .shadow-glow-primary {
+    box-shadow: var(--glow-primary);
   }
   
-  .shadow-glow-beam {
-    box-shadow: var(--glow-beam);
+  .shadow-glow-secure {
+    box-shadow: var(--glow-secure);
   }
   
-  .shadow-glow-critical {
-    box-shadow: var(--glow-critical);
+  .shadow-glow-feature {
+    box-shadow: var(--glow-feature);
   }
   
-  .shadow-mecha {
-    box-shadow: var(--shadow-mecha);
+  .shadow-card {
+    box-shadow: var(--shadow-card);
   }
 
-  /* GUNDAM RX-78 Color Utilities */
-  .text-gundam-blue {
-    color: hsl(var(--gundam-blue));
+  /* TideCloak Color Utilities */
+  .text-tidecloak-blue {
+    color: hsl(var(--tidecloak-blue));
   }
   
-  .text-gundam-white {
-    color: hsl(var(--gundam-white));
+  .text-tidecloak-purple {
+    color: hsl(var(--tidecloak-purple));
   }
   
-  .text-gundam-red {
-    color: hsl(var(--gundam-red));
+  .text-tidecloak-cyan {
+    color: hsl(var(--tidecloak-cyan));
   }
   
-  .text-gundam-yellow {
-    color: hsl(var(--gundam-yellow));
+  .text-tidecloak-green {
+    color: hsl(var(--tidecloak-green));
   }
   
-  .text-gundam-grey {
-    color: hsl(var(--gundam-grey));
+  .text-tidecloak-orange {
+    color: hsl(var(--tidecloak-orange));
   }
   
-  .text-shield {
-    color: hsl(var(--shield));
+  .text-secure {
+    color: hsl(var(--secure));
   }
   
-  .text-armed {
-    color: hsl(var(--armed));
+  .text-encrypted {
+    color: hsl(var(--encrypted));
   }
   
-  .text-boost {
-    color: hsl(var(--boost));
+  .text-protected {
+    color: hsl(var(--protected));
   }
 
-  .border-gundam-blue {
-    border-color: hsl(var(--gundam-blue));
+  .border-tidecloak-blue {
+    border-color: hsl(var(--tidecloak-blue));
   }
 
-  .bg-gundam-blue\/10 {
-    background-color: hsl(var(--gundam-blue) / 0.1);
+  .bg-tidecloak-blue\/10 {
+    background-color: hsl(var(--tidecloak-blue) / 0.1);
   }
 
-  /* GUNDAM Animations */
-  .animate-gundam-fade {
-    animation: gundam-fade 0.6s ease-out;
+  /* TideCloak Animations */
+  .animate-fade-up {
+    animation: fade-up 0.6s ease-out;
   }
   
-  .animate-armor-glow {
-    animation: armor-glow 2s ease-in-out infinite;
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
   }
   
-  .animate-mecha-pulse {
-    animation: mecha-pulse 1.5s ease-in-out infinite;
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
   }
 }
 
 @layer components {
-  /* GUNDAM Animation Keyframes */
-  @keyframes gundam-fade {
+  /* TideCloak Animation Keyframes */
+  @keyframes fade-up {
     from {
       opacity: 0;
-      transform: translateY(20px) scale(0.95);
+      transform: translateY(30px);
     }
     to {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
   }
 
-  @keyframes armor-glow {
+  @keyframes glow-pulse {
     0%, 100% {
-      box-shadow: 0 0 20px hsl(var(--gundam-red) / 0.2);
+      box-shadow: 0 0 20px hsl(var(--tidecloak-blue) / 0.2);
     }
     50% {
-      box-shadow: 0 0 40px hsl(var(--gundam-red) / 0.4);
+      box-shadow: 0 0 40px hsl(var(--tidecloak-blue) / 0.4);
     }
   }
 
-  @keyframes mecha-pulse {
+  @keyframes float {
     0%, 100% {
-      transform: scale(1);
-      opacity: 1;
+      transform: translateY(0px);
     }
     50% {
-      transform: scale(1.05);
-      opacity: 0.8;
+      transform: translateY(-10px);
     }
   }
 }
