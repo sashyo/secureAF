@@ -204,22 +204,22 @@ const LandingContent = () => {
       {/* Developer CTA Section */}
       <section className="py-20 bg-gradient-hero text-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Secure Your Data?</h2>
+          <h2 className="text-4xl font-bold mb-6 text-white">Your Data, Truly Protected</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-            Experience truly secure data storage where your private keys are never vulnerable to attack. See the difference mathematical security makes.
+            Store your most sensitive files with confidence. No backdoors, no compromise, no single point of failure.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
+            <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 font-semibold text-lg px-8 py-6" onClick={login}>
               <Database className="w-5 h-5 mr-2" />
-              Try SecureCore
+              Start Using SecureCore
             </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
+            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/20 font-semibold text-lg px-8 py-6" onClick={handleReadDocs}>
               <BookOpen className="w-5 h-5 mr-2" />
-              Technical Details
+              How It Works
             </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
+            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/20 font-semibold text-lg px-8 py-6" onClick={handleViewGitHub}>
               <Github className="w-5 h-5 mr-2" />
-              View Source Code
+              Open Source
             </Button>
           </div>
         </div>
