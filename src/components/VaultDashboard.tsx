@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useVault } from '@/contexts/VaultContext';
@@ -29,9 +30,14 @@ export function VaultDashboard() {
     hideFile,
     isDecrypted,
     getDecryptedContent,
-    setSearchTerm,
+    setSearchTerm: contextSetSearchTerm,
     setSelectedTags
   } = useVault();
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [showFileUpload, setShowFileUpload] = useState(false);

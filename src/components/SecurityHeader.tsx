@@ -14,7 +14,7 @@ interface SecurityHeaderProps {
 }
 
 export function SecurityHeader({ onSettingsToggle, onSessionTimeLeft }: SecurityHeaderProps) {
-  const { logout, userInfo } = useTideCloak();
+  const { logout, authenticated } = useTideCloak();
   const { toast } = useToast();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [sessionTimeLeft, setSessionTimeLeft] = useState(3600); // 1 hour default
@@ -112,9 +112,9 @@ export function SecurityHeader({ onSettingsToggle, onSessionTimeLeft }: Security
             </TooltipContent>
           </Tooltip>
 
-          {userInfo && (
+          {authenticated && (
             <Badge variant="secondary" className="bg-primary-glow/10">
-              {userInfo.email || 'Authenticated User'}
+              Authenticated User
             </Badge>
           )}
         </div>

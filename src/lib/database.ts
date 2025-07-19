@@ -12,6 +12,24 @@ export interface VaultNote {
   favorite?: boolean;
   lastAccessed?: Date;
   category?: string;
+  folderId?: number;
+  isPrivate?: boolean;
+  encryptedContent?: string;
+}
+
+export interface VaultFolder {
+  id?: number;
+  name: string;
+  description?: string;
+  encrypted: boolean;
+  color?: string;
+  icon?: string;
+  parentId?: number;
+  tags: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  userId?: string;
+  isPrivate?: boolean;
 }
 
 export interface VaultFile {
@@ -28,18 +46,21 @@ export interface VaultFile {
   favorite?: boolean;
   lastAccessed?: Date;
   category?: string;
+  folderId?: number;
 }
 
 export class VaultDatabase extends Dexie {
   notes!: Table<VaultNote>;
   files!: Table<VaultFile>;
+  folders!: Table<VaultFolder>;
 
   constructor() {
     super('SecureDataVault');
     
-    this.version(2).stores({
-      notes: '++id, title, encrypted, *tags, createdAt, updatedAt, userId',
-      files: '++id, name, type, size, encrypted, *tags, createdAt, updatedAt, userId'
+    this.version(3).stores({
+      notes: '++id, title, encrypted, *tags, createdAt, updatedAt, userId, folderId',
+      files: '++id, name, type, size, encrypted, *tags, createdAt, updatedAt, userId, folderId',
+      folders: '++id, name, encrypted, *tags, createdAt, updatedAt, userId, parentId'
     });
     
     // Handle migrations
@@ -51,6 +72,67 @@ export class VaultDatabase extends Dexie {
       tx.table('files').toCollection().modify(file => {
         if (!file.tags) file.tags = [];
       });
+    });
+
+    this.version(3).upgrade(tx => {
+      // Add new fields to existing records
+      tx.table('notes').toCollection().modify(note => {
+        if (!note.folderId) note.folderId = undefined;
+        if (!note.isPrivate) note.isPrivate = false;
+      });
+      tx.table('files').toCollection().modify(file => {
+        if (!file.folderId) file.folderId = undefined;
+      });
+    });
+  }
+
+  async initialize(): Promise<void> {
+    await this.open();
+  }
+
+  async getAllFolders(userId?: string): Promise<VaultFolder[]> {
+    let query = userId ? this.folders.where('userId').equals(userId) : this.folders.toCollection();
+    return await query.toArray();
+  }
+
+  async saveFolder(folder: Omit<VaultFolder, 'id' | 'createdAt' | 'updatedAt'>): Promise<number> {
+    const now = new Date();
+    return await this.folders.add({
+      ...folder,
+      createdAt: now,
+      updatedAt: now
+    });
+  }
+
+  async deleteFolder(id: number): Promise<void> {
+    await this.folders.delete(id);
+  }
+
+  async getAllNotes(userId?: string): Promise<VaultNote[]> {
+    let query = userId ? this.notes.where('userId').equals(userId) : this.notes.toCollection();
+    return await query.toArray();
+  }
+
+  async getAllFiles(userId?: string): Promise<VaultFile[]> {
+    let query = userId ? this.files.where('userId').equals(userId) : this.files.toCollection();
+    return await query.toArray();
+  }
+
+  async saveNote(note: Omit<VaultNote, 'id' | 'createdAt' | 'updatedAt'>): Promise<number> {
+    const now = new Date();
+    return await this.notes.add({
+      ...note,
+      createdAt: now,
+      updatedAt: now
+    });
+  }
+
+  async saveFile(file: Omit<VaultFile, 'id' | 'createdAt' | 'updatedAt'>): Promise<number> {
+    const now = new Date();
+    return await this.files.add({
+      ...file,
+      createdAt: now,
+      updatedAt: now
     });
   }
 }
