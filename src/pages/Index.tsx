@@ -153,27 +153,6 @@ const LandingContent = () => {
         </div>
       </section>
 
-      {/* Vault Features */}
-      <section className="py-20 bg-tidecloak-light/50">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {vaultFeatures.map((feature, index) => (
-              <Card key={index} className="relative overflow-hidden shadow-card border-0 animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className={`absolute inset-0 ${feature.gradient} opacity-5`}></div>
-                <CardHeader className="text-center pb-4">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl ${feature.gradient} flex items-center justify-center animate-float`} style={{ animationDelay: `${index * 0.2}s` }}>
-                    <feature.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground text-center">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* TideCloak Security Features */}
       <section className="py-20">
@@ -221,61 +200,6 @@ const LandingContent = () => {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-20 bg-tidecloak-light/30">
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-bold mb-6 text-foreground">The Technology Behind Unbreakable Security</h2>
-            <p className="text-xl text-muted-foreground">
-              How VibeVault achieves mathematically proven protection for your data
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center shadow-card border-0">
-              <CardHeader>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-hero flex items-center justify-center">
-                  <Key className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="text-foreground">1. Fragment</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Your encryption key is broken into cryptographic fragments before it ever exists in full
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center shadow-card border-0">
-              <CardHeader>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-secure flex items-center justify-center">
-                  <Server className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="text-foreground">2. Distribute</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Fragments are distributed across TideCloak's decentralized Security Fabric
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center shadow-card border-0">
-              <CardHeader>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-feature flex items-center justify-center">
-                  <Lock className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="text-foreground">3. Secure</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Access is granted through threshold cryptography — no single point can decrypt
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Developer CTA Section */}
       <section className="py-20 bg-gradient-hero text-white">
