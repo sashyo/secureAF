@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, Github, ArrowRight, Zap, Key, Server, Users, Code, CheckCircle, Star, ExternalLink, BookOpen, Clock, Database, Lock } from 'lucide-react';
-import { Authenticated, Unauthenticated } from '@tidecloak/react';
+import { Authenticated, Unauthenticated, useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,12 +9,21 @@ import { VaultProvider } from '@/contexts/VaultContext';
 import { VaultLogin } from '@/components/VaultLogin';
 import { VaultDashboard } from '@/components/VaultDashboard';
 
-const CipherVaultLanding = () => {
-  const [showDemo, setShowDemo] = useState(false);
+const VibeVaultLanding = () => {
+  return (
+    <VaultProvider>
+      <Authenticated>
+        <VaultDashboard />
+      </Authenticated>
+      <Unauthenticated>
+        <LandingContent />
+      </Unauthenticated>
+    </VaultProvider>
+  );
+};
 
-  const handleTryVault = () => {
-    setShowDemo(true);
-  };
+const LandingContent = () => {
+  const { login } = useTideCloak();
 
   const handleViewGitHub = () => {
     window.open('https://github.com/tidecloak/secure-vault-demo', '_blank');
@@ -55,34 +64,34 @@ const CipherVaultLanding = () => {
     {
       icon: Key,
       title: "Keyless by Design",
-      description: "Your encryption key never exists in full — it's fragmented across TideCloak's Security Fabric.",
+      description: "The key is broken into fragments and distributed across a decentralized Security Fabric.",
       gradient: "bg-gradient-hero"
     },
     {
-      icon: Server,
-      title: "Decentralized Security",
-      description: "Key fragments distributed across multiple nodes. No single point of failure or compromise.",
+      icon: Shield,
+      title: "Tamper-Proof Access",
+      description: "All access is cryptographically verified through advanced threshold cryptography.",
       gradient: "bg-gradient-secure"
     },
     {
-      icon: Lock,
-      title: "Threshold Cryptography",
-      description: "Advanced cryptographic protocols ensure your data remains secure even if parts of the system are compromised.",
+      icon: Server,
+      title: "Decentralized by Default",
+      description: "No single point ever holds enough to decrypt anything — there is no key to steal.",
       gradient: "bg-gradient-feature"
     },
     {
-      icon: Code,
-      title: "Developer-Friendly",
-      description: "Built with TideCloak SDK — the same revolutionary security you can integrate into your own apps.",
+      icon: Zap,
+      title: "Built for Dev Speed",
+      description: "Developers get instant, unstealable encryption without needing to understand cryptography at all.",
       gradient: "bg-gradient-cta"
     }
   ];
 
   const benefits = [
     "The key never exists in full — not even for a second",
-    "No one — not even you — can see the whole key",
+    "No one — not even you — can see the whole key", 
     "This isn't encryption as usual — this is unstealable security",
-    "Instant integration with zero crypto knowledge required"
+    "Vibers should vibe — not worry about auth, keys, or crypto. Those aren't vibes."
   ];
 
   return (
@@ -97,31 +106,31 @@ const CipherVaultLanding = () => {
             </Badge>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
-              CipherVault
+              VibeVault
             </h1>
             <h2 className="text-2xl md:text-3xl font-medium mb-8 text-tidecloak-blue">
-              The Data Vault That Can't Be Breached
+              Vibe with Your Code — Let TideCloak Handle Security
             </h2>
             
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              Store, share, and manage your sensitive data with <strong className="text-tidecloak-purple">unstealable encryption</strong>. 
-              Powered by TideCloak's revolutionary keyless security architecture.
+              The private key is never fully generated or stored anywhere — not even in memory. 
+              <strong className="text-tidecloak-purple">Vibers should vibe — not worry about auth, keys, or crypto. Those aren't vibes.</strong>
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Button size="lg" className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 hover:shadow-glow-primary text-lg px-8 py-6 text-white" onClick={handleTryVault}>
-                <Database className="w-5 h-5 mr-2" />
-                Open Your Vault
-                <ArrowRight className="w-5 h-5 ml-2" />
+              <Button size="lg" className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 hover:shadow-glow-primary text-lg px-8 py-6" onClick={login}>
+                <Database className="w-5 h-5 mr-2 text-white" />
+                <span className="text-white">Open Your Vault</span>
+                <ArrowRight className="w-5 h-5 ml-2 text-white" />
               </Button>
               <Button variant="outline" size="lg" className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 text-lg px-8 py-6" onClick={handleReadDocs}>
-                <BookOpen className="w-5 h-5 mr-2" />
-                See How It Works
+                <BookOpen className="w-5 h-5 mr-2 text-tidecloak-blue" />
+                <span className="text-tidecloak-blue">Read the Docs</span>
               </Button>
               <Button variant="outline" size="lg" className="border-foreground text-foreground hover:bg-muted text-lg px-8 py-6" onClick={handleViewGitHub}>
-                <Github className="w-5 h-5 mr-2" />
-                View Source Code
-                <ExternalLink className="w-4 h-4 ml-2" />
+                <Github className="w-5 h-5 mr-2 text-foreground" />
+                <span className="text-foreground">Star us on GitHub</span>
+                <ExternalLink className="w-4 h-4 ml-2 text-foreground" />
               </Button>
             </div>
 
@@ -149,10 +158,10 @@ const CipherVaultLanding = () => {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-6">
-              Your <span className="text-tidecloak-purple">Secure Data Vault</span>
+              Explore the <span className="text-tidecloak-purple">Vault</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Everything you need to store, manage, and share sensitive data with complete confidence.
+              Store, manage, and share sensitive data while you vibe with your code — security handled.
             </p>
           </div>
 
@@ -180,7 +189,7 @@ const CipherVaultLanding = () => {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-6">
-              Powered by <span className="text-tidecloak-blue">TideCloak Security</span>
+              How <span className="text-tidecloak-blue">TideCloak</span> Works
             </h2>
             <p className="text-xl text-muted-foreground">
               Revolutionary keyless encryption that makes your vault truly unstealable. The key never exists — anywhere.
@@ -282,42 +291,27 @@ const CipherVaultLanding = () => {
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Add This to Your App?</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-            CipherVault is built with TideCloak SDK. You can add the same unstealable security to your applications with just a few lines of code.
+            VibeVault is built with TideCloak SDK. You can add the same unstealable security to your applications with just a few lines of code.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 text-lg px-8 py-6" onClick={handleTryVault}>
-              <Database className="w-5 h-5 mr-2" />
-              Try CipherVault
+            <Button size="lg" className="bg-white hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
+              <Database className="w-5 h-5 mr-2 text-tidecloak-blue" />
+              <span className="text-tidecloak-blue">Explore the Vault</span>
             </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
-              <Code className="w-5 h-5 mr-2" />
-              Integrate TideCloak SDK
+            <Button variant="outline" size="lg" className="border-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
+              <Code className="w-5 h-5 mr-2 text-white" />
+              <span className="text-white">Read the Docs</span>
+            </Button>
+            <Button variant="outline" size="lg" className="border-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
+              <Github className="w-5 h-5 mr-2 text-white" />
+              <span className="text-white">Star us on GitHub</span>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Demo Modal */}
-      <Dialog open={showDemo} onOpenChange={setShowDemo}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-foreground">
-              <Database className="w-5 h-5 text-tidecloak-blue" />
-              CipherVault
-            </DialogTitle>
-          </DialogHeader>
-          <VaultProvider>
-            <Unauthenticated>
-              <VaultLogin />
-            </Unauthenticated>
-            <Authenticated>
-              <VaultDashboard />
-            </Authenticated>
-          </VaultProvider>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
-export default CipherVaultLanding;
+export default VibeVaultLanding;
