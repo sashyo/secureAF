@@ -202,8 +202,27 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'CLEAR_DECRYPTED' });
     };
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Hide all decrypted content when tab becomes hidden
+        dispatch({ type: 'CLEAR_DECRYPTED' });
+      }
+    };
+
+    const handleBlur = () => {
+      // Hide all decrypted content when window loses focus
+      dispatch({ type: 'CLEAR_DECRYPTED' });
+    };
+
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+    };
   }, []);
 
   const refreshData = async () => {
@@ -568,6 +587,36 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       return () => clearTimeout(timeoutId);
     }
   }, [state.searchTerm, state.selectedTags, isReady]);
+
+  // Auto-hide decrypted content after inactivity
+  useEffect(() => {
+    let inactivityTimer: NodeJS.Timeout;
+    
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        // Hide all decrypted content after 5 minutes of inactivity
+        if (state.decryptedItems.size > 0) {
+          dispatch({ type: 'CLEAR_DECRYPTED' });
+        }
+      }, 5 * 60 * 1000); // 5 minutes
+    };
+
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    
+    events.forEach(event => {
+      document.addEventListener(event, resetTimer, true);
+    });
+
+    resetTimer(); // Start the timer
+
+    return () => {
+      clearTimeout(inactivityTimer);
+      events.forEach(event => {
+        document.removeEventListener(event, resetTimer, true);
+      });
+    };
+  }, [state.decryptedItems.size]);
 
   const toggleNoteFavorite = async (id: number) => {
     try {
