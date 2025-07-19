@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, X, File, Image, Shield, AlertCircle, Tag } from 'lucide-react';
+import { Upload, X, File, Image, Shield, AlertCircle, Tag, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -278,7 +278,7 @@ export function FileUpload({ onClose }: FileUploadProps) {
             >
               {uploading ? (
                 <>
-                  <Shield className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Encrypting...
                 </>
               ) : (

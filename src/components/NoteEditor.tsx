@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Shield, Edit3, Tag } from 'lucide-react';
+import { X, Save, Shield, Edit3, Tag, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,7 +15,7 @@ interface NoteEditorProps {
 }
 
 export function NoteEditor({ note, onClose }: NoteEditorProps) {
-  const { createNote, updateNote, decryptNote, state } = useVault();
+  const { createNote, updateNote, decryptNote, state, getOperationStatus } = useVault();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tags, setTags] = useState<string[]>([]);
@@ -186,7 +186,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
             {isDecrypting ? (
               <div className="flex-1 border rounded-md p-4 bg-muted flex items-center justify-center">
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Shield className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Decrypting content...</span>
                 </div>
               </div>
@@ -224,8 +224,17 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
               className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white"
               disabled={loading || !title.trim() || !content.trim() || isDecrypting}
             >
-              <Save className="w-4 h-4 mr-2" />
-              {loading ? 'Saving...' : 'Save & Encrypt'}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Encrypting & Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save & Encrypt
+                </>
+              )}
             </Button>
           </div>
         </div>

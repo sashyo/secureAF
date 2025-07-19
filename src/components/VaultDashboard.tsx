@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings, FolderOpen, Bell, Calendar } from 'lucide-react';
+import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings, FolderOpen, Bell, Calendar, Loader2 } from 'lucide-react';
 import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,6 +33,7 @@ export function VaultDashboard() {
     hideFile,
     isDecrypted,
     getDecryptedContent,
+    getOperationStatus,
     setSearchTerm: contextSetSearchTerm,
     setSelectedTags,
     toggleNoteFavorite,
@@ -195,6 +196,16 @@ export function VaultDashboard() {
 
   const getEncryptionBadge = (encrypted: boolean, type: 'note' | 'file', id: number) => {
     const decrypted = isDecrypted(type, id);
+    const operationStatus = getOperationStatus(type, id);
+    
+    if (operationStatus) {
+      return (
+        <Badge variant="outline" className="text-primary animate-pulse">
+          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+          {operationStatus === 'decrypting' ? 'Decrypting...' : 'Encrypting...'}
+        </Badge>
+      );
+    }
     
     if (!encrypted) {
       return <Badge variant="outline" className="text-warning">Unencrypted</Badge>;
@@ -498,8 +509,14 @@ export function VaultDashboard() {
                                               variant="outline"
                                               onClick={() => handleDecryptNote(note)}
                                               className="flex-1"
+                                              disabled={!!getOperationStatus('note', note.id!)}
                                             >
-                                              {decrypted ? (
+                                              {getOperationStatus('note', note.id!) ? (
+                                                <>
+                                                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                  {getOperationStatus('note', note.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                                </>
+                                              ) : decrypted ? (
                                                 <>
                                                   <EyeOff className="w-4 h-4 mr-2" />
                                                   Hide
@@ -577,8 +594,14 @@ export function VaultDashboard() {
                                               variant="outline"
                                               onClick={() => handlePreviewFile(file)}
                                               className="flex-1"
+                                              disabled={!!getOperationStatus('file', file.id!)}
                                             >
-                                              {decrypted ? (
+                                              {getOperationStatus('file', file.id!) ? (
+                                                <>
+                                                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                  {getOperationStatus('file', file.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                                </>
+                                              ) : decrypted ? (
                                                 <>
                                                   <EyeOff className="w-4 h-4 mr-2" />
                                                   Hide
@@ -695,8 +718,14 @@ export function VaultDashboard() {
                                 onClick={() => handleDecryptNote(note)}
                                 className={`flex-1 ${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
                                 size="sm"
+                                disabled={!!getOperationStatus('note', note.id!)}
                               >
-                                {decrypted ? (
+                                {getOperationStatus('note', note.id!) ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                                    {getOperationStatus('note', note.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                  </>
+                                ) : decrypted ? (
                                   <>
                                     <EyeOff className="w-4 h-4 mr-1" />
                                     Hide
@@ -796,8 +825,14 @@ export function VaultDashboard() {
                                 onClick={() => handlePreviewFile(file)}
                                 className={`${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
                                 size="sm"
+                                disabled={!!getOperationStatus('file', file.id!)}
                               >
-                                {decrypted ? (
+                                {getOperationStatus('file', file.id!) ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                                    {getOperationStatus('file', file.id!) === 'decrypting' ? 'Decrypting...' : 'Processing...'}
+                                  </>
+                                ) : decrypted ? (
                                   <>
                                     <EyeOff className="w-4 h-4 mr-1" />
                                     Hide
