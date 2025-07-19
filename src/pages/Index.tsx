@@ -30,7 +30,7 @@ const LandingContent = () => {
   };
 
   const handleReadDocs = () => {
-    window.open('https://docs.tidecloak.com', '_blank');
+    window.open('https://docs.tidecloak.com/security-whitepaper', '_blank');
   };
 
   const vaultFeatures = [
@@ -64,34 +64,34 @@ const LandingContent = () => {
     {
       icon: Key,
       title: "Keyless by Design",
-      description: "The key is broken into fragments and distributed across a decentralized Security Fabric.",
+      description: "Your vault's key is mathematically impossible to steal — it's never created in full, anywhere.",
       gradient: "bg-gradient-hero"
     },
     {
       icon: Shield,
-      title: "Tamper-Proof Access",
-      description: "All access is cryptographically verified through advanced threshold cryptography.",
+      title: "Provable Security",
+      description: "Cryptographic proof that your data cannot be accessed without proper authorization. Mathematical certainty.",
       gradient: "bg-gradient-secure"
     },
     {
       icon: Server,
-      title: "Decentralized by Default",
-      description: "No single point ever holds enough to decrypt anything — there is no key to steal.",
+      title: "Distributed Protection",
+      description: "Key fragments scattered across secure nodes. No single point can compromise your vault.",
       gradient: "bg-gradient-feature"
     },
     {
       icon: Zap,
-      title: "Built for Dev Speed",
-      description: "Developers get instant, unstealable encryption without needing to understand cryptography at all.",
+      title: "Zero-Weakness Architecture",
+      description: "Advanced threshold cryptography eliminates traditional attack vectors. Unhackable by design.",
       gradient: "bg-gradient-cta"
     }
   ];
 
   const benefits = [
-    "The key never exists in full — not even for a second",
-    "No one — not even you — can see the whole key", 
-    "This isn't encryption as usual — this is unstealable security",
-    "Vibers should vibe — not worry about auth, keys, or crypto. Those aren't vibes."
+    "Mathematically proven: your key cannot be reconstructed by attackers",
+    "Even we cannot access your data — true zero-knowledge security", 
+    "First vault with cryptographic immunity to traditional hacking methods",
+    "Breakthrough technology that makes data breaches physically impossible"
   ];
 
   return (
@@ -102,19 +102,19 @@ const LandingContent = () => {
           <div className="text-center max-w-4xl mx-auto">
             <Badge variant="outline" className="mb-6 px-4 py-2 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/10 animate-glow-pulse">
               <Shield className="w-4 h-4 mr-2" />
-              Secured by TideCloak Technology
+              World's Most Secure Data Vault
             </Badge>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
               VibeVault
             </h1>
             <h2 className="text-2xl md:text-3xl font-medium mb-8 text-tidecloak-blue">
-              Vibe with Your Code — Let TideCloak Handle Security
+              Mathematically Unbreakable Security
             </h2>
             
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              The private key is never fully generated or stored anywhere — not even in memory. 
-              <strong className="text-tidecloak-purple">Vibers should vibe — not worry about auth, keys, or crypto. Those aren't vibes.</strong>
+              The only data vault with <strong className="text-tidecloak-purple">provable security</strong>. 
+              Our private key never exists in full — making your data mathematically impossible to steal.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -158,10 +158,10 @@ const LandingContent = () => {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-6">
-              Explore the <span className="text-tidecloak-purple">Vault</span>
+              The World's Most <span className="text-tidecloak-purple">Secure Vault</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Store, manage, and share sensitive data while you vibe with your code — security handled.
+              Store, manage, and share your most sensitive data with absolute confidence. Zero compromise.
             </p>
           </div>
 
@@ -189,10 +189,10 @@ const LandingContent = () => {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-6">
-              How <span className="text-tidecloak-blue">TideCloak</span> Works
+              Why This Vault is <span className="text-tidecloak-blue">Unbreakable</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Revolutionary keyless encryption that makes your vault truly unstealable. The key never exists — anywhere.
+              Powered by TideCloak's revolutionary cryptography. The technology that makes traditional hacking impossible.
             </p>
           </div>
 
@@ -215,7 +215,7 @@ const LandingContent = () => {
 
           {/* Key Benefits */}
           <div className="max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-center mb-8 text-foreground">Why This Changes Everything</h3>
+            <h3 className="text-2xl font-bold text-center mb-8 text-foreground">Provable Security Guarantees</h3>
             <div className="space-y-4">
               {benefits.map((benefit, index) => (
                 <div key={index} className="flex items-start gap-3 p-4 rounded-xl bg-card shadow-card animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -234,9 +234,9 @@ const LandingContent = () => {
       <section className="py-20 bg-tidecloak-light/30">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-bold mb-6 text-foreground">How TideCloak Works</h2>
+            <h2 className="text-4xl font-bold mb-6 text-foreground">The Technology Behind Unbreakable Security</h2>
             <p className="text-xl text-muted-foreground">
-              Three revolutionary steps that make traditional encryption obsolete
+              How VibeVault achieves mathematically proven protection for your data
             </p>
           </div>
 
@@ -289,9 +289,9 @@ const LandingContent = () => {
       {/* Developer CTA Section */}
       <section className="py-20 bg-gradient-hero text-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Add This to Your App?</h2>
+          <h2 className="text-4xl font-bold mb-6">The Most Secure Vault Ever Built</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-            VibeVault is built with TideCloak SDK. You can add the same unstealable security to your applications with just a few lines of code.
+            VibeVault represents a breakthrough in data security. Experience unbreakable protection for your most sensitive information.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
@@ -299,12 +299,12 @@ const LandingContent = () => {
               <span className="text-tidecloak-blue">Explore the Vault</span>
             </Button>
             <Button variant="outline" size="lg" className="border-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
-              <Code className="w-5 h-5 mr-2 text-white" />
-              <span className="text-white">Read the Docs</span>
+              <BookOpen className="w-5 h-5 mr-2 text-white" />
+              <span className="text-white">Security Whitepaper</span>
             </Button>
             <Button variant="outline" size="lg" className="border-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
               <Github className="w-5 h-5 mr-2 text-white" />
-              <span className="text-white">Star us on GitHub</span>
+              <span className="text-white">View Source Code</span>
             </Button>
           </div>
         </div>
