@@ -6,7 +6,7 @@ import { useVault } from '@/contexts/VaultContext';
 import { FileUtils } from '@/lib/encryption';
 
 export function VaultStats() {
-  const { state } = useVault();
+  const { state, setSearchTerm, setSelectedTags } = useVault();
 
   const totalNotes = state.notes.length;
   const totalFiles = state.files.length;
@@ -59,15 +59,30 @@ export function VaultStats() {
     }
   ];
 
+  const handleStatClick = (statTitle: string) => {
+    // Navigate to appropriate tab with filters
+    const event = new CustomEvent('navigateToTab', { 
+      detail: { 
+        tab: statTitle.includes('Notes') ? 'notes' : statTitle.includes('Files') ? 'files' : 'overview',
+        filter: statTitle.includes('Favorites') ? 'favorites' : null
+      } 
+    });
+    window.dispatchEvent(event);
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <Card key={index} className="border-security">
+          <Card 
+            key={index} 
+            className="border hover:border-tidecloak-blue/50 transition-all duration-200 cursor-pointer hover:shadow-lg"
+            onClick={() => handleStatClick(stat.title)}
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              <stat.icon className={`h-4 w-4 text-tidecloak-blue`} />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>

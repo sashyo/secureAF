@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings, FolderOpen } from 'lucide-react';
 import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -51,14 +51,16 @@ export function VaultDashboard() {
       if (note) {
         const updatedNote = { ...note, favorite: !note.favorite };
         await VaultStorage.updateNote(id, updatedNote);
-        // The context will update the state via the effect
+        // Trigger immediate state update
+        window.location.reload();
       }
     } else {
       const file = state.files.find(f => f.id === id);
       if (file) {
         const updatedFile = { ...file, favorite: !file.favorite };
         await VaultStorage.updateFile(id, updatedFile);
-        // The context will update the state via the effect
+        // Trigger immediate state update
+        window.location.reload();
       }
     }
   };
@@ -169,6 +171,28 @@ export function VaultDashboard() {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <Button
+                onClick={() => document.getElementById('import-backup')?.click()}
+                variant="outline"
+                size="sm"
+                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+              >
+                <FolderOpen className="w-4 h-4" />
+                Import Backup
+              </Button>
+              <input
+                id="import-backup"
+                type="file"
+                accept=".json"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    // TODO: Implement import logic
+                    console.log('Import backup:', file);
+                  }
+                }}
+              />
               <Button
                 onClick={() => setShowVaultExport(true)}
                 variant="outline"
@@ -281,20 +305,32 @@ export function VaultDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview" className="gap-2">
+          <TabsList className="grid w-full grid-cols-4 bg-card border border-border">
+            <TabsTrigger 
+              value="overview" 
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200"
+            >
               <BarChart3 className="w-4 h-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="notes" className="gap-2">
+            <TabsTrigger 
+              value="notes" 
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200"
+            >
               <FileText className="w-4 h-4" />
               Notes ({state.notes.length})
             </TabsTrigger>
-            <TabsTrigger value="files" className="gap-2">
+            <TabsTrigger 
+              value="files" 
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200"
+            >
               <Upload className="w-4 h-4" />
               Files ({state.files.length})
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2">
+            <TabsTrigger 
+              value="settings" 
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200"
+            >
               <Settings className="w-4 h-4" />
               Settings
             </TabsTrigger>
