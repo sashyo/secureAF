@@ -115,8 +115,8 @@ const LandingContent = () => {
             </h2>
             
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-              Store your most sensitive files with <strong className="text-tidecloak-purple">unbreakable protection</strong>. 
-              Advanced cryptography that eliminates every attack vector.
+              Store your most sensitive files with <strong className="text-tidecloak-purple">provable security</strong>. 
+              Advanced cryptography that's mathematically proven to be secure.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -133,17 +133,17 @@ const LandingContent = () => {
             </div>
 
             {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-12 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-tidecloak-green"></div>
+                <Shield className="w-4 h-4 text-tidecloak-green" />
                 Zero-Knowledge Architecture
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-tidecloak-blue"></div>
+                <Lock className="w-4 h-4 text-tidecloak-blue" />
                 End-to-End Encrypted
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-tidecloak-purple"></div>
+                <Server className="w-4 h-4 text-tidecloak-purple" />
                 Distributed Key Management
               </div>
             </div>
