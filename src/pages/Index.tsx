@@ -156,15 +156,6 @@ const LandingContent = () => {
       {/* Vault Features */}
       <section className="py-20 bg-tidecloak-light/50">
         <div className="container mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-bold mb-6">
-              The World's Most <span className="text-tidecloak-purple">Secure Vault</span>
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Store, manage, and share your most sensitive data with absolute confidence. Zero compromise.
-            </p>
-          </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {vaultFeatures.map((feature, index) => (
               <Card key={index} className="relative overflow-hidden shadow-card border-0 animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
