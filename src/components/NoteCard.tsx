@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { VaultNote } from '@/lib/database';
 import { EncryptionBadge } from './EncryptionBadge';
 import { TagList } from './TagList';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDate } from '@/lib/dateUtils';
 
 interface NoteCardProps {
   note: VaultNote;

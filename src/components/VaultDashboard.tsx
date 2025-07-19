@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useReducer, useCallback } from 'react';
 import { Plus, Upload, Shield, LogOut, FolderOpen, Archive, Settings, BarChart3, FileText } from 'lucide-react';
 import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
@@ -12,10 +12,9 @@ import { NoteCard } from './NoteCard';
 import { FileCard } from './FileCard';
 import { BackupConfigDialog } from './BackupConfigDialog';
 
-// Lazy load heavy components
-const NoteEditor = React.lazy(() => import('./NoteEditor').then(m => ({ default: m.NoteEditor })));
-const FileUpload = React.lazy(() => import('./FileUpload').then(m => ({ default: m.FileUpload })));
-const VaultExport = React.lazy(() => import('./VaultExport').then(m => ({ default: m.VaultExport })));
+import { NoteEditor } from './NoteEditor';
+import { FileUpload } from './FileUpload';
+import { VaultExport } from './VaultExport';
 
 // UI State Management with useReducer
 interface UIState {
@@ -431,26 +430,24 @@ export function VaultDashboard() {
           </div>
         </Tabs>
 
-        {/* Lazy-loaded Modals */}
-        <Suspense fallback={<div>Loading...</div>}>
-          {uiState.showNoteEditor && (
-            <NoteEditor
-              note={uiState.selectedNote}
-              onClose={() => dispatch({ type: 'closeEditor' })}
-            />
-          )}
-          
-          {uiState.showFileUpload && (
-            <FileUpload onClose={() => dispatch({ type: 'closeFileUpload' })} />
-          )}
-          
-          {uiState.showVaultExport && (
-            <VaultExport 
-              open={uiState.showVaultExport}
-              onClose={() => dispatch({ type: 'closeExport' })} 
-            />
-          )}
-        </Suspense>
+        {/* Modals */}
+        {uiState.showNoteEditor && (
+          <NoteEditor
+            note={uiState.selectedNote}
+            onClose={() => dispatch({ type: 'closeEditor' })}
+          />
+        )}
+        
+        {uiState.showFileUpload && (
+          <FileUpload onClose={() => dispatch({ type: 'closeFileUpload' })} />
+        )}
+        
+        {uiState.showVaultExport && (
+          <VaultExport 
+            open={uiState.showVaultExport}
+            onClose={() => dispatch({ type: 'closeExport' })} 
+          />
+        )}
 
         {/* Backup Configuration Dialog */}
         <BackupConfigDialog
