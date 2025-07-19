@@ -420,8 +420,10 @@ export function VaultDashboard() {
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview">
-            {state.searchTerm ? (
+          <TabsContent value="overview" className="space-y-6">
+            <VaultStats />
+            
+            {state.searchTerm && (
               <Card className="border-tidecloak-blue/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -619,8 +621,6 @@ export function VaultDashboard() {
                   })()}
                 </CardContent>
               </Card>
-            ) : (
-              <VaultStats />
             )}
           </TabsContent>
 
