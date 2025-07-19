@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Eye, EyeOff, Star, Download, Trash2 } from 'lucide-react';
+import { Eye, EyeOff, Star, Download, Trash2, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { VaultFile } from '@/lib/database';
@@ -11,6 +11,7 @@ interface FileCardProps {
   file: VaultFile;
   decrypted: boolean;
   content: string;
+  isLoading: boolean;
   onToggleDecrypt: (file: VaultFile) => void;
   onFavorite: (id: number) => void;
   onDownload: (id: number) => void;
@@ -21,6 +22,7 @@ export const FileCard = memo(function FileCard({
   file,
   decrypted,
   content,
+  isLoading,
   onToggleDecrypt,
   onFavorite,
   onDownload,
@@ -57,7 +59,16 @@ export const FileCard = memo(function FileCard({
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {decrypted && file.type.startsWith('image/') && content && (
+        {isLoading && (
+          <div className="p-3 bg-muted/50 rounded-md border border-dashed border-muted-foreground/30 flex items-center justify-center">
+            <Loader2 className="w-5 h-5 animate-spin text-tidecloak-blue mr-2" />
+            <span className="text-sm text-muted-foreground">
+              {decrypted ? 'Hiding...' : 'Decrypting...'}
+            </span>
+          </div>
+        )}
+        
+        {!isLoading && decrypted && file.type.startsWith('image/') && content && (
           <div className="p-3 bg-muted/50 rounded-md border border-dashed border-muted-foreground/30">
             <img
               src={content}
@@ -74,9 +85,15 @@ export const FileCard = memo(function FileCard({
             size="sm"
             variant="outline"
             onClick={() => onToggleDecrypt(file)}
+            disabled={isLoading}
             className="gap-2"
           >
-            {decrypted ? (
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {decrypted ? 'Hiding...' : 'Decrypting...'}
+              </>
+            ) : decrypted ? (
               <>
                 <EyeOff className="w-4 h-4" />
                 Hide

@@ -88,7 +88,8 @@ export function VaultDashboard() {
     setSearchTerm,
     setSelectedTags,
     toggleNoteFavorite,
-    toggleFileFavorite
+    toggleFileFavorite,
+    isOperationLoading
   } = useVault();
   
   const [uiState, dispatch] = useReducer(uiReducer, initialUIState);
@@ -339,6 +340,7 @@ export function VaultDashboard() {
                     note={note}
                     decrypted={isDecrypted('note', note.id!)}
                     content={(getDecryptedContent('note', note.id!) as string) || ''}
+                    isLoading={isOperationLoading('note', note.id!)}
                     onToggleDecrypt={handleDecryptNote}
                     onFavorite={(id) => toggleFavorite('note', id)}
                     onEdit={(note) => dispatch({ type: 'openEditor', note })}
@@ -375,6 +377,7 @@ export function VaultDashboard() {
                     file={file}
                     decrypted={isDecrypted('file', file.id!)}
                     content={(getDecryptedContent('file', file.id!) as string) || ''}
+                    isLoading={isOperationLoading('file', file.id!)}
                     onToggleDecrypt={handleDecryptFile}
                     onFavorite={(id) => toggleFavorite('file', id)}
                     onDownload={downloadFile}
