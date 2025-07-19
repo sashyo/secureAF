@@ -59,16 +59,6 @@ export function VaultStats() {
     }
   ];
 
-  const handleStatClick = (statTitle: string) => {
-    // Navigate to appropriate tab with filters
-    const event = new CustomEvent('navigateToTab', { 
-      detail: { 
-        tab: statTitle.includes('Notes') ? 'notes' : statTitle.includes('Files') ? 'files' : 'overview',
-        filter: statTitle.includes('Favorites') ? 'favorites' : null
-      } 
-    });
-    window.dispatchEvent(event);
-  };
 
   return (
     <div className="space-y-6">
@@ -77,8 +67,7 @@ export function VaultStats() {
         {stats.map((stat, index) => (
           <Card 
             key={index} 
-            className="border hover:border-tidecloak-blue/50 transition-all duration-200 cursor-pointer hover:shadow-lg"
-            onClick={() => handleStatClick(stat.title)}
+            className="border-muted"
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
