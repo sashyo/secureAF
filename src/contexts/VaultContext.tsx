@@ -120,12 +120,14 @@ interface VaultContextType {
   deleteNote: (id: number) => Promise<void>;
   decryptNote: (id: number) => Promise<string | null>;
   hideNote: (id: number) => void;
+  toggleNoteFavorite: (id: number) => Promise<void>;
   // File operations
   uploadFile: (file: File, tags?: string[]) => Promise<void>;
   deleteFile: (id: number) => Promise<void>;
   downloadFile: (id: number) => Promise<void>;
   decryptFile: (id: number) => Promise<Uint8Array | null>;
   hideFile: (id: number) => void;
+  toggleFileFavorite: (id: number) => Promise<void>;
   // Search and filtering
   setSearchTerm: (term: string) => void;
   setSelectedTags: (tags: string[]) => void;
@@ -481,6 +483,50 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     }
   }, [state.searchTerm, state.selectedTags, isReady]);
 
+  const toggleNoteFavorite = async (id: number) => {
+    try {
+      const note = state.notes.find(n => n.id === id);
+      if (!note) return;
+
+      const updatedNote = { ...note, favorite: !note.favorite };
+      await VaultStorage.updateNote(id, updatedNote);
+      dispatch({ type: 'UPDATE_NOTE', payload: updatedNote });
+      
+      toast({
+        title: "Success",
+        description: `Note ${updatedNote.favorite ? 'added to' : 'removed from'} favorites.`
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update favorite status.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const toggleFileFavorite = async (id: number) => {
+    try {
+      const file = state.files.find(f => f.id === id);
+      if (!file) return;
+
+      const updatedFile = { ...file, favorite: !file.favorite };
+      await VaultStorage.updateFile(id, updatedFile);
+      dispatch({ type: 'UPDATE_FILE', payload: updatedFile });
+      
+      toast({
+        title: "Success",
+        description: `File ${updatedFile.favorite ? 'added to' : 'removed from'} favorites.`
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update favorite status.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const isDecrypted = (type: 'note' | 'file', id: number): boolean => {
     return state.decryptedItems.has(`${type}-${id}`);
   };
@@ -507,7 +553,9 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     setSelectedTags,
     isDecrypted,
     getDecryptedContent,
-    refreshData
+    refreshData,
+    toggleNoteFavorite,
+    toggleFileFavorite
   };
 
   return (

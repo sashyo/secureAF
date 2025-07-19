@@ -31,7 +31,9 @@ export function VaultDashboard() {
     isDecrypted,
     getDecryptedContent,
     setSearchTerm: contextSetSearchTerm,
-    setSelectedTags
+    setSelectedTags,
+    toggleNoteFavorite,
+    toggleFileFavorite
   } = useVault();
   
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,21 +49,9 @@ export function VaultDashboard() {
 
   const toggleFavorite = async (type: 'note' | 'file', id: number) => {
     if (type === 'note') {
-      const note = state.notes.find(n => n.id === id);
-      if (note) {
-        const updatedNote = { ...note, favorite: !note.favorite };
-        await VaultStorage.updateNote(id, updatedNote);
-        // Trigger immediate state update
-        window.location.reload();
-      }
+      await toggleNoteFavorite(id);
     } else {
-      const file = state.files.find(f => f.id === id);
-      if (file) {
-        const updatedFile = { ...file, favorite: !file.favorite };
-        await VaultStorage.updateFile(id, updatedFile);
-        // Trigger immediate state update
-        window.location.reload();
-      }
+      await toggleFileFavorite(id);
     }
   };
 
