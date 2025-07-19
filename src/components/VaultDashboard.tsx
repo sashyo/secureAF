@@ -44,6 +44,7 @@ export function VaultDashboard() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [showFavorites, setShowFavorites] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'files' | 'settings'>('overview');
   
   const [showNoteEditor, setShowNoteEditor] = useState(false);
   const [showFileUpload, setShowFileUpload] = useState(false);
@@ -57,6 +58,27 @@ export function VaultDashboard() {
   const [backupEnabled, setBackupEnabled] = useState<boolean>(() => 
     localStorage.getItem('vault-backup-enabled') === 'true'
   );
+
+  // Hide all decrypted content when switching tabs
+  useEffect(() => {
+    console.log('Tab changed to:', activeTab, '- hiding all decrypted content');
+    
+    // Hide all decrypted notes
+    state.notes.forEach(note => {
+      if (note.id && isDecrypted('note', note.id)) {
+        console.log('Hiding decrypted note:', note.id);
+        hideNote(note.id);
+      }
+    });
+    
+    // Hide all decrypted files
+    state.files.forEach(file => {
+      if (file.id && isDecrypted('file', file.id)) {
+        console.log('Hiding decrypted file:', file.id);
+        hideFile(file.id);
+      }
+    });
+  }, [activeTab, state.notes, state.files, isDecrypted, hideNote, hideFile]);
 
   const toggleFavorite = async (type: 'note' | 'file', id: number) => {
     if (type === 'note') {
@@ -443,7 +465,7 @@ export function VaultDashboard() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'overview' | 'notes' | 'files' | 'settings')} className="w-full">
           <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-card/50 backdrop-blur-sm rounded-2xl shadow-card border-0">
             <TabsTrigger 
               value="overview" 
