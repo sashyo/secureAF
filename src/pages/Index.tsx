@@ -9,7 +9,7 @@ import { VaultProvider } from '@/contexts/VaultContext';
 import { VaultLogin } from '@/components/VaultLogin';
 import { VaultDashboard } from '@/components/VaultDashboard';
 
-const VibeVaultLanding = () => {
+const SecureVaultLanding = () => {
   return (
     <VaultProvider>
       <Authenticated>
@@ -30,7 +30,7 @@ const LandingContent = () => {
   };
 
   const handleReadDocs = () => {
-    window.open('https://docs.tidecloak.com/security-whitepaper', '_blank');
+    window.open('https://arxiv.org/pdf/2309.00915.pdf', '_blank');
   };
 
   const vaultFeatures = [
@@ -102,19 +102,19 @@ const LandingContent = () => {
           <div className="text-center max-w-4xl mx-auto">
             <Badge variant="outline" className="mb-6 px-4 py-2 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/10 animate-glow-pulse">
               <Shield className="w-4 h-4 mr-2" />
-              World's Most Secure Data Vault
+              Secured with Tide Protocol
             </Badge>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
-              VibeVault
+              SecureCore
             </h1>
             <h2 className="text-2xl md:text-3xl font-medium mb-8 text-tidecloak-blue">
-              Mathematically Unbreakable Security
+              Powered by Tide Foundation's Provable Security
             </h2>
             
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              The only data vault with <strong className="text-tidecloak-purple">provable security</strong>. 
-              Our private key never exists in full — making your data mathematically impossible to steal.
+              The first data vault secured with <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-tidecloak-blue hover:underline font-semibold">Tide Foundation's</a> breakthrough technology. 
+              Your encryption keys are <strong className="text-tidecloak-purple">mathematically proven</strong> to never exist in full anywhere — making your data impossible to steal.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -125,7 +125,7 @@ const LandingContent = () => {
               </Button>
               <Button variant="outline" size="lg" className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 text-lg px-8 py-6" onClick={handleReadDocs}>
                 <BookOpen className="w-5 h-5 mr-2" />
-                Security Whitepaper
+                Tide Research Paper
               </Button>
               <Button variant="outline" size="lg" className="border-foreground text-foreground hover:bg-muted text-lg px-8 py-6" onClick={handleViewGitHub}>
                 <Github className="w-5 h-5 mr-2" />
@@ -162,7 +162,7 @@ const LandingContent = () => {
               Why This Vault is <span className="text-tidecloak-blue">Unbreakable</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Powered by TideCloak's revolutionary cryptography. The technology that makes traditional hacking impossible.
+              Secured with <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-tidecloak-blue hover:underline font-semibold">Tide Foundation's</a> revolutionary threshold cryptography. The first technology with mathematically provable security guarantees.
             </p>
           </div>
 
@@ -204,9 +204,9 @@ const LandingContent = () => {
       {/* Developer CTA Section */}
       <section className="py-20 bg-gradient-hero text-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">The Most Secure Vault Ever Built</h2>
+          <h2 className="text-4xl font-bold mb-6">Experience Provable Security</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-            VibeVault represents a breakthrough in data security. Experience unbreakable protection for your most sensitive information.
+            SecureCore demonstrates <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-white hover:underline font-semibold">Tide Foundation's</a> breakthrough in cryptographic security. The first technology that makes data breaches mathematically impossible.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
@@ -215,7 +215,7 @@ const LandingContent = () => {
             </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
               <BookOpen className="w-5 h-5 mr-2" />
-              Security Whitepaper
+              Tide Research Paper
             </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
               <Github className="w-5 h-5 mr-2" />
@@ -229,4 +229,4 @@ const LandingContent = () => {
   );
 };
 
-export default VibeVaultLanding;
+export default SecureVaultLanding;
