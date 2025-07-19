@@ -204,18 +204,18 @@ const LandingContent = () => {
       {/* Developer CTA Section */}
       <section className="py-20 bg-gradient-hero text-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Experience Threshold Cryptography</h2>
+          <h2 className="text-4xl font-bold mb-6">Ready to Secure Your Data?</h2>
           <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-            SecureCore showcases <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-white hover:underline font-semibold">Tide Foundation's</a> peer-reviewed research in threshold cryptography. See how fragmenting keys across multiple nodes eliminates single points of failure.
+            Experience truly secure data storage where your private keys are never vulnerable to attack. See the difference mathematical security makes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
               <Database className="w-5 h-5 mr-2" />
-              Explore the Vault
+              Try SecureCore
             </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
               <BookOpen className="w-5 h-5 mr-2" />
-              Tide Research Paper
+              Technical Details
             </Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
               <Github className="w-5 h-5 mr-2" />
