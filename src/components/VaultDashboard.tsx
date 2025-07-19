@@ -412,205 +412,203 @@ export function VaultDashboard() {
           {/* Overview Tab */}
           <TabsContent value="overview">
             {state.searchTerm ? (
-              <div className="space-y-6">
-                <Card className="border-tidecloak-blue/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Search className="w-5 h-5 text-tidecloak-blue" />
-                      Search Results for "{state.searchTerm}"
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {(() => {
-                      const filteredNotes = state.notes.filter(note => 
-                        note.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
-                        (note.content && note.content.toLowerCase().includes(state.searchTerm.toLowerCase())) ||
-                        (note.tags && note.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
-                      );
-                      
-                      const filteredFiles = state.files.filter(file => 
-                        file.name.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
-                        (file.tags && file.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
-                      );
-                      
-                      const totalResults = filteredNotes.length + filteredFiles.length;
-                      
-                      if (totalResults === 0) {
-                        return (
-                          <div className="text-center py-8">
-                            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                            <h3 className="text-lg font-semibold mb-2">No results found</h3>
-                            <p className="text-muted-foreground">Try adjusting your search terms</p>
-                          </div>
-                        );
-                      }
-                      
+              <Card className="border-tidecloak-blue/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Search className="w-5 h-5 text-tidecloak-blue" />
+                    Search Results for "{state.searchTerm}"
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {(() => {
+                    const filteredNotes = state.notes.filter(note => 
+                      note.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                      (note.content && note.content.toLowerCase().includes(state.searchTerm.toLowerCase())) ||
+                      (note.tags && note.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
+                    );
+                    
+                    const filteredFiles = state.files.filter(file => 
+                      file.name.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                      (file.tags && file.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())))
+                    );
+                    
+                    const totalResults = filteredNotes.length + filteredFiles.length;
+                    
+                    if (totalResults === 0) {
                       return (
-                        <div className="space-y-6">
-                          {filteredNotes.length > 0 && (
-                            <div>
-                              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-tidecloak-blue" />
-                                Notes ({filteredNotes.length})
-                              </h3>
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {filteredNotes.slice(0, 6).map((note) => {
-                                  const decrypted = isDecrypted('note', note.id!);
-                                  const content = getDecryptedContent('note', note.id!) as string;
-                                  
-                                  return (
-                                    <Card key={note.id} className="shadow-security animate-secure-fade">
-                                      <CardHeader className="pb-3">
-                                        <div className="flex items-start justify-between">
-                                          <CardTitle className="text-lg truncate">{note.title}</CardTitle>
-                                          {getEncryptionBadge(note.encrypted, 'note', note.id!)}
-                                        </div>
-                                        <CardDescription>
-                                          {formatDate(note.updatedAt)}
-                                        </CardDescription>
-                                        {renderTagBadges(note.tags)}
-                                      </CardHeader>
-                                      <CardContent className="space-y-4">
-                                        <div className="min-h-[60px] p-3 bg-muted rounded-md">
-                                          {decrypted && content ? (
-                                            <p className="text-sm animate-decrypt-reveal">
-                                              {content.length > 100 ? `${content.substring(0, 100)}...` : content}
-                                            </p>
-                                          ) : (
-                                            <div className="flex items-center gap-2 text-muted-foreground">
-                                              <Shield className="w-4 h-4" />
-                                              <span className="text-sm">Content encrypted</span>
-                                            </div>
-                                          )}
-                                        </div>
-                                        <div className="flex gap-2">
-                                          <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handleDecryptNote(note)}
-                                            className="flex-1"
-                                          >
-                                            {decrypted ? (
-                                              <>
-                                                <EyeOff className="w-4 h-4 mr-2" />
-                                                Hide
-                                              </>
-                                            ) : (
-                                              <>
-                                                <Eye className="w-4 h-4 mr-2" />
-                                                View
-                                              </>
-                                            )}
-                                          </Button>
-                                          <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handleEditNote(note)}
-                                          >
-                                            Edit
-                                          </Button>
-                                          <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => toggleFavorite('note', note.id!)}
-                                          >
-                                            <Star className={`w-4 h-4 ${note.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
-                                          </Button>
-                                        </div>
-                                      </CardContent>
-                                    </Card>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                          
-                          {filteredFiles.length > 0 && (
-                            <div>
-                              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                                <Upload className="w-5 h-5 text-tidecloak-blue" />
-                                Files ({filteredFiles.length})
-                              </h3>
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {filteredFiles.slice(0, 6).map((file) => {
-                                  const decrypted = isDecrypted('file', file.id!);
-                                  const content = getDecryptedContent('file', file.id!);
-                                  
-                                  return (
-                                    <Card key={file.id} className="shadow-security animate-secure-fade">
-                                      <CardHeader className="pb-3">
-                                        <div className="flex items-start justify-between">
-                                          <CardTitle className="text-lg truncate">{file.name}</CardTitle>
-                                          {getEncryptionBadge(file.encrypted, 'file', file.id!)}
-                                        </div>
-                                        <CardDescription>
-                                          {FileUtils.formatFileSize(file.size)} • {formatDate(file.createdAt)}
-                                        </CardDescription>
-                                        {renderTagBadges(file.tags)}
-                                      </CardHeader>
-                                      <CardContent className="space-y-4">
-                                        <div className="min-h-[60px] p-3 bg-muted rounded-md flex items-center justify-center">
-                                          {decrypted && content ? (
-                                            <div className="text-center">
-                                              <p className="text-sm text-green-600 font-medium">File decrypted</p>
-                                              <p className="text-xs text-muted-foreground mt-1">Ready for download</p>
-                                            </div>
-                                          ) : (
-                                            <div className="flex items-center gap-2 text-muted-foreground">
-                                              <Shield className="w-4 h-4" />
-                                              <span className="text-sm">File encrypted</span>
-                                            </div>
-                                          )}
-                                        </div>
-                                        <div className="flex gap-2">
-                                          <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => handlePreviewFile(file)}
-                                            className="flex-1"
-                                          >
-                                            {decrypted ? (
-                                              <>
-                                                <EyeOff className="w-4 h-4 mr-2" />
-                                                Hide
-                                              </>
-                                            ) : (
-                                              <>
-                                                <Eye className="w-4 h-4 mr-2" />
-                                                Decrypt
-                                              </>
-                                            )}
-                                          </Button>
-                                          {decrypted && (
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              onClick={() => downloadFile(file.id!)}
-                                            >
-                                              <Download className="w-4 h-4" />
-                                            </Button>
-                                          )}
-                                          <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => toggleFavorite('file', file.id!)}
-                                          >
-                                            <Star className={`w-4 h-4 ${file.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
-                                          </Button>
-                                        </div>
-                                      </CardContent>
-                                    </Card>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
+                        <div className="text-center py-8">
+                          <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold mb-2">No results found</h3>
+                          <p className="text-muted-foreground">Try adjusting your search terms</p>
                         </div>
                       );
-                    })()}
-                  </CardContent>
-                </Card>
-              </div>
+                    }
+                    
+                    return (
+                      <div className="space-y-6">
+                        {filteredNotes.length > 0 && (
+                          <div>
+                            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                              <FileText className="w-5 h-5 text-tidecloak-blue" />
+                              Notes ({filteredNotes.length})
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {filteredNotes.slice(0, 6).map((note) => {
+                                const decrypted = isDecrypted('note', note.id!);
+                                const content = getDecryptedContent('note', note.id!) as string;
+                                
+                                return (
+                                  <Card key={note.id} className="shadow-security animate-secure-fade">
+                                    <CardHeader className="pb-3">
+                                      <div className="flex items-start justify-between">
+                                        <CardTitle className="text-lg truncate">{note.title}</CardTitle>
+                                        {getEncryptionBadge(note.encrypted, 'note', note.id!)}
+                                      </div>
+                                      <CardDescription>
+                                        {formatDate(note.updatedAt)}
+                                      </CardDescription>
+                                      {renderTagBadges(note.tags)}
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                      <div className="min-h-[60px] p-3 bg-muted rounded-md">
+                                        {decrypted && content ? (
+                                          <p className="text-sm animate-decrypt-reveal">
+                                            {content.length > 100 ? `${content.substring(0, 100)}...` : content}
+                                          </p>
+                                        ) : (
+                                          <div className="flex items-center gap-2 text-muted-foreground">
+                                            <Shield className="w-4 h-4" />
+                                            <span className="text-sm">Content encrypted</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => handleDecryptNote(note)}
+                                          className="flex-1"
+                                        >
+                                          {decrypted ? (
+                                            <>
+                                              <EyeOff className="w-4 h-4 mr-2" />
+                                              Hide
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Eye className="w-4 h-4 mr-2" />
+                                              View
+                                            </>
+                                          )}
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => handleEditNote(note)}
+                                        >
+                                          Edit
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => toggleFavorite('note', note.id!)}
+                                        >
+                                          <Star className={`w-4 h-4 ${note.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                                        </Button>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {filteredFiles.length > 0 && (
+                          <div>
+                            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                              <Upload className="w-5 h-5 text-tidecloak-blue" />
+                              Files ({filteredFiles.length})
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {filteredFiles.slice(0, 6).map((file) => {
+                                const decrypted = isDecrypted('file', file.id!);
+                                const content = getDecryptedContent('file', file.id!);
+                                
+                                return (
+                                  <Card key={file.id} className="shadow-security animate-secure-fade">
+                                    <CardHeader className="pb-3">
+                                      <div className="flex items-start justify-between">
+                                        <CardTitle className="text-lg truncate">{file.name}</CardTitle>
+                                        {getEncryptionBadge(file.encrypted, 'file', file.id!)}
+                                      </div>
+                                      <CardDescription>
+                                        {FileUtils.formatFileSize(file.size)} • {formatDate(file.createdAt)}
+                                      </CardDescription>
+                                      {renderTagBadges(file.tags)}
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                      <div className="min-h-[60px] p-3 bg-muted rounded-md flex items-center justify-center">
+                                        {decrypted && content ? (
+                                          <div className="text-center">
+                                            <p className="text-sm text-green-600 font-medium">File decrypted</p>
+                                            <p className="text-xs text-muted-foreground mt-1">Ready for download</p>
+                                          </div>
+                                        ) : (
+                                          <div className="flex items-center gap-2 text-muted-foreground">
+                                            <Shield className="w-4 h-4" />
+                                            <span className="text-sm">File encrypted</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => handlePreviewFile(file)}
+                                          className="flex-1"
+                                        >
+                                          {decrypted ? (
+                                            <>
+                                              <EyeOff className="w-4 h-4 mr-2" />
+                                              Hide
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Eye className="w-4 h-4 mr-2" />
+                                              Decrypt
+                                            </>
+                                          )}
+                                        </Button>
+                                        {decrypted && (
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => downloadFile(file.id!)}
+                                          >
+                                            <Download className="w-4 h-4" />
+                                          </Button>
+                                        )}
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => toggleFavorite('file', file.id!)}
+                                        >
+                                          <Star className={`w-4 h-4 ${file.favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                                        </Button>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
             ) : (
               <VaultStats />
             )}
