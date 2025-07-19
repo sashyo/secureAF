@@ -25,36 +25,36 @@ const NexusVaultLanding = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-nexus-dark to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-gundam-dark to-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-nexus opacity-10"></div>
+        <div className="absolute inset-0 bg-gradient-gundam opacity-10"></div>
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge variant="outline" className="mb-6 px-4 py-2 text-nexus-blue border-nexus-blue bg-nexus-blue/10 animate-beam-glow">
+            <Badge variant="outline" className="mb-6 px-4 py-2 text-gundam-red border-gundam-red bg-gundam-red/10 animate-armor-glow">
               <Zap className="w-4 h-4 mr-2" />
               Powered by TideCloak's Keyless Protocol
             </Badge>
             
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-nexus bg-clip-text text-transparent">NEXUS VAULT</span>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gundam-white">
+              NEXUS VAULT
             </h1>
-            <h2 className="text-2xl md:text-3xl font-medium mb-8 text-foreground/90">
+            <h2 className="text-2xl md:text-3xl font-medium mb-8 text-gundam-grey">
               Next-Gen Mecha Security System
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              Deploy your data with <strong className="text-nexus-cyan">unstealable quantum armor</strong>. 
+              Deploy your data with <strong className="text-gundam-white">unstealable quantum armor</strong>. 
               No keys to breach, no core to target, no single point of system failure.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button size="lg" className="bg-gradient-nexus hover:shadow-glow-nexus text-lg px-8 py-6" onClick={handleTryVault}>
+              <Button size="lg" className="bg-gradient-gundam hover:shadow-glow-gundam text-lg px-8 py-6" onClick={handleTryVault}>
                 <Shield className="w-5 h-5 mr-2" />
                 Activate NEXUS
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" size="lg" className="border-nexus-blue text-nexus-blue hover:bg-nexus-blue/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
+              <Button variant="outline" size="lg" className="border-gundam-red text-gundam-red hover:bg-gundam-red/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
                 <Github className="w-5 h-5 mr-2" />
                 Access Blueprints
               </Button>

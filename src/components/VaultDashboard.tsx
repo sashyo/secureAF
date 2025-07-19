@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useVault } from '@/contexts/VaultContext';
-import { VaultNote, VaultFile } from '@/lib/database';
+import { VaultNote, VaultFile, VaultStorage } from '@/lib/database';
 import { FileUtils } from '@/lib/encryption';
 import { NoteEditor } from './NoteEditor';
 import { FileUpload } from './FileUpload';
@@ -46,8 +46,21 @@ export function VaultDashboard() {
   const [showTagFilter, setShowTagFilter] = useState(false);
 
   const toggleFavorite = async (type: 'note' | 'file', id: number) => {
-    // TODO: Implement favorite toggle functionality
-    console.log(`Toggle favorite for ${type} ${id}`);
+    if (type === 'note') {
+      const note = state.notes.find(n => n.id === id);
+      if (note) {
+        const updatedNote = { ...note, favorite: !note.favorite };
+        await VaultStorage.updateNote(id, updatedNote);
+        // The context will update the state via the effect
+      }
+    } else {
+      const file = state.files.find(f => f.id === id);
+      if (file) {
+        const updatedFile = { ...file, favorite: !file.favorite };
+        await VaultStorage.updateFile(id, updatedFile);
+        // The context will update the state via the effect
+      }
+    }
   };
 
   const openNoteEditor = (note?: VaultNote) => {

@@ -8,61 +8,61 @@ Vibe-focused design for developers who want to code, not worry about crypto.
 
 @layer base {
   :root {
-    /* NEXUS VAULT - Gundam Mecha Theme */
-    --background: 210 30% 8%;
-    --foreground: 210 40% 98%;
-    --card: 210 30% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 210 30% 12%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 220 90% 56%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 18%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 210 40% 16%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 210 40% 18%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 210 40% 18%;
-    --input: 210 40% 18%;
-    --ring: 220 90% 56%;
+    /* GUNDAM MECHA THEME - Grey, White, Red */
+    --background: 210 15% 12%;
+    --foreground: 0 0% 98%;
+    --card: 210 15% 16%;
+    --card-foreground: 0 0% 98%;
+    --popover: 210 15% 16%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 85% 55%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 15% 25%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 210 15% 20%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 210 15% 25%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 15% 25%;
+    --input: 210 15% 25%;
+    --ring: 0 85% 55%;
 
-    /* NEXUS Mecha Colors */
-    --nexus-blue: 220 90% 56%;
-    --nexus-cyan: 180 100% 70%;
-    --nexus-red: 0 85% 65%;
-    --nexus-gold: 45 95% 58%;
-    --nexus-silver: 210 20% 78%;
-    --nexus-dark: 210 30% 8%;
-    --nexus-steel: 210 15% 25%;
+    /* GUNDAM Mecha Colors */
+    --gundam-red: 0 85% 55%;
+    --gundam-white: 0 0% 95%;
+    --gundam-grey: 210 15% 40%;
+    --gundam-steel: 210 15% 30%;
+    --gundam-silver: 210 10% 70%;
+    --gundam-dark: 210 15% 12%;
+    --gundam-black: 210 20% 8%;
     
     /* Mecha Status Colors */
-    --armed: 0 85% 65%;
-    --shield: 220 90% 56%;
-    --boost: 45 95% 58%;
-    --stealth: 180 100% 70%;
+    --armed: 0 85% 55%;
+    --shield: 210 15% 40%;
+    --boost: 0 0% 95%;
+    --stealth: 210 15% 30%;
     --critical: 0 100% 50%;
 
     /* Gundam-inspired Gradients */
-    --gradient-nexus: linear-gradient(135deg, hsl(220 90% 56%), hsl(180 100% 70%));
-    --gradient-beam: linear-gradient(135deg, hsl(45 95% 58%), hsl(0 85% 65%));
-    --gradient-shield: linear-gradient(135deg, hsl(220 90% 56%), hsl(210 30% 12%));
-    --gradient-boost: linear-gradient(135deg, hsl(180 100% 70%), hsl(45 95% 58%));
+    --gradient-gundam: linear-gradient(135deg, hsl(0 85% 55%), hsl(0 0% 95%));
+    --gradient-mecha: linear-gradient(135deg, hsl(210 15% 40%), hsl(0 85% 55%));
+    --gradient-armor: linear-gradient(135deg, hsl(0 0% 95%), hsl(210 15% 30%));
+    --gradient-steel: linear-gradient(135deg, hsl(210 15% 30%), hsl(210 15% 12%));
 
     /* Mecha Effects */
-    --glow-nexus: 0 0 25px hsl(220 90% 56% / 0.4);
-    --glow-beam: 0 0 20px hsl(45 95% 58% / 0.3);
-    --glow-critical: 0 0 30px hsl(0 85% 65% / 0.5);
-    --shadow-mecha: 0 20px 40px -10px hsl(220 90% 56% / 0.3);
+    --glow-gundam: 0 0 25px hsl(0 85% 55% / 0.4);
+    --glow-white: 0 0 20px hsl(0 0% 95% / 0.3);
+    --glow-critical: 0 0 30px hsl(0 85% 55% / 0.5);
+    --shadow-mecha: 0 20px 40px -10px hsl(0 85% 55% / 0.3);
 
     --radius: 0.5rem;
   }
 
   .dark {
-    /* Already dark by default - enhanced for consistency */
-    --background: 0 0% 3.9%;
+    /* Enhanced for Gundam theme */
+    --background: 210 15% 12%;
     --foreground: 0 0% 98%;
   }
 }
@@ -74,7 +74,7 @@ Vibe-focused design for developers who want to code, not worry about crypto.
 
   body {
     @apply bg-background text-foreground font-sans;
-    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--nexus-dark)));
+    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--gundam-dark)));
   }
 
   html {
@@ -83,30 +83,30 @@ Vibe-focused design for developers who want to code, not worry about crypto.
 }
 
 @layer utilities {
-  /* NEXUS Gradient Utilities */
-  .bg-gradient-nexus {
-    background: var(--gradient-nexus);
+  /* GUNDAM Gradient Utilities */
+  .bg-gradient-gundam {
+    background: var(--gradient-gundam);
   }
   
-  .bg-gradient-beam {
-    background: var(--gradient-beam);
+  .bg-gradient-mecha {
+    background: var(--gradient-mecha);
   }
   
-  .bg-gradient-shield {
-    background: var(--gradient-shield);
+  .bg-gradient-armor {
+    background: var(--gradient-armor);
   }
   
-  .bg-gradient-boost {
-    background: var(--gradient-boost);
+  .bg-gradient-steel {
+    background: var(--gradient-steel);
   }
 
-  /* NEXUS Shadow Utilities */
-  .shadow-glow-nexus {
-    box-shadow: var(--glow-nexus);
+  /* GUNDAM Shadow Utilities */
+  .shadow-glow-gundam {
+    box-shadow: var(--glow-gundam);
   }
   
-  .shadow-glow-beam {
-    box-shadow: var(--glow-beam);
+  .shadow-glow-white {
+    box-shadow: var(--glow-white);
   }
   
   .shadow-glow-critical {
@@ -117,21 +117,21 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     box-shadow: var(--shadow-mecha);
   }
 
-  /* NEXUS Color Utilities */
-  .text-nexus-blue {
-    color: hsl(var(--nexus-blue));
+  /* GUNDAM Color Utilities */
+  .text-gundam-red {
+    color: hsl(var(--gundam-red));
   }
   
-  .text-nexus-cyan {
-    color: hsl(var(--nexus-cyan));
+  .text-gundam-white {
+    color: hsl(var(--gundam-white));
   }
   
-  .text-nexus-red {
-    color: hsl(var(--nexus-red));
+  .text-gundam-grey {
+    color: hsl(var(--gundam-grey));
   }
   
-  .text-nexus-gold {
-    color: hsl(var(--nexus-gold));
+  .text-gundam-steel {
+    color: hsl(var(--gundam-steel));
   }
   
   .text-shield {
@@ -146,21 +146,21 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     color: hsl(var(--boost));
   }
 
-  .border-nexus-blue {
-    border-color: hsl(var(--nexus-blue));
+  .border-gundam-red {
+    border-color: hsl(var(--gundam-red));
   }
 
-  .bg-nexus-blue\/10 {
-    background-color: hsl(var(--nexus-blue) / 0.1);
+  .bg-gundam-red\/10 {
+    background-color: hsl(var(--gundam-red) / 0.1);
   }
 
-  /* NEXUS Animations */
-  .animate-nexus-fade {
-    animation: nexus-fade 0.6s ease-out;
+  /* GUNDAM Animations */
+  .animate-gundam-fade {
+    animation: gundam-fade 0.6s ease-out;
   }
   
-  .animate-beam-glow {
-    animation: beam-glow 2s ease-in-out infinite;
+  .animate-armor-glow {
+    animation: armor-glow 2s ease-in-out infinite;
   }
   
   .animate-mecha-pulse {
@@ -169,8 +169,8 @@ Vibe-focused design for developers who want to code, not worry about crypto.
 }
 
 @layer components {
-  /* NEXUS Animation Keyframes */
-  @keyframes nexus-fade {
+  /* GUNDAM Animation Keyframes */
+  @keyframes gundam-fade {
     from {
       opacity: 0;
       transform: translateY(20px) scale(0.95);
@@ -181,12 +181,12 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     }
   }
 
-  @keyframes beam-glow {
+  @keyframes armor-glow {
     0%, 100% {
-      box-shadow: 0 0 20px hsl(var(--boost) / 0.2);
+      box-shadow: 0 0 20px hsl(var(--gundam-red) / 0.2);
     }
     50% {
-      box-shadow: 0 0 40px hsl(var(--boost) / 0.4);
+      box-shadow: 0 0 40px hsl(var(--gundam-red) / 0.4);
     }
   }
 
