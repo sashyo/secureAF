@@ -398,7 +398,7 @@ export function VaultDashboard() {
                   <span>Notes</span>
                   <Badge 
                     variant="secondary" 
-                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0 data-[state=active]:bg-white/30 data-[state=active]:text-white"
+                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0"
                   >
                     {state.notes.length}
                   </Badge>
@@ -415,7 +415,7 @@ export function VaultDashboard() {
                   <span>Files</span>
                   <Badge 
                     variant="secondary" 
-                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0 data-[state=active]:bg-white/30 data-[state=active]:text-white"
+                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0"
                   >
                     {state.files.length}
                   </Badge>
