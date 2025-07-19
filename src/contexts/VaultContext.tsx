@@ -7,6 +7,8 @@ import { useTideCloak } from '@tidecloak/react';
 export interface VaultState {
   notes: VaultNote[];
   files: VaultFile[];
+  allNotes: VaultNote[]; // Complete unfiltered notes for stats
+  allFiles: VaultFile[]; // Complete unfiltered files for stats
   loading: boolean;
   error: string | null;
   decryptedItems: Set<string>; // Track which items are currently decrypted
@@ -21,6 +23,8 @@ export type VaultAction =
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_NOTES'; payload: VaultNote[] }
   | { type: 'SET_FILES'; payload: VaultFile[] }
+  | { type: 'SET_ALL_NOTES'; payload: VaultNote[] }
+  | { type: 'SET_ALL_FILES'; payload: VaultFile[] }
   | { type: 'ADD_NOTE'; payload: VaultNote }
   | { type: 'UPDATE_NOTE'; payload: VaultNote }
   | { type: 'DELETE_NOTE'; payload: number }
@@ -37,6 +41,8 @@ export type VaultAction =
 const initialState: VaultState = {
   notes: [],
   files: [],
+  allNotes: [],
+  allFiles: [],
   loading: false,
   error: null,
   decryptedItems: new Set(),
@@ -56,33 +62,53 @@ function vaultReducer(state: VaultState, action: VaultAction): VaultState {
       return { ...state, notes: action.payload };
     case 'SET_FILES':
       return { ...state, files: action.payload };
+    case 'SET_ALL_NOTES':
+      return { ...state, allNotes: action.payload };
+    case 'SET_ALL_FILES':
+      return { ...state, allFiles: action.payload };
     case 'ADD_NOTE':
-      return { ...state, notes: [...state.notes, action.payload] };
+      return { 
+        ...state, 
+        notes: [...state.notes, action.payload],
+        allNotes: [...state.allNotes, action.payload]
+      };
     case 'UPDATE_NOTE':
       return {
         ...state,
         notes: state.notes.map(note =>
+          note.id === action.payload.id ? action.payload : note
+        ),
+        allNotes: state.allNotes.map(note =>
           note.id === action.payload.id ? action.payload : note
         )
       };
     case 'DELETE_NOTE':
       return {
         ...state,
-        notes: state.notes.filter(note => note.id !== action.payload)
+        notes: state.notes.filter(note => note.id !== action.payload),
+        allNotes: state.allNotes.filter(note => note.id !== action.payload)
       };
     case 'ADD_FILE':
-      return { ...state, files: [...state.files, action.payload] };
+      return { 
+        ...state, 
+        files: [...state.files, action.payload],
+        allFiles: [...state.allFiles, action.payload]
+      };
     case 'UPDATE_FILE':
       return {
         ...state,
         files: state.files.map(file =>
+          file.id === action.payload.id ? action.payload : file
+        ),
+        allFiles: state.allFiles.map(file =>
           file.id === action.payload.id ? action.payload : file
         )
       };
     case 'DELETE_FILE':
       return {
         ...state,
-        files: state.files.filter(file => file.id !== action.payload)
+        files: state.files.filter(file => file.id !== action.payload),
+        allFiles: state.allFiles.filter(file => file.id !== action.payload)
       };
     case 'SET_DECRYPTED_CONTENT': {
       const newDecrypted = new Set(state.decryptedItems);
@@ -168,14 +194,46 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const refreshData = async () => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      const [notes, files, tags] = await Promise.all([
-        VaultStorage.getAllNotes(userId, state.searchTerm, state.selectedTags.length ? state.selectedTags : undefined),
-        VaultStorage.getAllFiles(userId, state.searchTerm, state.selectedTags.length ? state.selectedTags : undefined),
+      
+      // Get all data first (unfiltered for stats)
+      const [allNotes, allFiles, tags] = await Promise.all([
+        VaultStorage.getAllNotes(userId),
+        VaultStorage.getAllFiles(userId),
         VaultStorage.getAllTags(userId)
       ]);
-      dispatch({ type: 'SET_NOTES', payload: notes });
-      dispatch({ type: 'SET_FILES', payload: files });
+      
+      // Set the complete data for stats
+      dispatch({ type: 'SET_ALL_NOTES', payload: allNotes });
+      dispatch({ type: 'SET_ALL_FILES', payload: allFiles });
       dispatch({ type: 'SET_ALL_TAGS', payload: tags });
+      
+      // Filter data for display
+      const filteredNotes = allNotes.filter(note => {
+        const matchesSearch = !state.searchTerm || 
+          note.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+          (note.content && note.content.toLowerCase().includes(state.searchTerm.toLowerCase())) ||
+          (note.tags && note.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())));
+        
+        const matchesTags = !state.selectedTags.length || 
+          state.selectedTags.some(tag => note.tags?.includes(tag));
+        
+        return matchesSearch && matchesTags;
+      });
+      
+      const filteredFiles = allFiles.filter(file => {
+        const matchesSearch = !state.searchTerm || 
+          file.name.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+          (file.tags && file.tags.some(tag => tag.toLowerCase().includes(state.searchTerm.toLowerCase())));
+        
+        const matchesTags = !state.selectedTags.length || 
+          state.selectedTags.some(tag => file.tags?.includes(tag));
+        
+        return matchesSearch && matchesTags;
+      });
+      
+      // Set filtered data for display
+      dispatch({ type: 'SET_NOTES', payload: filteredNotes });
+      dispatch({ type: 'SET_FILES', payload: filteredFiles });
       dispatch({ type: 'SET_ERROR', payload: null });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load data';

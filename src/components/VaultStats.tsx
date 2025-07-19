@@ -8,20 +8,21 @@ import { FileUtils } from '@/lib/encryption';
 export function VaultStats() {
   const { state, setSearchTerm, setSelectedTags } = useVault();
 
-  const totalNotes = state.notes.length;
-  const totalFiles = state.files.length;
-  const encryptedNotes = state.notes.filter(n => n.encrypted).length;
-  const encryptedFiles = state.files.filter(f => f.encrypted).length;
-  const favoriteItems = state.notes.filter(n => n.favorite).length + state.files.filter(f => f.favorite).length;
+  // Use allNotes and allFiles for accurate stats, not filtered data
+  const totalNotes = state.allNotes.length;
+  const totalFiles = state.allFiles.length;
+  const encryptedNotes = state.allNotes.filter(n => n.encrypted).length;
+  const encryptedFiles = state.allFiles.filter(f => f.encrypted).length;
+  const favoriteItems = state.allNotes.filter(n => n.favorite).length + state.allFiles.filter(f => f.favorite).length;
   
-  const totalStorageBytes = state.files.reduce((total, file) => total + file.size, 0);
+  const totalStorageBytes = state.allFiles.reduce((total, file) => total + file.size, 0);
   const totalStorage = FileUtils.formatFileSize(totalStorageBytes);
 
   const recentlyAccessed = [
-    ...state.notes.filter(n => n.lastAccessed).sort((a, b) => 
+    ...state.allNotes.filter(n => n.lastAccessed).sort((a, b) => 
       new Date(b.lastAccessed!).getTime() - new Date(a.lastAccessed!).getTime()
     ).slice(0, 3).map(n => ({ type: 'note' as const, item: n })),
-    ...state.files.filter(f => f.lastAccessed).sort((a, b) => 
+    ...state.allFiles.filter(f => f.lastAccessed).sort((a, b) => 
       new Date(b.lastAccessed!).getTime() - new Date(a.lastAccessed!).getTime()
     ).slice(0, 3).map(f => ({ type: 'file' as const, item: f }))
   ].sort((a, b) => 
