@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Shield, Edit3 } from 'lucide-react';
+import { X, Save, Shield, Edit3, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,6 +18,8 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
   const { createNote, updateNote, decryptNote, state } = useVault();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isDecrypting, setIsDecrypting] = useState(false);
 
@@ -26,6 +28,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
   useEffect(() => {
     if (note) {
       setTitle(note.title);
+      setTags(note.tags || []);
       
       if (note.encrypted) {
         // Check if content is already decrypted in context
@@ -52,6 +55,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
     } else {
       setTitle('');
       setContent('');
+      setTags([]);
       setIsDecrypting(false);
     }
   }, [note?.id, note?.encrypted]);
@@ -62,15 +66,33 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
     setLoading(true);
     try {
       if (isEditing && note?.id) {
-        await updateNote(note.id, title.trim(), content.trim());
+        await updateNote(note.id, title.trim(), content.trim(), tags);
       } else {
-        await createNote(title.trim(), content.trim());
+        await createNote(title.trim(), content.trim(), tags);
       }
       onClose();
     } catch (error) {
       console.error('Failed to save note:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const addTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag();
     }
   };
 
@@ -117,6 +139,46 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
               onKeyDown={handleKeyDown}
               className="focus:ring-primary focus:border-primary"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="tags">Tags</Label>
+            <div className="flex gap-2">
+              <Input
+                id="tags"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagKeyDown}
+                placeholder="Add tags (press Enter)..."
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                onClick={addTag}
+                variant="outline"
+                size="sm"
+                disabled={!tagInput.trim()}
+              >
+                Add
+              </Button>
+            </div>
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {tags.map((tag, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs">
+                    <Tag className="w-3 h-3 mr-1" />
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="ml-1 hover:text-destructive"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2 flex-1 flex flex-col">

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, X, File, Image, Shield, AlertCircle } from 'lucide-react';
+import { Upload, X, File, Image, Shield, AlertCircle, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,8 @@ interface FileUploadProps {
 export function FileUpload({ onClose }: FileUploadProps) {
   const { uploadFile, state } = useVault();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragOver, setDragOver] = useState(false);
@@ -67,7 +69,7 @@ export function FileUpload({ onClose }: FileUploadProps) {
         });
       }, 100);
 
-      await uploadFile(selectedFile);
+      await uploadFile(selectedFile, tags);
       
       clearInterval(progressInterval);
       setUploadProgress(100);
@@ -84,6 +86,24 @@ export function FileUpload({ onClose }: FileUploadProps) {
     }
   };
 
+  const addTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag();
+    }
+  };
+
   const getFileIcon = (file: File) => {
     if (FileUtils.isImageFile(file.type)) {
       return <Image className="w-8 h-8 text-primary" />;
@@ -93,11 +113,11 @@ export function FileUpload({ onClose }: FileUploadProps) {
 
   return (
     <Dialog open={true} onOpenChange={() => !uploading && onClose()}>
-      <DialogContent className="max-w-md shadow-security">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-security rounded-lg flex items-center justify-center">
-              <Upload className="w-5 h-5 text-primary-foreground" />
+            <div className="w-10 h-10 bg-tidecloak-blue rounded-lg flex items-center justify-center">
+              <Upload className="w-5 h-5 text-white" />
             </div>
             <div>
               <DialogTitle className="text-xl">Upload File</DialogTitle>
@@ -166,6 +186,48 @@ export function FileUpload({ onClose }: FileUploadProps) {
                 </div>
               </div>
 
+              {/* Tag Input Section */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Tags</label>
+                <div className="flex gap-2">
+                  <input
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyDown={handleTagKeyDown}
+                    placeholder="Add tags (press Enter)..."
+                    className="flex-1 px-3 py-2 border border-input rounded-md text-sm"
+                    disabled={uploading}
+                  />
+                  <Button
+                    type="button"
+                    onClick={addTag}
+                    variant="outline"
+                    size="sm"
+                    disabled={!tagInput.trim() || uploading}
+                  >
+                    Add
+                  </Button>
+                </div>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        <Tag className="w-3 h-3 mr-1" />
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="ml-1 hover:text-destructive"
+                          disabled={uploading}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {selectedFile.size > maxFileSize && (
                 <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
                   <AlertCircle className="w-4 h-4 text-destructive" />
@@ -175,9 +237,9 @@ export function FileUpload({ onClose }: FileUploadProps) {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 p-3 bg-encrypted-bg border border-encrypted/20 rounded-md">
-                <Shield className="w-4 h-4 text-encrypted" />
-                <span className="text-sm text-encrypted font-medium">
+              <div className="flex items-center gap-2 p-3 bg-tidecloak-blue/10 border border-tidecloak-blue/20 rounded-md">
+                <Shield className="w-4 h-4 text-tidecloak-blue" />
+                <span className="text-sm text-tidecloak-blue font-medium">
                   File will be encrypted before storage
                 </span>
               </div>
@@ -196,7 +258,7 @@ export function FileUpload({ onClose }: FileUploadProps) {
         </div>
 
         <div className="flex justify-between items-center pt-4 border-t">
-          <Badge className="encrypted-indicator">
+          <Badge className="bg-tidecloak-blue/10 text-tidecloak-blue border-tidecloak-blue">
             <Shield className="w-3 h-3 mr-1" />
             End-to-end encrypted
           </Badge>
@@ -211,7 +273,7 @@ export function FileUpload({ onClose }: FileUploadProps) {
             </Button>
             <Button
               onClick={handleUpload}
-              variant="vault"
+              className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white"
               disabled={!selectedFile || uploading || selectedFile.size > maxFileSize}
             >
               {uploading ? (
