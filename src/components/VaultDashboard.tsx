@@ -378,44 +378,58 @@ export function VaultDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-muted/30 border border-border rounded-xl p-2 h-auto">
+          <TabsList className="grid w-full grid-cols-4 bg-background border border-border rounded-xl p-1 shadow-sm">
             <TabsTrigger 
               value="overview" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
             >
-              <BarChart3 className="w-5 h-5" />
-              Overview
+              <div className="flex flex-col items-center gap-1">
+                <BarChart3 className="w-5 h-5" />
+                <span>Overview</span>
+              </div>
             </TabsTrigger>
             <TabsTrigger 
               value="notes" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
             >
-              <FileText className="w-5 h-5" />
-              <span className="flex flex-col items-center sm:flex-row sm:gap-1">
-                <span>Notes</span>
-                <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                  {state.notes.length}
-                </Badge>
-              </span>
+              <div className="flex flex-col items-center gap-1">
+                <FileText className="w-5 h-5" />
+                <div className="flex items-center gap-1">
+                  <span>Notes</span>
+                  <Badge 
+                    variant="secondary" 
+                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0 data-[state=active]:bg-white/30 data-[state=active]:text-white"
+                  >
+                    {state.notes.length}
+                  </Badge>
+                </div>
+              </div>
             </TabsTrigger>
             <TabsTrigger 
               value="files" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
             >
-              <Upload className="w-5 h-5" />
-              <span className="flex flex-col items-center sm:flex-row sm:gap-1">
-                <span>Files</span>
-                <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                  {state.files.length}
-                </Badge>
-              </span>
+              <div className="flex flex-col items-center gap-1">
+                <Upload className="w-5 h-5" />
+                <div className="flex items-center gap-1">
+                  <span>Files</span>
+                  <Badge 
+                    variant="secondary" 
+                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0 data-[state=active]:bg-white/30 data-[state=active]:text-white"
+                  >
+                    {state.files.length}
+                  </Badge>
+                </div>
+              </div>
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
             >
-              <Settings className="w-5 h-5" />
-              Settings
+              <div className="flex flex-col items-center gap-1">
+                <Settings className="w-5 h-5" />
+                <span>Settings</span>
+              </div>
             </TabsTrigger>
           </TabsList>
 
