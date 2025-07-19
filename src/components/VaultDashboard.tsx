@@ -148,18 +148,24 @@ export function VaultDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-vault">
+    <div className="min-h-screen bg-gradient-to-br from-background to-tidecloak-light">
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold flex items-center gap-3">
-                <Shield className="w-8 h-8 text-primary" />
-                Secure Data Vault
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Your encrypted notes and files
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold flex items-center gap-3">
+                  <Shield className="w-8 h-8 text-tidecloak-blue" />
+                  SecureCore
+                </h1>
+                <Badge variant="outline" className="px-3 py-1 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/10">
+                  <Shield className="w-3 h-3 mr-1" />
+                  Secured with Tide
+                </Badge>
+              </div>
+              <p className="text-muted-foreground">
+                Your encrypted vault protected by advanced cryptography
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -167,7 +173,7 @@ export function VaultDashboard() {
                 onClick={() => setShowVaultExport(true)}
                 variant="outline"
                 size="sm"
-                className="gap-2"
+                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
               >
                 <Archive className="w-4 h-4" />
                 Export Backup
@@ -176,7 +182,7 @@ export function VaultDashboard() {
                 onClick={() => logout()}
                 variant="outline"
                 size="sm"
-                className="gap-2 text-destructive hover:text-destructive"
+                className="gap-2 text-destructive hover:text-destructive border-destructive hover:bg-destructive/10"
               >
                 <LogOut className="w-4 h-4" />
                 Sign Out
@@ -256,8 +262,7 @@ export function VaultDashboard() {
             
             <Button
               onClick={() => openNoteEditor()}
-              variant="vault"
-              className="gap-2"
+              className="gap-2 bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white"
             >
               <Plus className="w-4 h-4" />
               New Note
@@ -265,8 +270,8 @@ export function VaultDashboard() {
             
             <Button
               onClick={() => setShowFileUpload(true)}
-              variant="secondary"
-              className="gap-2"
+              variant="outline"
+              className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
             >
               <Upload className="w-4 h-4" />
               Upload File
@@ -345,7 +350,7 @@ export function VaultDashboard() {
                   <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No notes yet</h3>
                   <p className="text-muted-foreground mb-4">Create your first encrypted note to get started</p>
-                  <Button onClick={() => openNoteEditor()} variant="vault">
+                  <Button onClick={() => openNoteEditor()} className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white">
                     <Plus className="w-4 h-4 mr-2" />
                     Create Note
                   </Button>
@@ -395,9 +400,8 @@ export function VaultDashboard() {
                           </Button>
                           <Button
                             onClick={() => handleDecryptNote(note)}
-                            variant={decrypted ? "decrypted" : "encrypted"}
+                            className={`flex-1 ${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
                             size="sm"
-                            className="flex-1"
                           >
                             {decrypted ? (
                               <>
@@ -441,7 +445,7 @@ export function VaultDashboard() {
                   <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No files uploaded</h3>
                   <p className="text-muted-foreground mb-4">Upload your first encrypted file to get started</p>
-                  <Button onClick={() => setShowFileUpload(true)} variant="vault">
+                  <Button onClick={() => setShowFileUpload(true)} className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white">
                     <Upload className="w-4 h-4 mr-2" />
                     Upload File
                   </Button>
@@ -496,7 +500,7 @@ export function VaultDashboard() {
                         <div className="flex gap-2">
                           <Button
                             onClick={() => handlePreviewFile(file)}
-                            variant={decrypted ? "decrypted" : "encrypted"}
+                            className={`${decrypted ? 'bg-tidecloak-green hover:bg-tidecloak-green/90 text-white' : 'bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white'}`}
                             size="sm"
                           >
                             {decrypted ? (
