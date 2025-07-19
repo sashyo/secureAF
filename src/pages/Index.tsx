@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Zap, Globe, Code, Star, Github, Book, ArrowRight, Lock, Key, Cpu, Network } from 'lucide-react';
+import { Shield, FileText, Lock, Upload, Eye, EyeOff, Star, Github, ArrowRight, Cpu, Key, Network } from 'lucide-react';
 import { Authenticated, Unauthenticated } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,244 +8,224 @@ import { VaultProvider } from '@/contexts/VaultContext';
 import { VaultLogin } from '@/components/VaultLogin';
 import { VaultDashboard } from '@/components/VaultDashboard';
 
-const RevolutionaryLanding = () => {
-  const features = [
-    {
-      icon: Key,
-      title: "Keyless by Design",
-      description: "The key never exists in full — not even for a second. Revolutionary threshold cryptography fragments ensure unstealable security.",
-      gradient: "bg-gradient-keyless"
-    },
-    {
-      icon: Shield,
-      title: "Tamper-Proof Access", 
-      description: "All access is cryptographically verified. No single point holds enough to decrypt anything — there is no key to steal.",
-      gradient: "bg-gradient-cyber"
-    },
-    {
-      icon: Network,
-      title: "Decentralized by Default",
-      description: "Security fragments distributed across our decentralized Security Fabric. No central point of failure, ever.",
-      gradient: "bg-gradient-electric"
-    },
-    {
-      icon: Zap,
-      title: "Built for Dev Speed",
-      description: "Get instant, unstealable encryption without understanding cryptography. Vibers should vibe — not worry about crypto.",
-      gradient: "bg-gradient-hero"
-    }
-  ];
-
-  const testimonials = [
-    {
-      quote: "This isn't encryption as usual — this is unstealable security. Game changer.",
-      author: "Sarah Chen",
-      role: "Lead Developer @ TechFlow"
-    },
-    {
-      quote: "Finally, world-class cryptography that doesn't make me feel like I need a PhD.",
-      author: "Marcus Rodriguez", 
-      role: "Founder @ DevVibe"
-    },
-    {
-      quote: "The key never existing in full blew my mind. This is the future of app security.",
-      author: "Alex Kim",
-      role: "Security Engineer @ CyberFirst"
-    }
-  ];
-
+const SecureVaultLanding = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-tide-dark to-background">
-      {/* Hero Section */}
+      {/* Hero Section - Vault Focused */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-hero opacity-10"></div>
+        <div className="absolute inset-0 bg-gradient-hero opacity-5"></div>
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <Badge variant="outline" className="mb-6 px-4 py-2 text-tide-purple border-tide-purple bg-tide-purple/10">
-              <Cpu className="w-4 h-4 mr-2" />
-              Powered by Revolutionary Threshold Cryptography
+              <Shield className="w-4 h-4 mr-2" />
+              Secured by TideCloak's Keyless Technology
             </Badge>
             
-            <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-hero bg-clip-text text-transparent">
-              Vibe with Your Code
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="bg-gradient-hero bg-clip-text text-transparent">SecureVault</span>
             </h1>
-            <h2 className="text-3xl md:text-4xl font-medium mb-8 text-foreground/90">
-              Let TideCloak Handle Security
+            <h2 className="text-2xl md:text-3xl font-medium mb-8 text-foreground/90">
+              The Data Vault That Can't Be Hacked
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              The first keyless security platform. No keys to manage, no keys to steal, no keys to worry about. 
-              Just unstealable encryption that works instantly.
+              Store your notes, files, and sensitive data with <strong>mathematically unstealable security</strong>. 
+              No keys to manage, no keys to steal, no single point of failure.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button size="lg" className="bg-gradient-hero hover:shadow-glow-purple text-lg px-8 py-6">
-                <Shield className="w-5 h-5 mr-2" />
-                Explore the Vault
+                <Lock className="w-5 h-5 mr-2" />
+                Secure Your Data
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button variant="outline" size="lg" className="border-tide-purple text-tide-purple hover:bg-tide-purple/10 text-lg px-8 py-6">
-                <Book className="w-5 h-5 mr-2" />
-                Read the Docs
-              </Button>
-              <Button variant="outline" size="lg" className="border-muted hover:bg-muted/10 text-lg px-8 py-6">
                 <Github className="w-5 h-5 mr-2" />
-                Star on GitHub
-                <Star className="w-4 h-4 ml-2" />
+                See the Code
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div className="p-4">
-                <div className="text-2xl font-bold text-keyless mb-2">0 Keys</div>
-                <div className="text-sm text-muted-foreground">Ever Generated or Stored</div>
-              </div>
-              <div className="p-4">
-                <div className="text-2xl font-bold text-decentralized mb-2">100% Decentralized</div>
-                <div className="text-sm text-muted-foreground">Security Fabric</div>
-              </div>
-              <div className="p-4">
-                <div className="text-2xl font-bold text-unstealable mb-2">∞ Unstealable</div>
-                <div className="text-sm text-muted-foreground">By Mathematical Design</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Revolutionary Features */}
-      <section className="py-20 relative">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">This Changes Everything</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Not just another auth tool — a complete revolution in how applications secure data
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="group hover:shadow-revolutionary transition-all duration-300 border-muted/20 bg-card/50 backdrop-blur-sm">
-                <CardHeader>
-                  <div className={`w-12 h-12 rounded-lg ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <feature.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
-                    {feature.description}
-                  </CardDescription>
+            {/* Vault Features Preview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+                <CardContent className="pt-6 text-center">
+                  <FileText className="w-8 h-8 text-tide-purple mx-auto mb-3" />
+                  <h3 className="font-semibold mb-2">Encrypted Notes</h3>
+                  <p className="text-sm text-muted-foreground">Rich text notes with keyless encryption</p>
                 </CardContent>
               </Card>
-            ))}
+              
+              <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+                <CardContent className="pt-6 text-center">
+                  <Upload className="w-8 h-8 text-decentralized mx-auto mb-3" />
+                  <h3 className="font-semibold mb-2">Secure Files</h3>
+                  <p className="text-sm text-muted-foreground">Upload and store files with unstealable security</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+                <CardContent className="pt-6 text-center">
+                  <Eye className="w-8 h-8 text-unstealable mx-auto mb-3" />
+                  <h3 className="font-semibold mb-2">Controlled Access</h3>
+                  <p className="text-sm text-muted-foreground">Decrypt only when you need it, auto-hide for privacy</p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* The TideCloak Revolution */}
       <section className="py-20 bg-muted/5">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">How the Magic Happens</h2>
-            <p className="text-xl text-muted-foreground">
-              Revolutionary threshold cryptography that makes keys obsolete
-            </p>
-          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4 px-3 py-1 text-tide-purple border-tide-purple bg-tide-purple/10">
+                Revolutionary Security
+              </Badge>
+              <h2 className="text-3xl font-bold mb-4">Why This Vault Can't Be Hacked</h2>
+              <p className="text-lg text-muted-foreground">
+                This isn't just another encrypted vault. It's secured by TideCloak's breakthrough in cryptography.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-keyless rounded-full flex items-center justify-center">
-                <Cpu className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Fragment & Distribute</h3>
-              <p className="text-muted-foreground">
-                Your data is protected by cryptographic fragments distributed across our decentralized Security Fabric.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-gradient-keyless flex items-center justify-center mb-4">
+                    <Key className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle>No Keys Exist</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Traditional encryption creates keys that can be stolen. TideCloak's threshold cryptography means 
+                    <strong> the key never exists in full — not even for a second</strong>.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-gradient-cyber flex items-center justify-center mb-4">
+                    <Network className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle>Fragments Everywhere</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Your data is protected by cryptographic fragments distributed across TideCloak's Security Fabric. 
+                    <strong> No single point holds enough to decrypt anything</strong>.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-cyber rounded-full flex items-center justify-center">
-                <Network className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Verify & Access</h3>
-              <p className="text-muted-foreground">
-                All access is cryptographically verified through advanced threshold protocols. No keys, no risk.
+
+            <div className="text-center p-8 bg-gradient-hero/10 rounded-lg border border-tide-purple/20">
+              <Cpu className="w-12 h-12 text-tide-purple mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-4">This is What TideCloak Makes Possible</h3>
+              <p className="text-muted-foreground mb-6">
+                Developers can now build apps with <strong>mathematically unstealable security</strong> 
+                without understanding cryptography. This vault is proof — world-class security with simple APIs.
               </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-electric rounded-full flex items-center justify-center">
-                <Shield className="w-8 h-8 text-white" />
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button variant="outline" className="border-tide-purple text-tide-purple hover:bg-tide-purple/10">
+                  <Github className="w-4 h-4 mr-2" />
+                  Explore TideCloak SDK
+                </Button>
+                <Button variant="outline" className="border-muted hover:bg-muted/10">
+                  <Star className="w-4 h-4 mr-2" />
+                  See Documentation
+                </Button>
               </div>
-              <h3 className="text-xl font-semibold mb-4">Stay Unstealable</h3>
-              <p className="text-muted-foreground">
-                No one — not even you — can see the whole key. It's mathematically impossible to steal what doesn't exist.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Vault Capabilities */}
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Developers Are Vibing</h2>
+            <h2 className="text-3xl font-bold mb-4">What Makes This Vault Special</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Beyond just storage — intelligent security features that adapt to how you work
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-muted/20 bg-card/50 backdrop-blur-sm">
-                <CardContent className="pt-6">
-                  <p className="text-muted-foreground mb-4 italic">"{testimonial.quote}"</p>
-                  <div>
-                    <div className="font-semibold">{testimonial.author}</div>
-                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="w-5 h-5 mr-2 text-tide-purple" />
+                  Smart Notes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">Rich text editor with real-time encryption. Notes auto-hide after viewing for privacy.</p>
+                <Badge variant="secondary" className="text-xs">Auto-encrypting</Badge>
+              </CardContent>
+            </Card>
+
+            <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Upload className="w-5 h-5 mr-2 text-decentralized" />
+                  File Vault
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">Drag & drop file storage with image previews and instant encryption on upload.</p>
+                <Badge variant="secondary" className="text-xs">Image preview</Badge>
+              </CardContent>
+            </Card>
+
+            <Card className="border-muted/20 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Shield className="w-5 h-5 mr-2 text-unstealable" />
+                  Audit Trail
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">Complete audit log of all decrypt actions and access patterns for security monitoring.</p>
+                <Badge variant="secondary" className="text-xs">Security focused</Badge>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Developer CTA */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-5"></div>
         <div className="container mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl font-bold mb-4">Ready to Build the Future?</h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of developers who've discovered unstealable security. 
-            Because vibers should vibe — not worry about crypto.
+          <h2 className="text-3xl font-bold mb-4">Experience Unstealable Security</h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            See how TideCloak's keyless cryptography makes this vault mathematically impossible to hack. 
+            Then imagine what you could build.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-hero hover:shadow-glow-purple text-lg px-8 py-6">
-              <Shield className="w-5 h-5 mr-2" />
-              Start Building
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button variant="outline" size="lg" className="border-tide-purple text-tide-purple hover:bg-tide-purple/10 text-lg px-8 py-6">
-              <Github className="w-5 h-5 mr-2" />
-              Explore on GitHub
-            </Button>
-          </div>
+          <Button size="lg" className="bg-gradient-hero hover:shadow-glow-purple text-lg px-8 py-6">
+            <Lock className="w-5 h-5 mr-2" />
+            Try the Vault
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-muted/20 py-12">
+      <footer className="border-t border-muted/20 py-8">
         <div className="container mx-auto px-6 text-center">
           <div className="flex items-center justify-center mb-4">
-            <Shield className="w-6 h-6 text-tide-purple mr-2" />
-            <span className="text-lg font-semibold">SecureVault</span>
+            <Shield className="w-5 h-5 text-tide-purple mr-2" />
+            <span className="font-semibold">SecureVault</span>
             <Badge variant="outline" className="ml-3 text-xs px-2 py-1 text-tide-purple border-tide-purple">
               Powered by TideCloak
             </Badge>
           </div>
           <p className="text-muted-foreground text-sm">
-            Revolutionary keyless security. Built for developers who want to vibe with their code.
+            A demonstration of keyless security. Built for developers who want unstealable data protection.
           </p>
         </div>
       </footer>
@@ -257,7 +237,7 @@ const Index = () => {
   return (
     <>
       <Unauthenticated>
-        <RevolutionaryLanding />
+        <SecureVaultLanding />
       </Unauthenticated>
       
       <Authenticated>
