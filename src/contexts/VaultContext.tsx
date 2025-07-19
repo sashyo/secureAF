@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { flushSync } from 'react-dom';
 import { VaultNote, VaultFile, VaultStorage } from '@/lib/database';
 import { useVaultEncryption } from '@/lib/encryption';
 import { useToast } from '@/hooks/use-toast';
@@ -215,10 +214,8 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     const handleVisibilityChange = () => {
       console.log('Visibility change - hidden:', document.hidden);
       if (document.hidden) {
-        console.log('Tab hidden - forcing immediate clear of decrypted content');
-        flushSync(() => {
-          dispatch({ type: 'CLEAR_DECRYPTED' });
-        });
+        console.log('Tab hidden - clearing decrypted content IMMEDIATELY');
+        dispatch({ type: 'CLEAR_DECRYPTED' });
         toast({
           title: "Security Lock Activated",
           description: "Decrypted content hidden for security"
@@ -227,10 +224,8 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     };
 
     const handleBlur = () => {
-      console.log('Window blur - forcing immediate clear of decrypted content');
-      flushSync(() => {
-        dispatch({ type: 'CLEAR_DECRYPTED' });
-      });
+      console.log('Window blur - clearing decrypted content IMMEDIATELY');
+      dispatch({ type: 'CLEAR_DECRYPTED' });
       toast({
         title: "Security Lock Activated", 
         description: "Decrypted content hidden for security"
