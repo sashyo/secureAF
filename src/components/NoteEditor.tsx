@@ -105,44 +105,44 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
 
   return (
     <Dialog open={true} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-premium border-0 bg-card/95 backdrop-blur-md">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-tidecloak-blue rounded-lg flex items-center justify-center">
-                <Edit3 className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center shadow-glow-primary">
+                <Edit3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">
+                <DialogTitle className="text-2xl font-bold">
                   {isEditing ? 'Edit Note' : 'Create New Note'}
                 </DialogTitle>
-                <DialogDescription>
+                <DialogDescription className="text-muted-foreground">
                   {isEditing ? 'Modify your encrypted note' : 'Create a new encrypted note'}
                 </DialogDescription>
               </div>
             </div>
-            <Badge className="bg-tidecloak-blue/10 text-tidecloak-blue border-tidecloak-blue">
+            <Badge className="encrypted-indicator shadow-glow-primary">
               <Shield className="w-3 h-3 mr-1" />
               Encrypted
             </Badge>
           </div>
         </DialogHeader>
 
-        <div className="flex-1 space-y-4 overflow-hidden">
+        <div className="flex-1 space-y-6 overflow-hidden">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title" className="text-sm font-medium">Title</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter note title..."
               onKeyDown={handleKeyDown}
-              className="focus:ring-primary focus:border-primary"
+              className="shadow-card border-0 bg-card/50 backdrop-blur-sm focus:shadow-glow-primary transition-all"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="tags">Tags</Label>
+          <div className="space-y-3">
+            <Label htmlFor="tags" className="text-sm font-medium">Tags</Label>
             <div className="flex gap-2">
               <Input
                 id="tags"
@@ -150,7 +150,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
                 placeholder="Add tags (press Enter)..."
-                className="flex-1"
+                className="flex-1 shadow-card border-0 bg-card/50 backdrop-blur-sm"
               />
               <Button
                 type="button"
@@ -158,20 +158,21 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
                 variant="outline"
                 size="sm"
                 disabled={!tagInput.trim()}
+                className="shadow-card border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
               >
                 Add
               </Button>
             </div>
             {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-3">
                 {tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
+                  <Badge key={index} variant="secondary" className="text-xs shadow-card bg-muted/50">
                     <Tag className="w-3 h-3 mr-1" />
                     {tag}
                     <button
                       type="button"
                       onClick={() => removeTag(tag)}
-                      className="ml-1 hover:text-destructive"
+                      className="ml-1 hover:text-destructive transition-colors"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -181,13 +182,13 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
             )}
           </div>
 
-          <div className="space-y-2 flex-1 flex flex-col">
-            <Label htmlFor="content">Content</Label>
+          <div className="space-y-3 flex-1 flex flex-col">
+            <Label htmlFor="content" className="text-sm font-medium">Content</Label>
             {isDecrypting ? (
-              <div className="flex-1 border rounded-md p-4 bg-muted flex items-center justify-center">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Decrypting content...</span>
+              <div className="flex-1 border rounded-xl p-6 bg-gradient-surface flex items-center justify-center shadow-card">
+                <div className="flex items-center gap-3 text-muted-foreground">
+                  <Loader2 className="w-5 h-5 animate-spin text-tidecloak-blue" />
+                  <span className="text-sm font-medium">Decrypting content...</span>
                 </div>
               </div>
             ) : (
@@ -196,32 +197,32 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Write your note content here..."
-                className="flex-1 min-h-[300px] resize-none focus:ring-primary focus:border-primary"
+                className="flex-1 min-h-[300px] resize-none shadow-card border-0 bg-card/50 backdrop-blur-sm focus:shadow-glow-primary transition-all"
                 onKeyDown={handleKeyDown}
               />
             )}
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex items-center justify-between pt-6 border-t">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Shield className="w-4 h-4 text-tidecloak-blue" />
             <span>Content will be encrypted automatically</span>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               onClick={onClose}
               variant="outline"
               disabled={loading}
-              className="border-foreground text-foreground hover:bg-muted"
+              className="shadow-card border-0 bg-muted/50 hover:bg-muted/70 transition-all"
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
             <Button
               onClick={handleSave}
-              className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white"
+              className="bg-gradient-hero hover:bg-gradient-hero/90 text-white shadow-glow-primary hover-lift"
               disabled={loading || !title.trim() || !content.trim() || isDecrypting}
             >
               {loading ? (
@@ -239,8 +240,11 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
           </div>
         </div>
 
-        <div className="text-xs text-muted-foreground mt-2">
-          Tip: Press Ctrl+S to save quickly
+        <div className="text-xs text-muted-foreground mt-3 flex items-center gap-1">
+          <kbd className="px-2 py-1 bg-muted rounded text-xs">Ctrl</kbd>
+          <span>+</span>
+          <kbd className="px-2 py-1 bg-muted rounded text-xs">S</kbd>
+          <span>to save quickly</span>
         </div>
       </DialogContent>
     </Dialog>

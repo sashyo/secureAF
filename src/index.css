@@ -2,78 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Revolutionary TideCloak Design System - Keyless Security
-Vibe-focused design for developers who want to code, not worry about crypto.
+/* SecureCore Design System - Ultra-Sleek Security Interface
+Advanced cryptographic protection meets premium user experience.
 */
 
 @layer base {
   :root {
-    /* TIDECLOAK BRIGHT THEME - Light, Clean, Professional */
-    --background: 0 0% 100%;
-    --foreground: 222 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 98%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 98%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 98%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    /* SECURECORE PREMIUM THEME - Ultra-sleek, Security-focused */
+    --background: 252 100% 99%;
+    --foreground: 230 20% 10%;
+    --card: 255 100% 100%;
+    --card-foreground: 230 20% 10%;
+    --popover: 255 100% 100%;
+    --popover-foreground: 230 20% 10%;
+    --primary: 230 84% 20%;
+    --primary-foreground: 255 100% 100%;
+    --secondary: 240 15% 96%;
+    --secondary-foreground: 230 20% 20%;
+    --muted: 240 15% 96%;
+    --muted-foreground: 225 15% 55%;
+    --accent: 240 15% 94%;
+    --accent-foreground: 230 20% 15%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 255 100% 100%;
+    --border: 240 15% 90%;
+    --input: 240 15% 92%;
+    --ring: 230 84% 20%;
 
-    /* TIDECLOAK Brand Colors */
-    --tidecloak-blue: 221.2 83.2% 53.3%;
-    --tidecloak-purple: 262.1 83.3% 57.8%;
-    --tidecloak-cyan: 186 100% 50%;
-    --tidecloak-green: 142.1 76.2% 36.3%;
-    --tidecloak-orange: 24.6 95% 53.1%;
-    --tidecloak-pink: 330.4 81.2% 60.4%;
-    --tidecloak-grey: 215.4 16.3% 46.9%;
-    --tidecloak-light: 210 40% 98%;
+    /* SECURECORE Brand Colors - Refined Security Palette */
+    --tidecloak-blue: 230 84% 20%;
+    --tidecloak-purple: 260 80% 25%;
+    --tidecloak-cyan: 190 85% 25%;
+    --tidecloak-green: 140 65% 25%;
+    --tidecloak-orange: 25 80% 50%;
+    --tidecloak-pink: 330 70% 50%;
+    --tidecloak-grey: 225 15% 55%;
+    --tidecloak-light: 245 20% 98%;
     
-    /* Security Status Colors */
-    --secure: 142.1 76.2% 36.3%;
-    --encrypted: 221.2 83.2% 53.3%;
-    --protected: 262.1 83.3% 57.8%;
-    --verified: 186 100% 50%;
-    --critical: 0 84.2% 60.2%;
+    /* Security Status Colors - Professional Grade */
+    --secure: 140 65% 25%;
+    --encrypted: 230 84% 20%;
+    --protected: 260 80% 25%;
+    --verified: 190 85% 25%;
+    --critical: 0 72% 51%;
+    --warning: 40 90% 50%;
 
-    /* TideCloak Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(221.2 83.2% 53.3%), hsl(262.1 83.3% 57.8%));
-    --gradient-secure: linear-gradient(135deg, hsl(142.1 76.2% 36.3%), hsl(186 100% 50%));
-    --gradient-feature: linear-gradient(135deg, hsl(186 100% 50%), hsl(330.4 81.2% 60.4%));
-    --gradient-cta: linear-gradient(135deg, hsl(24.6 95% 53.1%), hsl(330.4 81.2% 60.4%));
+    /* Premium Gradients - Sophisticated Security */
+    --gradient-hero: linear-gradient(135deg, hsl(230 84% 20%), hsl(260 80% 25%));
+    --gradient-secure: linear-gradient(135deg, hsl(140 65% 25%), hsl(190 85% 25%));
+    --gradient-feature: linear-gradient(135deg, hsl(190 85% 25%), hsl(330 70% 50%));
+    --gradient-cta: linear-gradient(135deg, hsl(25 80% 50%), hsl(330 70% 50%));
+    --gradient-surface: linear-gradient(135deg, hsl(252 100% 99%), hsl(245 20% 98%));
 
-    /* TideCloak Effects */
-    --glow-primary: 0 0 25px hsl(221.2 83.2% 53.3% / 0.3);
-    --glow-secure: 0 0 20px hsl(142.1 76.2% 36.3% / 0.3);
-    --glow-feature: 0 0 30px hsl(186 100% 50% / 0.3);
-    --shadow-card: 0 4px 6px -1px hsl(220 22% 5% / 0.1), 0 2px 4px -2px hsl(220 22% 5% / 0.1);
+    /* Premium Effects - Sleek Security Interface */
+    --glow-primary: 0 0 30px hsl(230 84% 20% / 0.25);
+    --glow-secure: 0 0 25px hsl(140 65% 25% / 0.25);
+    --glow-feature: 0 0 35px hsl(190 85% 25% / 0.25);
+    --shadow-card: 0 8px 25px -5px hsl(230 20% 10% / 0.08), 0 4px 10px -3px hsl(230 20% 10% / 0.05);
+    --shadow-premium: 0 20px 60px -10px hsl(230 20% 10% / 0.15), 0 8px 25px -5px hsl(230 20% 10% / 0.08);
+    --backdrop-blur: blur(16px) saturate(180%);
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --background: 230 20% 4%;
+    --foreground: 245 20% 95%;
+    --card: 230 15% 8%;
+    --card-foreground: 245 20% 95%;
+    --popover: 230 15% 8%;
+    --popover-foreground: 245 20% 95%;
+    --muted: 230 15% 12%;
+    --muted-foreground: 225 15% 65%;
+    --accent: 230 15% 12%;
+    --accent-foreground: 245 20% 95%;
+    --border: 230 15% 15%;
+    --input: 230 15% 15%;
+    --shadow-card: 0 8px 25px -5px hsl(230 20% 0% / 0.25), 0 4px 10px -3px hsl(230 20% 0% / 0.15);
+    --shadow-premium: 0 20px 60px -10px hsl(230 20% 0% / 0.4), 0 8px 25px -5px hsl(230 20% 0% / 0.25);
   }
 }
 
@@ -83,17 +89,18 @@ Vibe-focused design for developers who want to code, not worry about crypto.
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
-    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--tidecloak-light)));
+    @apply bg-background text-foreground font-sans antialiased;
+    background: var(--gradient-surface);
+    min-height: 100vh;
   }
 
   html {
-    /* Light theme by default */
+    scroll-behavior: smooth;
   }
 }
 
 @layer utilities {
-  /* TideCloak Gradient Utilities */
+  /* Premium Gradient Utilities */
   .bg-gradient-hero {
     background: var(--gradient-hero);
   }
@@ -110,7 +117,11 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     background: var(--gradient-cta);
   }
 
-  /* TideCloak Shadow Utilities */
+  .bg-gradient-surface {
+    background: var(--gradient-surface);
+  }
+
+  /* Premium Shadow Utilities */
   .shadow-glow-primary {
     box-shadow: var(--glow-primary);
   }
@@ -127,7 +138,24 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     box-shadow: var(--shadow-card);
   }
 
-  /* TideCloak Color Utilities */
+  .shadow-premium {
+    box-shadow: var(--shadow-premium);
+  }
+
+  /* Glass Effects */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Refined Color Utilities */
   .text-tidecloak-blue {
     color: hsl(var(--tidecloak-blue));
   }
@@ -196,29 +224,32 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     background-color: hsl(var(--tidecloak-blue) / 0.1);
   }
 
-  
-  /* Additional Security CSS Classes */
-  .shadow-security {
-    box-shadow: 0 4px 20px hsl(var(--tidecloak-blue) / 0.15);
+  /* Security Status Indicators */
+  .encrypted-indicator {
+    @apply bg-gradient-hero text-white border-0 shadow-glow-primary;
   }
 
-  .bg-gradient-security {
-    background: linear-gradient(135deg, hsl(var(--tidecloak-blue)), hsl(var(--tidecloak-purple)));
+  .decrypted-indicator {
+    @apply bg-gradient-secure text-white border-0 shadow-glow-secure;
   }
 
+  .warning-indicator {
+    @apply bg-gradient-cta text-white border-0;
+  }
+
+  /* Enhanced Security Animations */
   .animate-secure-fade {
-    animation: fade-up 0.6s ease-out;
+    animation: secure-fade 0.6s ease-out;
   }
 
   .animate-decrypt-reveal {
-    animation: fade-in 0.4s ease-out;
+    animation: decrypt-reveal 0.8s ease-out;
   }
 
   .animate-pulse-glow {
     animation: glow-pulse 2s ease-in-out infinite;
   }
 
-  /* TideCloak Animations */
   .animate-fade-up {
     animation: fade-up 0.6s ease-out;
   }
@@ -230,10 +261,28 @@ Vibe-focused design for developers who want to code, not worry about crypto.
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
+
+  /* Interactive Hover Effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-premium);
+  }
+
+  .hover-glow {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-glow:hover {
+    box-shadow: var(--glow-primary);
+  }
 }
 
 @layer components {
-  /* TideCloak Animation Keyframes */
+  /* Enhanced Animation Keyframes */
   @keyframes fade-up {
     from {
       opacity: 0;
@@ -245,12 +294,36 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     }
   }
 
+  @keyframes secure-fade {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes decrypt-reveal {
+    from {
+      opacity: 0;
+      filter: blur(8px);
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: scale(1);
+    }
+  }
+
   @keyframes glow-pulse {
     0%, 100% {
-      box-shadow: 0 0 20px hsl(var(--tidecloak-blue) / 0.2);
+      box-shadow: 0 0 25px hsl(var(--tidecloak-blue) / 0.2);
     }
     50% {
-      box-shadow: 0 0 40px hsl(var(--tidecloak-blue) / 0.4);
+      box-shadow: 0 0 45px hsl(var(--tidecloak-blue) / 0.4);
     }
   }
 
@@ -259,7 +332,7 @@ Vibe-focused design for developers who want to code, not worry about crypto.
       transform: translateY(0px);
     }
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-12px);
     }
   }
 }

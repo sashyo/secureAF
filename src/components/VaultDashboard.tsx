@@ -234,7 +234,7 @@ export function VaultDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-tidecloak-light">
+    <div className="min-h-screen bg-gradient-surface">
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
@@ -242,10 +242,12 @@ export function VaultDashboard() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold flex items-center gap-3">
-                  <Shield className="w-8 h-8 text-tidecloak-blue" />
+                  <div className="p-2 bg-gradient-hero rounded-xl shadow-glow-primary">
+                    <Shield className="w-8 h-8 text-white" />
+                  </div>
                   SecureCore
                 </h1>
-                <Badge variant="outline" className="px-3 py-1 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/10">
+                <Badge variant="outline" className="px-4 py-2 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/5 shadow-card">
                   <Shield className="w-3 h-3 mr-1" />
                   Secured with Tide
                 </Badge>
@@ -259,7 +261,7 @@ export function VaultDashboard() {
                 onClick={() => document.getElementById('import-backup')?.click()}
                 variant="outline"
                 size="sm"
-                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 hover-lift shadow-card"
               >
                 <FolderOpen className="w-4 h-4" />
                 Import Backup
@@ -272,7 +274,6 @@ export function VaultDashboard() {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    // TODO: Implement import logic
                     console.log('Import backup:', file);
                   }
                 }}
@@ -281,7 +282,7 @@ export function VaultDashboard() {
                 onClick={() => setShowVaultExport(true)}
                 variant="outline"
                 size="sm"
-                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 hover-lift shadow-card"
               >
                 <Archive className="w-4 h-4" />
                 Export Backup
@@ -290,7 +291,7 @@ export function VaultDashboard() {
                 onClick={() => logout()}
                 variant="outline"
                 size="sm"
-                className="gap-2 text-destructive hover:text-destructive border-destructive hover:bg-destructive/10"
+                className="gap-2 text-destructive hover:text-destructive border-destructive hover:bg-destructive/10 hover-lift shadow-card"
               >
                 <LogOut className="w-4 h-4" />
                 Sign Out
@@ -307,24 +308,24 @@ export function VaultDashboard() {
               placeholder="Search notes and files..."
               value={state.searchTerm}
               onChange={(e) => contextSetSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 shadow-card border-0 bg-card/50 backdrop-blur-sm"
             />
           </div>
           
           <div className="flex gap-2">
             <Popover open={showTagFilter} onOpenChange={setShowTagFilter}>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="default">
+                <Button variant="outline" size="default" className="shadow-card border-0 bg-card/50 backdrop-blur-sm hover-lift">
                   <Filter className="w-4 h-4 mr-2" />
                   Tags
                   {state.selectedTags.length > 0 && (
-                    <Badge className="ml-2 h-5 w-5 p-0 text-xs">
+                    <Badge className="ml-2 h-5 w-5 p-0 text-xs bg-gradient-hero text-white">
                       {state.selectedTags.length}
                     </Badge>
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80" align="end">
+              <PopoverContent className="w-80 shadow-premium border-0 bg-card/95 backdrop-blur-md" align="end">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">Filter by Tags</h4>
@@ -333,7 +334,7 @@ export function VaultDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={clearTagFilters}
-                        className="h-8 px-2"
+                        className="h-8 px-2 hover:bg-destructive/10 hover:text-destructive"
                       >
                         <X className="w-4 h-4 mr-1" />
                         Clear
@@ -370,7 +371,7 @@ export function VaultDashboard() {
             
             <Button
               onClick={() => openNoteEditor()}
-              className="gap-2 bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white"
+              className="gap-2 bg-gradient-hero hover:bg-gradient-hero/90 text-white shadow-glow-primary hover-lift"
             >
               <Plus className="w-4 h-4" />
               New Note
@@ -379,7 +380,7 @@ export function VaultDashboard() {
             <Button
               onClick={() => setShowFileUpload(true)}
               variant="outline"
-              className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10"
+              className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 shadow-card hover-lift"
             >
               <Upload className="w-4 h-4" />
               Upload File
@@ -389,37 +390,37 @@ export function VaultDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-muted rounded-lg">
+          <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-card/50 backdrop-blur-sm rounded-2xl shadow-card border-0">
             <TabsTrigger 
               value="overview" 
-              className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <BarChart3 className="w-4 h-4" />
               Overview
             </TabsTrigger>
             <TabsTrigger 
               value="notes" 
-              className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <FileText className="w-4 h-4" />
               Notes
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-xs bg-muted/50">
                 {state.allNotes.length}
               </Badge>
             </TabsTrigger>
             <TabsTrigger 
               value="files" 
-              className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <Upload className="w-4 h-4" />
               Files
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-xs bg-muted/50">
                 {state.allFiles.length}
               </Badge>
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:text-foreground"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-hero data-[state=active]:text-white data-[state=active]:shadow-glow-primary rounded-xl transition-all duration-300"
             >
               <Settings className="w-4 h-4" />
               Settings
