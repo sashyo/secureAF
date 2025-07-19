@@ -128,9 +128,16 @@ function vaultReducer(state: VaultState, action: VaultAction): VaultState {
       newContents.delete(action.payload);
       return { ...state, decryptedItems: newDecrypted, decryptedContents: newContents };
     }
-    case 'CLEAR_DECRYPTED':
+    case 'CLEAR_DECRYPTED': {
       console.log('CLEAR_DECRYPTED action - clearing', state.decryptedItems.size, 'items');
-      return { ...state, decryptedItems: new Set(), decryptedContents: new Map() };
+      const clearedState = { 
+        ...state, 
+        decryptedItems: new Set<string>(), 
+        decryptedContents: new Map<string, string | Uint8Array>() 
+      };
+      console.log('State after clear - decrypted items:', clearedState.decryptedItems.size);
+      return clearedState;
+    }
     case 'SET_SEARCH':
       return { ...state, searchTerm: action.payload };
     case 'SET_TAGS':
