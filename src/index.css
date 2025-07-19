@@ -168,6 +168,22 @@ Vibe-focused design for developers who want to code, not worry about crypto.
     background-color: hsl(var(--tidecloak-blue) / 0.1);
   }
 
+  .bg-tidecloak-blue {
+    background-color: hsl(var(--tidecloak-blue));
+  }
+
+  .bg-tidecloak-blue\/90 {
+    background-color: hsl(var(--tidecloak-blue) / 0.9);
+  }
+
+  .hover\:bg-tidecloak-blue\/90:hover {
+    background-color: hsl(var(--tidecloak-blue) / 0.9);
+  }
+
+  .hover\:bg-tidecloak-blue\/10:hover {
+    background-color: hsl(var(--tidecloak-blue) / 0.1);
+  }
+
   /* TideCloak Animations */
   .animate-fade-up {
     animation: fade-up 0.6s ease-out;

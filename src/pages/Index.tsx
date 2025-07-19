@@ -118,19 +118,19 @@ const LandingContent = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Button size="lg" className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 hover:shadow-glow-primary text-lg px-8 py-6" onClick={login}>
-                <Database className="w-5 h-5 mr-2 text-white" />
-                <span className="text-white">Open Your Vault</span>
-                <ArrowRight className="w-5 h-5 ml-2 text-white" />
+              <Button size="lg" className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white hover:shadow-glow-primary text-lg px-8 py-6" onClick={login}>
+                <Database className="w-5 h-5 mr-2" />
+                Open Your Vault
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button variant="outline" size="lg" className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 text-lg px-8 py-6" onClick={handleReadDocs}>
-                <BookOpen className="w-5 h-5 mr-2 text-tidecloak-blue" />
-                <span className="text-tidecloak-blue">Read the Docs</span>
+                <BookOpen className="w-5 h-5 mr-2" />
+                Security Whitepaper
               </Button>
               <Button variant="outline" size="lg" className="border-foreground text-foreground hover:bg-muted text-lg px-8 py-6" onClick={handleViewGitHub}>
-                <Github className="w-5 h-5 mr-2 text-foreground" />
-                <span className="text-foreground">Star us on GitHub</span>
-                <ExternalLink className="w-4 h-4 ml-2 text-foreground" />
+                <Github className="w-5 h-5 mr-2" />
+                Star us on GitHub
+                <ExternalLink className="w-4 h-4 ml-2" />
               </Button>
             </div>
 
@@ -294,17 +294,17 @@ const LandingContent = () => {
             VibeVault represents a breakthrough in data security. Experience unbreakable protection for your most sensitive information.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
-              <Database className="w-5 h-5 mr-2 text-tidecloak-blue" />
-              <span className="text-tidecloak-blue">Explore the Vault</span>
+            <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 text-lg px-8 py-6" onClick={login}>
+              <Database className="w-5 h-5 mr-2" />
+              Explore the Vault
             </Button>
-            <Button variant="outline" size="lg" className="border-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
-              <BookOpen className="w-5 h-5 mr-2 text-white" />
-              <span className="text-white">Security Whitepaper</span>
+            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleReadDocs}>
+              <BookOpen className="w-5 h-5 mr-2" />
+              Security Whitepaper
             </Button>
-            <Button variant="outline" size="lg" className="border-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
-              <Github className="w-5 h-5 mr-2 text-white" />
-              <span className="text-white">View Source Code</span>
+            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
+              <Github className="w-5 h-5 mr-2" />
+              View Source Code
             </Button>
           </div>
         </div>
