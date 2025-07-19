@@ -115,7 +115,7 @@ const LandingContent = () => {
             </h2>
             
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-              Store your most sensitive files with <strong className="text-tidecloak-purple">provable security</strong>. 
+              Store your most sensitive files with <strong className="text-tidecloak-purple">unbreakable protection</strong>. 
               Advanced cryptography that's mathematically proven to be secure.
             </p>
             
