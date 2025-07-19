@@ -199,12 +199,13 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   // Clear decrypted content when navigating away
   useEffect(() => {
     const handleBeforeUnload = () => {
+      console.log('Page unload - clearing decrypted content');
       dispatch({ type: 'CLEAR_DECRYPTED' });
     };
 
     const handleVisibilityChange = () => {
-      console.log('Visibility change:', document.hidden, 'Decrypted items:', state.decryptedItems.size);
-      if (document.hidden && state.decryptedItems.size > 0) {
+      console.log('Visibility change - hidden:', document.hidden);
+      if (document.hidden) {
         console.log('Tab hidden - clearing decrypted content');
         dispatch({ type: 'CLEAR_DECRYPTED' });
         toast({
@@ -215,15 +216,12 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     };
 
     const handleBlur = () => {
-      console.log('Window blur - decrypted items:', state.decryptedItems.size);
-      if (state.decryptedItems.size > 0) {
-        console.log('Window blur - clearing decrypted content');
-        dispatch({ type: 'CLEAR_DECRYPTED' });
-        toast({
-          title: "Security Lock Activated", 
-          description: "Decrypted content hidden for security"
-        });
-      }
+      console.log('Window blur - clearing decrypted content');
+      dispatch({ type: 'CLEAR_DECRYPTED' });
+      toast({
+        title: "Security Lock Activated", 
+        description: "Decrypted content hidden for security"
+      });
     };
 
     // Page unload events
@@ -240,7 +238,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleBlur);
     };
-  }, [state.decryptedItems.size, toast]);
+  }, [toast]);
 
   const refreshData = async () => {
     try {
