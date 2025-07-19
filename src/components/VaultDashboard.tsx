@@ -378,58 +378,44 @@ export function VaultDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-background border border-border rounded-xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-4 bg-card border border-border rounded-lg p-1 shadow-sm">
             <TabsTrigger 
               value="overview" 
-              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-4 rounded-md cursor-pointer flex flex-col items-center gap-2"
             >
-              <div className="flex flex-col items-center gap-1">
-                <BarChart3 className="w-5 h-5" />
-                <span>Overview</span>
-              </div>
+              <BarChart3 className="w-5 h-5" />
+              <span className="text-sm">Overview</span>
             </TabsTrigger>
             <TabsTrigger 
               value="notes" 
-              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-4 rounded-md cursor-pointer flex flex-col items-center gap-2"
             >
-              <div className="flex flex-col items-center gap-1">
-                <FileText className="w-5 h-5" />
-                <div className="flex items-center gap-1">
-                  <span>Notes</span>
-                  <Badge 
-                    variant="secondary" 
-                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0"
-                  >
-                    {state.notes.length}
-                  </Badge>
-                </div>
+              <FileText className="w-5 h-5" />
+              <div className="flex items-center gap-2 text-sm">
+                <span>Notes</span>
+                <Badge variant="secondary" className="text-xs bg-tidecloak-blue/20 text-tidecloak-blue">
+                  {state.notes.length}
+                </Badge>
               </div>
             </TabsTrigger>
             <TabsTrigger 
               value="files" 
-              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-4 rounded-md cursor-pointer flex flex-col items-center gap-2"
             >
-              <div className="flex flex-col items-center gap-1">
-                <Upload className="w-5 h-5" />
-                <div className="flex items-center gap-1">
-                  <span>Files</span>
-                  <Badge 
-                    variant="secondary" 
-                    className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue border-0"
-                  >
-                    {state.files.length}
-                  </Badge>
-                </div>
+              <Upload className="w-5 h-5" />
+              <div className="flex items-center gap-2 text-sm">
+                <span>Files</span>
+                <Badge variant="secondary" className="text-xs bg-tidecloak-blue/20 text-tidecloak-blue">
+                  {state.files.length}
+                </Badge>
               </div>
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-tidecloak-blue/10 transition-all duration-300 font-semibold px-4 py-3 rounded-lg cursor-pointer border-2 border-transparent data-[state=active]:border-tidecloak-blue/30 text-sm flex items-center justify-center gap-2 min-h-[60px]"
+              className="data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-4 rounded-md cursor-pointer flex flex-col items-center gap-2"
             >
-              <div className="flex flex-col items-center gap-1">
-                <Settings className="w-5 h-5" />
-                <span>Settings</span>
-              </div>
+              <Settings className="w-5 h-5" />
+              <span className="text-sm">Settings</span>
             </TabsTrigger>
           </TabsList>
 
