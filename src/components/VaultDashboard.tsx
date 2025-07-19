@@ -378,33 +378,43 @@ export function VaultDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-card border border-border rounded-lg p-1">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/30 border border-border rounded-xl p-2 h-auto">
             <TabsTrigger 
               value="overview" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-3 rounded-md cursor-pointer shadow-sm data-[state=active]:shadow-md"
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
             >
-              <BarChart3 className="w-4 h-4" />
+              <BarChart3 className="w-5 h-5" />
               Overview
             </TabsTrigger>
             <TabsTrigger 
               value="notes" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-3 rounded-md cursor-pointer shadow-sm data-[state=active]:shadow-md"
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
             >
-              <FileText className="w-4 h-4" />
-              Notes ({state.notes.length})
+              <FileText className="w-5 h-5" />
+              <span className="flex flex-col items-center sm:flex-row sm:gap-1">
+                <span>Notes</span>
+                <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                  {state.notes.length}
+                </Badge>
+              </span>
             </TabsTrigger>
             <TabsTrigger 
               value="files" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-3 rounded-md cursor-pointer shadow-sm data-[state=active]:shadow-md"
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
             >
-              <Upload className="w-4 h-4" />
-              Files ({state.files.length})
+              <Upload className="w-5 h-5" />
+              <span className="flex flex-col items-center sm:flex-row sm:gap-1">
+                <span>Files</span>
+                <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-tidecloak-blue/20 text-tidecloak-blue data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                  {state.files.length}
+                </Badge>
+              </span>
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-4 py-3 rounded-md cursor-pointer shadow-sm data-[state=active]:shadow-md"
+              className="gap-2 data-[state=active]:bg-tidecloak-blue data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-tidecloak-blue/10 transition-all duration-200 font-medium px-6 py-4 rounded-lg cursor-pointer border border-transparent data-[state=active]:border-tidecloak-blue/20 text-base"
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-5 h-5" />
               Settings
             </TabsTrigger>
           </TabsList>
