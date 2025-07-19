@@ -97,59 +97,63 @@ const LandingContent = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-tidecloak-light">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20">
+      <section className="relative overflow-hidden py-20 lg:py-32">
         <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <Badge variant="outline" className="mb-6 px-4 py-2 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/10 animate-glow-pulse">
-              <Shield className="w-4 h-4 mr-2" />
-              Secured with Tide Protocol
-            </Badge>
+          <div className="text-center max-w-5xl mx-auto">
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tidecloak-blue/10 border border-tidecloak-blue/20 text-tidecloak-blue text-sm font-medium mb-6">
+                <Shield className="w-4 h-4" />
+                Next-Generation Security
+              </div>
+            </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 text-foreground">
               SecureCore
             </h1>
-            <h2 className="text-2xl md:text-3xl font-medium mb-8 text-tidecloak-blue">
-              Mathematically Unbreakable Security
+            <h2 className="text-3xl md:text-4xl font-light mb-8 text-tidecloak-blue">
+              Your Data, Impossible to Steal
             </h2>
             
-            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              The only data vault with <strong className="text-tidecloak-purple">provable security</strong>. 
-              Our private key never exists in full — making your data mathematically impossible to steal.
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
+              Store your most sensitive files with <strong className="text-tidecloak-purple">unbreakable protection</strong>. 
+              Advanced cryptography that eliminates every attack vector.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Button size="lg" className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white text-lg px-8 py-6" onClick={login}>
+              <Button size="lg" className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white text-lg px-10 py-6 rounded-xl" onClick={login}>
                 <Database className="w-5 h-5 mr-2" />
-                Open Your Vault
+                Start Protecting Your Data
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" size="lg" className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 text-lg px-8 py-6" onClick={handleReadDocs}>
-                <BookOpen className="w-5 h-5 mr-2" />
-                Tide Research Paper
-              </Button>
-              <Button variant="outline" size="lg" className="border-foreground text-foreground hover:bg-muted text-lg px-8 py-6" onClick={handleViewGitHub}>
+              <Button variant="outline" size="lg" className="border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 text-lg px-10 py-6 rounded-xl" onClick={handleViewGitHub}>
                 <Github className="w-5 h-5 mr-2" />
-                Star us on GitHub
+                View on GitHub
                 <ExternalLink className="w-4 h-4 ml-2" />
               </Button>
             </div>
 
             {/* Trust Indicators */}
-            <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-12 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-tidecloak-green" />
-                Zero-Knowledge
+                <div className="w-2 h-2 rounded-full bg-tidecloak-green"></div>
+                Zero-Knowledge Architecture
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-tidecloak-green" />
+                <div className="w-2 h-2 rounded-full bg-tidecloak-blue"></div>
                 End-to-End Encrypted
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-tidecloak-green" />
-                Keyless Security
+                <div className="w-2 h-2 rounded-full bg-tidecloak-purple"></div>
+                Distributed Key Management
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-tidecloak-blue/10 blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-tidecloak-purple/10 blur-3xl"></div>
         </div>
       </section>
 
