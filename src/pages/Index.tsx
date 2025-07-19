@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Shield, FileText, Lock, Upload, Eye, EyeOff, Star, Github, ArrowRight, Cpu, Key, Network } from 'lucide-react';
 import { Authenticated, Unauthenticated } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { VaultProvider } from '@/contexts/VaultContext';
 import { VaultLogin } from '@/components/VaultLogin';
 import { VaultDashboard } from '@/components/VaultDashboard';
 
 const SecureVaultLanding = () => {
+  const [showDemo, setShowDemo] = useState(false);
+  const [showGitHub, setShowGitHub] = useState(false);
+
+  const handleTryVault = () => {
+    // This would trigger the login flow
+    setShowDemo(true);
+  };
+
+  const handleViewGitHub = () => {
+    window.open('https://github.com/tidecloak/secure-vault-demo', '_blank');
+  };
+
+  const handleReadDocs = () => {
+    window.open('https://docs.tidecloak.com', '_blank');
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-tide-dark to-background">
       {/* Hero Section - Vault Focused */}
@@ -34,12 +50,12 @@ const SecureVaultLanding = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button size="lg" className="bg-gradient-hero hover:shadow-glow-purple text-lg px-8 py-6">
+              <Button size="lg" className="bg-gradient-hero hover:shadow-glow-purple text-lg px-8 py-6" onClick={handleTryVault}>
                 <Lock className="w-5 h-5 mr-2" />
                 Secure Your Data
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" size="lg" className="border-tide-purple text-tide-purple hover:bg-tide-purple/10 text-lg px-8 py-6">
+              <Button variant="outline" size="lg" className="border-tide-purple text-tide-purple hover:bg-tide-purple/10 text-lg px-8 py-6" onClick={handleViewGitHub}>
                 <Github className="w-5 h-5 mr-2" />
                 See the Code
               </Button>
@@ -129,11 +145,11 @@ const SecureVaultLanding = () => {
                 without understanding cryptography. This vault is proof — world-class security with simple APIs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="outline" className="border-tide-purple text-tide-purple hover:bg-tide-purple/10">
+                <Button variant="outline" className="border-tide-purple text-tide-purple hover:bg-tide-purple/10" onClick={handleReadDocs}>
                   <Github className="w-4 h-4 mr-2" />
                   Explore TideCloak SDK
                 </Button>
-                <Button variant="outline" className="border-muted hover:bg-muted/10">
+                <Button variant="outline" className="border-muted hover:bg-muted/10" onClick={handleReadDocs}>
                   <Star className="w-4 h-4 mr-2" />
                   See Documentation
                 </Button>
@@ -206,13 +222,31 @@ const SecureVaultLanding = () => {
             Then imagine what you could build.
           </p>
           
-          <Button size="lg" className="bg-gradient-hero hover:shadow-glow-purple text-lg px-8 py-6">
+          <Button size="lg" className="bg-gradient-hero hover:shadow-glow-purple text-lg px-8 py-6" onClick={handleTryVault}>
             <Lock className="w-5 h-5 mr-2" />
             Try the Vault
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
       </section>
+
+      {/* Demo Modal */}
+      <Dialog open={showDemo} onOpenChange={setShowDemo}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <Shield className="w-5 h-5 text-tide-purple" />
+              <span>Try SecureVault</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-muted-foreground">
+              To experience the full vault with TideCloak's keyless security, you'll need to authenticate first.
+            </p>
+            <VaultLogin />
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Footer */}
       <footer className="border-t border-muted/20 py-8">
