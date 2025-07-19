@@ -247,10 +247,6 @@ export function VaultDashboard() {
                   </div>
                   SecureCore
                 </h1>
-                <Badge variant="outline" className="px-4 py-2 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/5 shadow-card">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Secured with Tide
-                </Badge>
               </div>
               <p className="text-muted-foreground">
                 Your encrypted vault protected by advanced cryptography
