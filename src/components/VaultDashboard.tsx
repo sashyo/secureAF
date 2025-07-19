@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings, FolderOpen, Bell, Calendar, Loader2 } from 'lucide-react';
+import { Plus, FileText, Upload, Shield, Eye, EyeOff, Download, Trash2, LogOut, Search, Filter, X, Tag, Star, BarChart3, Archive, Settings, FolderOpen, Bell, Calendar, Loader2, Lock } from 'lucide-react';
 import { useTideCloak } from '@tidecloak/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -234,71 +234,125 @@ export function VaultDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-surface">
-      <div className="container mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold flex items-center gap-3">
-                  <div className="p-2 bg-gradient-hero rounded-xl shadow-glow-primary">
-                    <Shield className="w-8 h-8 text-white" />
-                  </div>
-                  SecureCore
-                </h1>
-                <Badge variant="outline" className="px-4 py-2 text-tidecloak-blue border-tidecloak-blue bg-tidecloak-blue/5 shadow-card">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Secured with Tide
-                </Badge>
+    <div className="min-h-screen">
+      {/* Modern Header */}
+      <header className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/95">
+        <div className="container-refined">
+          <div className="flex h-20 items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-gradient-hero rounded-2xl shadow-glow-primary hover-lift">
+                  <Shield className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gradient">SecureVault</h1>
+                  <p className="text-sm text-muted-foreground">Enterprise Data Protection</p>
+                </div>
               </div>
-              <p className="text-muted-foreground">
-                Your encrypted vault protected by advanced cryptography
-              </p>
+              <Badge variant="outline" className="hidden sm:flex px-3 py-1 bg-tidecloak-blue/10 border-tidecloak-blue/20 text-tidecloak-blue">
+                <Shield className="w-3 h-3 mr-1" />
+                Protected
+              </Badge>
             </div>
+            
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => document.getElementById('import-backup')?.click()}
                 variant="outline"
                 size="sm"
-                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 hover-lift shadow-card"
+                className="hidden sm:flex gap-2 border-tidecloak-blue/20 text-tidecloak-blue hover:bg-tidecloak-blue/10 hover-lift"
               >
                 <FolderOpen className="w-4 h-4" />
-                Import Backup
+                Import
               </Button>
-              <input
-                id="import-backup"
-                type="file"
-                accept=".json"
-                style={{ display: 'none' }}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    console.log('Import backup:', file);
-                  }
-                }}
-              />
               <Button
                 onClick={() => setShowVaultExport(true)}
                 variant="outline"
                 size="sm"
-                className="gap-2 border-tidecloak-blue text-tidecloak-blue hover:bg-tidecloak-blue/10 hover-lift shadow-card"
+                className="hidden sm:flex gap-2 border-tidecloak-blue/20 text-tidecloak-blue hover:bg-tidecloak-blue/10 hover-lift"
               >
                 <Archive className="w-4 h-4" />
-                Export Backup
+                Export
               </Button>
               <Button
                 onClick={() => logout()}
                 variant="outline"
                 size="sm"
-                className="gap-2 text-destructive hover:text-destructive border-destructive hover:bg-destructive/10 hover-lift shadow-card"
+                className="gap-2 text-destructive hover:text-destructive border-destructive/20 hover:bg-destructive/10 hover-lift"
               >
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                <span className="hidden sm:inline">Sign Out</span>
               </Button>
             </div>
           </div>
         </div>
+      </header>
+
+      <main className="container-refined">
+        {/* Hero Stats Section */}
+        <div className="section-padding">
+          <div className="text-center space-y-8">
+            <div className="inline-flex items-center space-x-2 bg-tidecloak-blue/10 px-4 py-2 rounded-full border border-tidecloak-blue/20">
+              <div className="w-2 h-2 bg-tidecloak-green rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-tidecloak-blue">Vault Active</span>
+            </div>
+            
+            <div>
+              <h2 className="text-4xl font-bold text-gradient mb-3">Your Secure Vault</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Enterprise-grade encryption protecting your most valuable data with zero-trust architecture
+              </p>
+            </div>
+
+            {/* Modern Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+              <div className="card-elevated rounded-2xl p-6 text-center hover-lift">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-hero flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-foreground">{state.allNotes.length}</div>
+                <div className="text-sm text-muted-foreground">Secure Notes</div>
+              </div>
+              
+              <div className="card-elevated rounded-2xl p-6 text-center hover-lift">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-secure flex items-center justify-center">
+                  <Upload className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-foreground">{state.allFiles.length}</div>
+                <div className="text-sm text-muted-foreground">Protected Files</div>
+              </div>
+              
+              <div className="card-elevated rounded-2xl p-6 text-center hover-lift">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-feature flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-foreground">256-bit</div>
+                <div className="text-sm text-muted-foreground">AES Encryption</div>
+              </div>
+              
+              <div className="card-elevated rounded-2xl p-6 text-center hover-lift">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-cta flex items-center justify-center">
+                  <Lock className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-foreground">100%</div>
+                <div className="text-sm text-muted-foreground">Zero-Trust</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <input
+          id="import-backup"
+          type="file"
+          accept=".json"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              console.log('Import backup:', file);
+            }
+          }}
+        />
 
         {/* Search and Filter Bar */}
         <div className="mb-6 flex flex-col sm:flex-row gap-4">
@@ -1044,7 +1098,7 @@ export function VaultDashboard() {
             </DialogContent>
           </Dialog>
         )}
-      </div>
+      </main>
     </div>
   );
 }
