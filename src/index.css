@@ -2,136 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Data Vault Design System - Security & Privacy Focused
-All colors MUST be HSL for consistent theming.
+/* Revolutionary TideCloak Design System - Keyless Security
+Vibe-focused design for developers who want to code, not worry about crypto.
 */
 
 @layer base {
   :root {
-    --background: 220 15% 97%;
-    --foreground: 220 50% 15%;
+    /* Revolutionary Dark Theme */
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 76% 65%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 262 76% 65%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 50% 15%;
+    /* Revolutionary TideCloak Colors */
+    --tide-purple: 262 76% 65%;
+    --tide-purple-glow: 262 76% 75%;
+    --tide-dark: 228 84% 5%;
+    --tide-cyber: 180 100% 50%;
+    --tide-electric: 60 100% 50%;
+    
+    /* Security Status Colors */
+    --keyless: 142 71% 45%;
+    --encrypted: 262 76% 65%;
+    --decentralized: 180 100% 50%;
+    --unstealable: 60 100% 50%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 50% 15%;
+    /* Revolutionary Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--tide-purple)), hsl(var(--tide-cyber)));
+    --gradient-keyless: linear-gradient(135deg, hsl(var(--keyless)), hsl(var(--tide-purple)));
+    --gradient-cyber: linear-gradient(135deg, hsl(var(--tide-cyber)), hsl(var(--tide-purple)));
+    --gradient-electric: linear-gradient(135deg, hsl(var(--tide-electric)), hsl(var(--tide-purple)));
 
-    /* Security-focused primary colors - Deep blues */
-    --primary: 215 85% 35%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 215 90% 60%;
-
-    /* Encrypted state - Red tones */
-    --encrypted: 0 80% 50%;
-    --encrypted-foreground: 0 0% 100%;
-    --encrypted-bg: 0 20% 95%;
-
-    /* Decrypted state - Green tones */
-    --decrypted: 142 76% 36%;
-    --decrypted-foreground: 0 0% 100%;
-    --decrypted-bg: 142 20% 95%;
-
-    /* Warning/pending state - Amber tones */
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-    --warning-bg: 38 20% 95%;
-
-    --secondary: 220 20% 92%;
-    --secondary-foreground: 220 50% 15%;
-
-    --muted: 220 15% 94%;
-    --muted-foreground: 220 25% 50%;
-
-    --accent: 215 85% 92%;
-    --accent-foreground: 215 85% 25%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 220 20% 88%;
-    --input: 220 20% 88%;
-    --ring: 215 85% 35%;
+    /* Revolutionary Shadows & Effects */
+    --glow-purple: 0 0 40px hsl(var(--tide-purple) / 0.3);
+    --glow-cyber: 0 0 30px hsl(var(--tide-cyber) / 0.2);
+    --shadow-revolutionary: 0 25px 50px -12px hsl(var(--tide-purple) / 0.25);
 
     --radius: 0.5rem;
-
-    /* Security-focused gradients */
-    --gradient-security: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-encrypted: linear-gradient(135deg, hsl(var(--encrypted)), hsl(0 60% 60%));
-    --gradient-decrypted: linear-gradient(135deg, hsl(var(--decrypted)), hsl(142 60% 50%));
-    --gradient-vault: linear-gradient(180deg, hsl(var(--background)), hsl(220 20% 94%));
-
-    /* Security shadows */
-    --shadow-security: 0 10px 30px -10px hsl(var(--primary) / 0.3);
-    --shadow-encrypted: 0 5px 20px -5px hsl(var(--encrypted) / 0.2);
-    --shadow-decrypted: 0 5px 20px -5px hsl(var(--decrypted) / 0.2);
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 220 15% 8%;
-    --foreground: 220 15% 85%;
-
-    --card: 220 15% 10%;
-    --card-foreground: 220 15% 85%;
-
-    --popover: 220 15% 10%;
-    --popover-foreground: 220 15% 85%;
-
-    --primary: 215 85% 50%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 215 90% 70%;
-
-    --encrypted: 0 80% 60%;
-    --encrypted-foreground: 0 0% 100%;
-    --encrypted-bg: 0 20% 15%;
-
-    --decrypted: 142 76% 50%;
-    --decrypted-foreground: 0 0% 100%;
-    --decrypted-bg: 142 20% 15%;
-
-    --warning: 38 92% 60%;
-    --warning-foreground: 0 0% 100%;
-    --warning-bg: 38 20% 15%;
-
-    --secondary: 220 15% 15%;
-    --secondary-foreground: 220 15% 85%;
-
-    --muted: 220 15% 12%;
-    --muted-foreground: 220 15% 60%;
-
-    --accent: 215 85% 15%;
-    --accent-foreground: 215 85% 75%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 215 85% 50%;
-
-    /* Dark mode gradients */
-    --gradient-security: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-encrypted: linear-gradient(135deg, hsl(var(--encrypted)), hsl(0 70% 70%));
-    --gradient-decrypted: linear-gradient(135deg, hsl(var(--decrypted)), hsl(142 70% 60%));
-    --gradient-vault: linear-gradient(180deg, hsl(var(--background)), hsl(220 15% 12%));
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Already dark by default - enhanced for consistency */
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
   }
 }
 
@@ -141,73 +69,119 @@ All colors MUST be HSL for consistent theming.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--tide-dark)));
+  }
+
+  html {
+    @apply dark;
   }
 }
 
 @layer utilities {
-  /* Security gradient utilities */
-  .bg-gradient-security {
-    background: var(--gradient-security);
+  /* Revolutionary Gradient Utilities */
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
   }
   
-  .bg-gradient-encrypted {
-    background: var(--gradient-encrypted);
+  .bg-gradient-keyless {
+    background: var(--gradient-keyless);
   }
   
-  .bg-gradient-decrypted {
-    background: var(--gradient-decrypted);
+  .bg-gradient-cyber {
+    background: var(--gradient-cyber);
   }
   
-  .bg-gradient-vault {
-    background: var(--gradient-vault);
+  .bg-gradient-electric {
+    background: var(--gradient-electric);
   }
 
-  /* Security shadow utilities */
-  .shadow-security {
-    box-shadow: var(--shadow-security);
+  /* Revolutionary Shadow Utilities */
+  .shadow-glow-purple {
+    box-shadow: var(--glow-purple);
   }
   
-  .shadow-encrypted {
-    box-shadow: var(--shadow-encrypted);
+  .shadow-glow-cyber {
+    box-shadow: var(--glow-cyber);
   }
   
-  .shadow-decrypted {
-    box-shadow: var(--shadow-decrypted);
+  .shadow-revolutionary {
+    box-shadow: var(--shadow-revolutionary);
   }
 
-  /* Security state indicators */
-  .encrypted-indicator {
-    @apply bg-encrypted text-encrypted-foreground;
+  /* Revolutionary Color Utilities */
+  .text-tide-purple {
+    color: hsl(var(--tide-purple));
   }
   
-  .decrypted-indicator {
-    @apply bg-decrypted text-decrypted-foreground;
+  .text-tide-cyber {
+    color: hsl(var(--tide-cyber));
   }
   
-  .warning-indicator {
-    @apply bg-warning text-warning-foreground;
+  .text-keyless {
+    color: hsl(var(--keyless));
+  }
+  
+  .text-decentralized {
+    color: hsl(var(--decentralized));
+  }
+  
+  .text-unstealable {
+    color: hsl(var(--unstealable));
   }
 
-  /* Security animations */
-  .animate-secure-fade {
-    animation: secure-fade 0.3s ease-out;
-  }
-  
-  .animate-decrypt-reveal {
-    animation: decrypt-reveal 0.5s ease-out;
-  }
-  
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+  .border-tide-purple {
+    border-color: hsl(var(--tide-purple));
   }
 
-  /* Auto-hiding decrypted content */
-  .decrypted-content {
-    @apply animate-decrypt-reveal;
+  .bg-tide-purple\/10 {
+    background-color: hsl(var(--tide-purple) / 0.1);
+  }
+
+  /* Revolutionary Animations */
+  .animate-revolutionary-fade {
+    animation: revolutionary-fade 0.6s ease-out;
   }
   
-  .decrypted-content.fade-out {
-    animation: fade-out 0.3s ease-out forwards;
+  .animate-keyless-glow {
+    animation: keyless-glow 2s ease-in-out infinite;
+  }
+  
+  .animate-cyber-pulse {
+    animation: cyber-pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@layer components {
+  /* Revolutionary Animation Keyframes */
+  @keyframes revolutionary-fade {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes keyless-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--keyless) / 0.2);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(var(--keyless) / 0.4);
+    }
+  }
+
+  @keyframes cyber-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
   }
 }
