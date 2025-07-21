@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://sashyo.github.io",
+  "homepage": "https://sashyo.github.io/secureAF",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
