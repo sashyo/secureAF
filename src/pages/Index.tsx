@@ -166,7 +166,7 @@ const LandingContent = () => {
               Why This Vault is <span className="text-tidecloak-blue">Unbreakable</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Built on <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-tidecloak-blue hover:underline font-semibold">Tide Foundation's</a> threshold cryptography research. Unlike traditional security that relies on keeping keys secret, Tide fragments keys across multiple nodes so no single point can ever reconstruct them.
+              Built on <a href="https://tide.org" target="_blank" rel="noopener noreferrer" className="text-tidecloak-blue hover:underline font-semibold">Tide Foundation's</a> threshold cryptography research. Unlike traditional security that relies on keeping keys secret, Tide decentralizes key fragments across multiple nodes so no single point can ever reconstruct them.
             </p>
           </div>
 
