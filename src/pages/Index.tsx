@@ -114,24 +114,10 @@ const LandingContent = () => {
               Your Data, Impossible to Steal
             </h2>
             
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
               Store your most sensitive files with <strong className="text-tidecloak-purple">unbreakable protection</strong>. 
               Advanced cryptography that's mathematically proven to be secure.
             </p>
-
-            <div className="mb-8">
-              <p className="text-sm text-muted-foreground">
-                Vibed coded with good vibes but secured by{" "}
-                <a 
-                  href="https://github.com/tidecloak/tidecloak-react-sdk" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-tidecloak-blue hover:underline font-medium"
-                >
-                  Tide SDK
-                </a>
-              </p>
-            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <Button size="lg" className="bg-tidecloak-blue hover:bg-tidecloak-blue/90 text-white text-lg px-10 py-6 rounded-xl" onClick={login}>
