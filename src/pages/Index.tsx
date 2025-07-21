@@ -221,6 +221,33 @@ const LandingContent = () => {
         </div>
       </section>
 
+      {/* Credits Footer */}
+      <footer className="py-8 bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto px-6 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-muted-foreground">
+            <span>Vibed coded with good vibes by</span>
+            <a 
+              href="https://lovable.dev" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-tidecloak-blue hover:underline font-medium"
+            >
+              Lovable
+            </a>
+            <span className="hidden sm:inline">•</span>
+            <span>Secured by</span>
+            <a 
+              href="https://tide.org" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-tidecloak-purple hover:underline font-medium"
+            >
+              Tide SDK
+            </a>
+          </div>
+        </div>
+      </footer>
+
     </div>
   );
 };
