@@ -1,5 +1,7 @@
 # SecureAF - Unbreakable Data Vault
 
+> Vibed coded with good vibes ([Lovable](https://lovable.dev)) but secured by [Tide SDK](https://github.com/tide-org/tidecloak-react) 🛡️
+
 A next-generation secure data vault built with advanced threshold cryptography. Store your most sensitive files and notes with mathematical proof that they cannot be stolen.
 
 ## 🔒 Key Features
