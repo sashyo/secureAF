@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   publicDir: "public",
-  base: "/secureAF",
+  base: "/secureAF/",
   server: {
     host: "::",
     port: 8080,
