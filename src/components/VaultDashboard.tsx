@@ -159,7 +159,7 @@ export function VaultDashboard() {
     if (!lastBackup || (now - parseInt(lastBackup)) > intervalMs) {
       // Show reminder
       if (Notification.permission === 'granted') {
-        new Notification('SecureCore Backup Reminder', {
+        new Notification('SecureAF Backup Reminder', {
           body: `It's time to backup your vault! Last backup was ${lastBackup ? new Date(parseInt(lastBackup)).toLocaleDateString() : 'never'}.`,
           icon: '/favicon.ico'
         });
@@ -257,7 +257,7 @@ export function VaultDashboard() {
                   <div className="p-2 bg-gradient-hero rounded-xl shadow-glow-primary">
                     <Shield className="w-8 h-8 text-white" />
                   </div>
-                  SecureCore
+                  SecureAF
                 </h1>
               </div>
               <p className="text-muted-foreground">

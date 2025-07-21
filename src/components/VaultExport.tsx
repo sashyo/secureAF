@@ -188,7 +188,7 @@ export function VaultExport({ open, onClose }: VaultExportProps) {
             </Button>
             <Button 
               onClick={handleExport} 
-              variant="vault"
+              className="bg-gradient-hero hover:bg-gradient-hero/90 text-white"
               disabled={exporting || (!includeNotes && !includeFiles)}
             >
               <Download className="w-4 h-4 mr-2" />

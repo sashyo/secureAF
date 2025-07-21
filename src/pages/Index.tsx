@@ -75,8 +75,8 @@ const LandingContent = () => {
     },
     {
       icon: Server,
-      title: "Distributed Protection",
-      description: "Key fragments scattered across secure nodes. No single point can compromise your vault.",
+      title: "Decentralized Protection",
+      description: "Key fragments distributed across independent nodes. No central authority can access your data.",
       gradient: "bg-gradient-feature"
     },
     {
@@ -108,7 +108,7 @@ const LandingContent = () => {
             </div>
             
             <h1 className="text-6xl md:text-8xl font-bold mb-6 text-foreground">
-              SecureCore
+              SecureAF
             </h1>
             <h2 className="text-3xl md:text-4xl font-light mb-8 text-tidecloak-blue">
               Your Data, Impossible to Steal
@@ -144,7 +144,7 @@ const LandingContent = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Server className="w-4 h-4 text-tidecloak-purple" />
-                Distributed Key Management
+                Decentralized Architecture
               </div>
             </div>
           </div>
@@ -215,7 +215,7 @@ const LandingContent = () => {
           <div className="flex justify-center">
             <Button size="lg" className="bg-white text-tidecloak-blue hover:bg-white/90 font-semibold text-lg px-12 py-6" onClick={login}>
               <Database className="w-5 h-5 mr-2" />
-              Try SecureCore Now
+              Try SecureAF Now
             </Button>
           </div>
         </div>
