@@ -26,7 +26,7 @@ const LandingContent = () => {
   const { login } = useTideCloak();
 
   const handleViewGitHub = () => {
-    window.open('https://github.com/sashyo/sashyo.github.io', '_blank');
+    window.open('https://github.com/sashyo/secureAF', '_blank');
   };
 
   const handleReadDocs = () => {
