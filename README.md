@@ -1,73 +1,176 @@
-# Welcome to your Lovable project 
+# SecureAF - Unbreakable Data Vault
 
-## Project info
+A next-generation secure data vault built with advanced threshold cryptography. Store your most sensitive files and notes with mathematical proof that they cannot be stolen.
 
-**URL**: https://lovable.dev/projects/d79cbf3e-8e74-4b44-bb43-aae629e97c8b
+## 🔒 Key Features
 
-## How can I edit this code?
+- **Zero-Knowledge Architecture**: Your data is encrypted before it leaves your device
+- **Keyless by Design**: Vault keys are mathematically impossible to reconstruct
+- **Decentralized Protection**: Key fragments spread across independent nodes
+- **Provable Security**: Cryptographic immunity to traditional hacking methods
+- **Secure File Storage**: Upload and encrypt any file type
+- **Encrypted Notes**: Create and manage secure text notes with tags
+- **Secure Sharing**: Share encrypted files while maintaining control
+- **Version History**: Track changes with tamper-proof audit trails
 
-There are several ways of editing your application.
+## 🏗️ Built With Advanced Technology
 
-**Use Lovable**
+SecureAF is powered by [Tide Foundation's](https://tide.org) breakthrough threshold cryptography research. Unlike traditional security that relies on keeping keys secret, Tide decentralizes key fragments so no single point can ever reconstruct them.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d79cbf3e-8e74-4b44-bb43-aae629e97c8b) and start prompting.
+## 🚀 Technology Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with custom design system
+- **Authentication**: TideCloak SDK for secure login
+- **Encryption**: Advanced threshold cryptography
+- **Database**: IndexedDB with Dexie for local storage
+- **Build Tool**: Vite for fast development
+- **UI Components**: Shadcn/ui for modern interface
 
-**Use your preferred IDE**
+## 📖 Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js 18+ 
+- npm or yarn
 
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd secureaf
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔐 How It Works
 
-**Use GitHub Codespaces**
+1. **Sign In**: Authenticate using TideCloak's secure protocol
+2. **Create**: Add notes or upload files to your vault
+3. **Encrypt**: Content is automatically encrypted with your distributed key
+4. **Access**: Decrypt content only when needed with proper authorization
+5. **Share**: Securely share encrypted files with granular access control
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🛡️ Security Features
 
-## What technologies are used for this project?
+### Keyless Design
+- Your vault key is never created in full, anywhere
+- Mathematical impossibility of key reconstruction
+- No single point of failure
 
-This project is built with:
+### Decentralized Architecture
+- Key fragments distributed across independent nodes
+- No central authority can access your data
+- Breakthrough immunity to data breaches
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Zero-Knowledge Protection
+- Data encrypted client-side before transmission
+- Server cannot decrypt your content
+- Complete privacy by design
 
-## How can I deploy this project?
+## 📱 Usage
 
-Simply open [Lovable](https://lovable.dev/projects/d79cbf3e-8e74-4b44-bb43-aae629e97c8b) and click on Share -> Publish.
+### Managing Notes
+- Create encrypted text notes with rich formatting
+- Organize with tags and favorites
+- Search through encrypted content
+- Version history for all changes
 
-## Can I connect a custom domain to my Lovable project?
+### File Management
+- Upload any file type up to [size limit]
+- Automatic encryption on upload
+- Secure download and sharing
+- File metadata protection
 
-Yes, you can!
+### Backup & Export
+- Create secure vault backups
+- Encrypted export format
+- Import from previous backups
+- Cross-device synchronization
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🔧 Development
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Project Structure
+
+```
+src/
+├── components/         # React components
+│   ├── ui/            # Shadcn UI components
+│   └── vault/         # Vault-specific components
+├── contexts/          # React contexts
+├── hooks/             # Custom React hooks
+├── lib/               # Utility libraries
+│   ├── encryption.ts  # Cryptography functions
+│   └── database.ts    # Database operations
+└── pages/             # Application pages
+```
+
+### Available Scripts
+
+```sh
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run type-check   # TypeScript type checking
+```
+
+## 🚀 Deployment
+
+### Using Lovable
+1. Open your [Lovable Project](https://lovable.dev/projects/d79cbf3e-8e74-4b44-bb43-aae629e97c8b)
+2. Click Share → Publish
+3. Your app will be deployed automatically
+
+### Custom Deployment
+The built application can be deployed to any static hosting service:
+- Vercel
+- Netlify  
+- GitHub Pages
+- AWS S3 + CloudFront
+
+## 🔗 Connect Custom Domain
+
+To use your own domain:
+1. Navigate to Project > Settings > Domains in Lovable
+2. Click "Connect Domain"
+3. Follow the DNS configuration steps
+
+*Note: Custom domains require a paid Lovable plan*
+
+## 🤝 Contributing
+
+This project uses:
+- **Code Style**: ESLint + Prettier
+- **Commits**: Conventional commits preferred
+- **Branches**: Feature branches with descriptive names
+
+## 📜 License
+
+Built with [Lovable](https://lovable.dev) - The AI-powered web development platform.
+
+## 🔬 Research & Documentation
+
+- [Tide Foundation Research](https://arxiv.org/pdf/2309.00915.pdf)
+- [Threshold Cryptography Explained](https://tide.org)
+- [TideCloak SDK Documentation](https://docs.tidecloak.com)
+
+## ⚡ Performance
+
+- Fast client-side encryption/decryption
+- Efficient IndexedDB storage
+- Optimized bundle size with tree-shaking
+- Progressive loading for large files
+
+---
+
+**SecureAF** - Your Data, Impossible to Steal 🛡️
