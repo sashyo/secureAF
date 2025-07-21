@@ -76,7 +76,7 @@ const LandingContent = () => {
     {
       icon: Server,
       title: "Decentralized Protection",
-      description: "Key fragments distributed across independent nodes. No central authority can access your data.",
+      description: "Key fragments decentralized across independent nodes. No central authority can access your data.",
       gradient: "bg-gradient-feature"
     },
     {
