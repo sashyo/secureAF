@@ -12,7 +12,7 @@ import adapter from "./tidecloakAdapter.json";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <TideCloakContextProvider config={adapter}>
+  <TideCloakContextProvider config={{...adapter, redirectUri: "https://sashyo.github.io/secureAF/auth/redirect"}}>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
