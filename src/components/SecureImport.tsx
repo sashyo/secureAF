@@ -15,6 +15,8 @@ export function SecureImport() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState('');
+  const [itemProgress, setItemProgress] = useState({ current: 0, total: 0, type: '' });
   const [conflictResolution, setConflictResolution] = useState<'replace' | 'skip'>('skip');
   const [showConflictOptions, setShowConflictOptions] = useState(false);
   const [importData, setImportData] = useState<any>(null);
@@ -108,9 +110,12 @@ export function SecureImport() {
     setImporting(true);
     setImportProgress(0);
     setShowConflictOptions(false);
+    setCurrentStep('Initializing import process...');
+    setItemProgress({ current: 0, total: 0, type: '' });
 
     try {
-      setImportProgress(20);
+      setImportProgress(10);
+      setCurrentStep('Connecting to NEXUS database...');
 
       let imported = { folders: 0, notes: 0, files: 0, skipped: 0, replaced: 0 };
 
@@ -119,11 +124,22 @@ export function SecureImport() {
       const existingFiles = await db.getAllFiles();
       const existingFolders = await db.getAllFolders();
 
-      setImportProgress(30);
+      setImportProgress(20);
+      setCurrentStep('Analyzing data for conflicts...');
+
+      // Calculate total items to process
+      const totalItems = (data.folders?.length || 0) + (data.notes?.length || 0) + (data.files?.length || 0);
+      let processedItems = 0;
 
       // Import folders first (if any)
       if (data.folders?.length) {
-        for (const folder of data.folders) {
+        setCurrentStep('Importing folders...');
+        setItemProgress({ current: 0, total: data.folders.length, type: 'folders' });
+        
+        for (let i = 0; i < data.folders.length; i++) {
+          const folder = data.folders[i];
+          setItemProgress({ current: i + 1, total: data.folders.length, type: 'folders' });
+          
           try {
             const existingFolder = existingFolders.find(f => f.name === folder.name);
             
@@ -152,17 +168,26 @@ export function SecureImport() {
               });
               imported.folders++;
             }
+            
+            processedItems++;
+            const baseProgress = 20 + (processedItems / totalItems) * 60;
+            setImportProgress(Math.min(baseProgress, 80));
+            
           } catch (error) {
             console.error('Error importing folder:', error);
           }
         }
       }
 
-      setImportProgress(50);
-
       // Import notes
       if (data.notes?.length) {
-        for (const note of data.notes) {
+        setCurrentStep('Importing notes...');
+        setItemProgress({ current: 0, total: data.notes.length, type: 'notes' });
+        
+        for (let i = 0; i < data.notes.length; i++) {
+          const note = data.notes[i];
+          setItemProgress({ current: i + 1, total: data.notes.length, type: 'notes' });
+          
           try {
             const existingNote = existingNotes.find(n => n.title === note.title);
             
@@ -198,17 +223,26 @@ export function SecureImport() {
               });
               imported.notes++;
             }
+            
+            processedItems++;
+            const baseProgress = 20 + (processedItems / totalItems) * 60;
+            setImportProgress(Math.min(baseProgress, 80));
+            
           } catch (error) {
             console.error('Error importing note:', error);
           }
         }
       }
 
-      setImportProgress(70);
-
       // Import files
       if (data.files?.length) {
-        for (const file of data.files) {
+        setCurrentStep('Importing files...');
+        setItemProgress({ current: 0, total: data.files.length, type: 'files' });
+        
+        for (let i = 0; i < data.files.length; i++) {
+          const file = data.files[i];
+          setItemProgress({ current: i + 1, total: data.files.length, type: 'files' });
+          
           try {
             const existingFile = existingFiles.find(f => f.name === file.name);
             
@@ -254,13 +288,23 @@ export function SecureImport() {
               });
               imported.files++;
             }
+            
+            processedItems++;
+            const baseProgress = 20 + (processedItems / totalItems) * 60;
+            setImportProgress(Math.min(baseProgress, 80));
+            
           } catch (error) {
             console.error('Error importing file:', error);
           }
         }
       }
 
+      setImportProgress(90);
+      setCurrentStep('Finalizing import...');
+      setItemProgress({ current: 0, total: 0, type: '' });
+
       setImportProgress(100);
+      setCurrentStep('Import completed successfully!');
 
       setImportResult({
         success: true,
@@ -294,9 +338,21 @@ export function SecureImport() {
   };
 
   const resetImport = () => {
+    if (importing) {
+      // Prevent reset during import
+      toast({
+        title: "Import in Progress",
+        description: "Please wait for the current import to complete",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setSelectedFile(null);
     setImportResult(null);
     setImportProgress(0);
+    setCurrentStep('');
+    setItemProgress({ current: 0, total: 0, type: '' });
     setShowConflictOptions(false);
     setImportData(null);
   };
@@ -443,18 +499,50 @@ export function SecureImport() {
               )}
 
               {importing && (
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-nexus-blue font-medium">Restoring quantum data...</span>
-                    <span className="text-nexus-blue">{importProgress}%</span>
-                  </div>
-                  <Progress value={importProgress} className="w-full h-2" />
-                  <div className="text-xs text-muted-foreground text-center">
-                    {importProgress < 40 && "Validating backup integrity..."}
-                    {importProgress >= 40 && importProgress < 80 && "Processing data conflicts..."}
-                    {importProgress >= 80 && "Integrating with NEXUS matrix..."}
-                  </div>
-                </div>
+                <Card className="border-nexus-blue/30 bg-nexus-blue/5">
+                  <CardContent className="pt-6">
+                    <div className="space-y-4">
+                      {/* Main Progress */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-nexus-blue font-medium">Import Progress</span>
+                          <span className="text-nexus-blue font-bold">{importProgress}%</span>
+                        </div>
+                        <Progress value={importProgress} className="w-full h-3" />
+                      </div>
+
+                      {/* Current Step */}
+                      <div className="flex items-center space-x-3 py-2">
+                        <div className="w-2 h-2 bg-nexus-blue rounded-full animate-pulse"></div>
+                        <span className="text-sm font-medium text-nexus-blue">{currentStep}</span>
+                      </div>
+
+                      {/* Item Progress */}
+                      {itemProgress.total > 0 && (
+                        <div className="space-y-2 p-3 bg-nexus-blue/10 rounded-lg">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-nexus-blue capitalize">Processing {itemProgress.type}</span>
+                            <span className="text-nexus-blue font-medium">
+                              {itemProgress.current} / {itemProgress.total}
+                            </span>
+                          </div>
+                          <Progress 
+                            value={(itemProgress.current / itemProgress.total) * 100} 
+                            className="w-full h-2" 
+                          />
+                        </div>
+                      )}
+
+                      {/* Warning */}
+                      <Alert className="border-amber-200 bg-amber-50/50">
+                        <AlertCircle className="h-4 w-4 text-amber-600" />
+                        <AlertDescription className="text-amber-700 text-sm">
+                          <strong>Import in progress.</strong> Please do not close this tab or navigate away.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
 
               {importResult && (
