@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Shield, CheckCircle, AlertCircle, FileText, FolderOpen } from 'lucide-react';
+import { Upload, Shield, CheckCircle, AlertCircle, FileText, FolderOpen, RefreshCw, SkipForward } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { db } from '@/lib/database';
 import { useToast } from '@/hooks/use-toast';
 
@@ -14,6 +15,9 @@ export function SecureImport() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState(0);
+  const [conflictResolution, setConflictResolution] = useState<'replace' | 'skip'>('skip');
+  const [showConflictOptions, setShowConflictOptions] = useState(false);
+  const [importData, setImportData] = useState<any>(null);
   const [importResult, setImportResult] = useState<{
     success: boolean;
     message: string;
@@ -21,6 +25,8 @@ export function SecureImport() {
       folders: number;
       notes: number;
       files: number;
+      skipped: number;
+      replaced: number;
     };
   } | null>(null);
 
@@ -51,103 +57,203 @@ export function SecureImport() {
     );
   };
 
-  const importData = async () => {
+  const prepareImport = async () => {
     if (!selectedFile) return;
 
-    setImporting(true);
-    setImportProgress(0);
-
     try {
-      // Read file content
+      // Read and parse file
       const fileContent = await selectedFile.text();
-      setImportProgress(20);
-
-      // Parse JSON
-      let importData;
-      try {
-        importData = JSON.parse(fileContent);
-      } catch (error) {
-        throw new Error('Invalid JSON format in backup file');
-      }
-
-      if (!validateImportData(importData)) {
+      const parsedData = JSON.parse(fileContent);
+      
+      if (!validateImportData(parsedData)) {
         throw new Error('Invalid NEXUS backup format - corrupted or unsupported version');
       }
 
-      setImportProgress(40);
-
-      let imported = { folders: 0, notes: 0, files: 0 };
-
-      // Initialize database
+      // Check for existing data conflicts
       await db.initialize();
+      const existingNotes = await db.getAllNotes();
+      const existingFiles = await db.getAllFiles();
+      const existingFolders = await db.getAllFolders();
+
+      const hasConflicts = 
+        (parsedData.notes?.some((note: any) => 
+          existingNotes.some(existing => existing.title === note.title)
+        )) ||
+        (parsedData.files?.some((file: any) => 
+          existingFiles.some(existing => existing.name === file.name)
+        )) ||
+        (parsedData.folders?.some((folder: any) => 
+          existingFolders.some(existing => existing.name === folder.name)
+        ));
+
+      setImportData(parsedData);
+
+      if (hasConflicts) {
+        setShowConflictOptions(true);
+      } else {
+        // No conflicts, proceed with import
+        performImport(parsedData);
+      }
+
+    } catch (error) {
+      toast({
+        title: "Import Failed",
+        description: error instanceof Error ? error.message : 'Invalid backup file',
+        variant: "destructive"
+      });
+    }
+  };
+
+  const performImport = async (data: any) => {
+    setImporting(true);
+    setImportProgress(0);
+    setShowConflictOptions(false);
+
+    try {
+      setImportProgress(20);
+
+      let imported = { folders: 0, notes: 0, files: 0, skipped: 0, replaced: 0 };
+
+      // Get existing data for conflict checking
+      const existingNotes = await db.getAllNotes();
+      const existingFiles = await db.getAllFiles();
+      const existingFolders = await db.getAllFolders();
+
+      setImportProgress(30);
 
       // Import folders first (if any)
-      if (importData.folders?.length) {
-        for (const folder of importData.folders) {
+      if (data.folders?.length) {
+        for (const folder of data.folders) {
           try {
-            await db.saveFolder({
-              name: folder.name || 'Imported Folder',
-              description: folder.description || '',
-              encrypted: folder.encrypted !== false,
-              tags: Array.isArray(folder.tags) ? folder.tags : [],
-              userId: 'current-user',
-              isPrivate: folder.isPrivate || false
-            });
-            imported.folders++;
+            const existingFolder = existingFolders.find(f => f.name === folder.name);
+            
+            if (existingFolder) {
+              if (conflictResolution === 'skip') {
+                imported.skipped++;
+                continue;
+              } else {
+                // Replace existing folder
+                await db.folders.update(existingFolder.id!, {
+                  description: folder.description || '',
+                  encrypted: folder.encrypted !== false,
+                  tags: Array.isArray(folder.tags) ? folder.tags : [],
+                  updatedAt: new Date()
+                });
+                imported.replaced++;
+              }
+            } else {
+              await db.saveFolder({
+                name: folder.name || 'Imported Folder',
+                description: folder.description || '',
+                encrypted: folder.encrypted !== false,
+                tags: Array.isArray(folder.tags) ? folder.tags : [],
+                userId: 'current-user',
+                isPrivate: folder.isPrivate || false
+              });
+              imported.folders++;
+            }
           } catch (error) {
             console.error('Error importing folder:', error);
           }
         }
       }
 
-      setImportProgress(60);
+      setImportProgress(50);
 
       // Import notes
-      if (importData.notes?.length) {
-        for (const note of importData.notes) {
+      if (data.notes?.length) {
+        for (const note of data.notes) {
           try {
-            await db.saveNote({
-              title: note.title || 'Imported Note',
-              content: note.content || '',
-              encrypted: note.encrypted !== false,
-              tags: Array.isArray(note.tags) ? note.tags : [],
-              userId: 'current-user',
-              favorite: note.favorite || false,
-              category: note.category || 'imported',
-              folderId: note.folderId || undefined,
-              isPrivate: note.isPrivate || false
-            });
-            imported.notes++;
+            const existingNote = existingNotes.find(n => n.title === note.title);
+            
+            if (existingNote) {
+              if (conflictResolution === 'skip') {
+                imported.skipped++;
+                continue;
+              } else {
+                // Replace existing note
+                await db.notes.update(existingNote.id!, {
+                  content: note.content || '',
+                  encrypted: note.encrypted !== false,
+                  tags: Array.isArray(note.tags) ? note.tags : [],
+                  favorite: note.favorite || false,
+                  category: note.category || 'imported',
+                  folderId: note.folderId || undefined,
+                  isPrivate: note.isPrivate || false,
+                  updatedAt: new Date()
+                });
+                imported.replaced++;
+              }
+            } else {
+              await db.saveNote({
+                title: note.title || 'Imported Note',
+                content: note.content || '',
+                encrypted: note.encrypted !== false,
+                tags: Array.isArray(note.tags) ? note.tags : [],
+                userId: 'current-user',
+                favorite: note.favorite || false,
+                category: note.category || 'imported',
+                folderId: note.folderId || undefined,
+                isPrivate: note.isPrivate || false
+              });
+              imported.notes++;
+            }
           } catch (error) {
             console.error('Error importing note:', error);
           }
         }
       }
 
-      setImportProgress(80);
+      setImportProgress(70);
 
       // Import files
-      if (importData.files?.length) {
-        for (const file of importData.files) {
+      if (data.files?.length) {
+        for (const file of data.files) {
           try {
-            // Convert array back to Uint8Array if needed
-            const fileData = Array.isArray(file.data) 
-              ? new Uint8Array(file.data) 
-              : new Uint8Array();
+            const existingFile = existingFiles.find(f => f.name === file.name);
+            
+            if (existingFile) {
+              if (conflictResolution === 'skip') {
+                imported.skipped++;
+                continue;
+              } else {
+                // Replace existing file
+                const fileData = Array.isArray(file.data) 
+                  ? new Uint8Array(file.data) 
+                  : new Uint8Array();
 
-            await db.saveFile({
-              name: file.name || 'Imported File',
-              type: file.type || 'application/octet-stream',
-              size: file.size || fileData.length,
-              data: fileData,
-              encrypted: file.encrypted !== false,
-              tags: Array.isArray(file.tags) ? file.tags : [],
-              userId: 'current-user',
-              favorite: file.favorite || false,
-              category: file.category || 'imported',
-              folderId: file.folderId || undefined
-            });
-            imported.files++;
+                await db.files.update(existingFile.id!, {
+                  type: file.type || 'application/octet-stream',
+                  size: file.size || fileData.length,
+                  data: fileData,
+                  encrypted: file.encrypted !== false,
+                  tags: Array.isArray(file.tags) ? file.tags : [],
+                  favorite: file.favorite || false,
+                  category: file.category || 'imported',
+                  folderId: file.folderId || undefined,
+                  updatedAt: new Date()
+                });
+                imported.replaced++;
+              }
+            } else {
+              const fileData = Array.isArray(file.data) 
+                ? new Uint8Array(file.data) 
+                : new Uint8Array();
+
+              await db.saveFile({
+                name: file.name || 'Imported File',
+                type: file.type || 'application/octet-stream',
+                size: file.size || fileData.length,
+                data: fileData,
+                encrypted: file.encrypted !== false,
+                tags: Array.isArray(file.tags) ? file.tags : [],
+                userId: 'current-user',
+                favorite: file.favorite || false,
+                category: file.category || 'imported',
+                folderId: file.folderId || undefined
+              });
+              imported.files++;
+            }
           } catch (error) {
             console.error('Error importing file:', error);
           }
@@ -162,9 +268,12 @@ export function SecureImport() {
         details: imported
       });
 
+      const totalNew = imported.folders + imported.notes + imported.files;
+      const totalProcessed = totalNew + imported.skipped + imported.replaced;
+
       toast({
         title: "Import Successful",
-        description: `Restored ${imported.folders} folders, ${imported.notes} notes, and ${imported.files} files to NEXUS`
+        description: `Processed ${totalProcessed} items: ${totalNew} new, ${imported.replaced} replaced, ${imported.skipped} skipped`
       });
 
     } catch (error) {
@@ -188,6 +297,8 @@ export function SecureImport() {
     setSelectedFile(null);
     setImportResult(null);
     setImportProgress(0);
+    setShowConflictOptions(false);
+    setImportData(null);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -275,6 +386,62 @@ export function SecureImport() {
                 </Badge>
               </div>
 
+              {showConflictOptions && !importing && (
+                <Card className="border-amber-200 bg-amber-50/50 dark:border-amber-800 dark:bg-amber-950/50">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-amber-800 dark:text-amber-200 text-lg">
+                      Data Conflicts Detected
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-amber-700 dark:text-amber-300">
+                      Some items in the backup have the same names as existing data. Choose how to handle conflicts:
+                    </p>
+                    
+                    <RadioGroup value={conflictResolution} onValueChange={(value: 'replace' | 'skip') => setConflictResolution(value)}>
+                      <div className="flex items-center space-x-2 p-3 border border-amber-200 dark:border-amber-800 rounded-lg">
+                        <RadioGroupItem value="skip" id="skip" />
+                        <Label htmlFor="skip" className="flex items-center space-x-2 cursor-pointer flex-1">
+                          <SkipForward className="w-4 h-4 text-amber-600" />
+                          <div>
+                            <div className="font-medium">Skip Duplicates</div>
+                            <div className="text-xs text-muted-foreground">Keep existing data, skip items with same name</div>
+                          </div>
+                        </Label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 p-3 border border-amber-200 dark:border-amber-800 rounded-lg">
+                        <RadioGroupItem value="replace" id="replace" />
+                        <Label htmlFor="replace" className="flex items-center space-x-2 cursor-pointer flex-1">
+                          <RefreshCw className="w-4 h-4 text-amber-600" />
+                          <div>
+                            <div className="font-medium">Replace Existing</div>
+                            <div className="text-xs text-muted-foreground">Overwrite existing data with backup data</div>
+                          </div>
+                        </Label>
+                      </div>
+                    </RadioGroup>
+
+                    <div className="flex space-x-2">
+                      <Button 
+                        onClick={() => performImport(importData)} 
+                        className="flex-1 bg-gradient-nexus hover:shadow-glow-nexus"
+                      >
+                        <Shield className="w-4 h-4 mr-2" />
+                        Proceed with Import
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setShowConflictOptions(false)}
+                        className="border-amber-600 text-amber-600 hover:bg-amber-50"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {importing && (
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
@@ -284,7 +451,7 @@ export function SecureImport() {
                   <Progress value={importProgress} className="w-full h-2" />
                   <div className="text-xs text-muted-foreground text-center">
                     {importProgress < 40 && "Validating backup integrity..."}
-                    {importProgress >= 40 && importProgress < 80 && "Decrypting data fragments..."}
+                    {importProgress >= 40 && importProgress < 80 && "Processing data conflicts..."}
                     {importProgress >= 80 && "Integrating with NEXUS matrix..."}
                   </div>
                 </div>
@@ -304,18 +471,26 @@ export function SecureImport() {
                         {importResult.message}
                       </p>
                       {importResult.details && (
-                        <div className="grid grid-cols-3 gap-4 mt-3">
-                          <div className="text-center">
+                        <div className="grid grid-cols-5 gap-2 mt-3 text-center">
+                          <div>
                             <div className="text-lg font-bold text-nexus-blue">{importResult.details.folders}</div>
-                            <div className="text-xs text-muted-foreground">Folders</div>
+                            <div className="text-xs text-muted-foreground">New Folders</div>
                           </div>
-                          <div className="text-center">
+                          <div>
                             <div className="text-lg font-bold text-nexus-cyan">{importResult.details.notes}</div>
-                            <div className="text-xs text-muted-foreground">Notes</div>
+                            <div className="text-xs text-muted-foreground">New Notes</div>
                           </div>
-                          <div className="text-center">
+                          <div>
                             <div className="text-lg font-bold text-nexus-gold">{importResult.details.files}</div>
-                            <div className="text-xs text-muted-foreground">Files</div>
+                            <div className="text-xs text-muted-foreground">New Files</div>
+                          </div>
+                          <div>
+                            <div className="text-lg font-bold text-green-600">{importResult.details.replaced || 0}</div>
+                            <div className="text-xs text-muted-foreground">Replaced</div>
+                          </div>
+                          <div>
+                            <div className="text-lg font-bold text-gray-600">{importResult.details.skipped || 0}</div>
+                            <div className="text-xs text-muted-foreground">Skipped</div>
                           </div>
                         </div>
                       )}
@@ -325,24 +500,26 @@ export function SecureImport() {
               )}
 
               <div className="flex space-x-2">
-                {!importing && !importResult && (
+                {!importing && !importResult && !showConflictOptions && (
                   <Button 
-                    onClick={importData} 
+                    onClick={prepareImport} 
                     className="flex-1 bg-gradient-nexus hover:shadow-glow-nexus"
                   >
                     <Shield className="w-4 h-4 mr-2" />
-                    Restore to NEXUS
+                    Analyze & Import
                   </Button>
                 )}
                 
-                <Button 
-                  variant="outline" 
-                  onClick={resetImport} 
-                  disabled={importing}
-                  className="border-nexus-blue text-nexus-blue hover:bg-nexus-blue/10"
-                >
-                  {importResult ? 'Import Another' : 'Cancel'}
-                </Button>
+                {!showConflictOptions && (
+                  <Button 
+                    variant="outline" 
+                    onClick={resetImport} 
+                    disabled={importing}
+                    className="border-nexus-blue text-nexus-blue hover:bg-nexus-blue/10"
+                  >
+                    {importResult ? 'Import Another' : 'Cancel'}
+                  </Button>
+                )}
               </div>
             </div>
           )}
