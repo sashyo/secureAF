@@ -112,32 +112,10 @@ export class VaultEncryption {
         return { encryptedData: data, success: false, error: 'Authentication required for encryption' };
       }
 
-      const CHUNK_SIZE = 32 * 1024;  // 32 KB per slice
-      const segments: Array<{ data: string; tags: string[] }> = [];
+      const encryptedChunks = await this.doEncrypt([{data: data, tags:["vault-file"]}]);
 
-      // 1) Slice into chunks, convert each to a small binary string, then base64‑encode
-      for (let offset = 0; offset < data.length; offset += CHUNK_SIZE) {
-        const slice = data.subarray(offset, offset + CHUNK_SIZE);
-        let bin = '';
-        for (const byte of slice) {
-          bin += String.fromCharCode(byte);
-        }
-        segments.push({
-          data: btoa(bin),
-          tags: ['vault-file']
-        });
-      }
-
-      // 2) Encrypt all base64 chunks at once
-      const encryptedChunks = await this.doEncrypt(segments);
-      if (!encryptedChunks?.length) {
-        return { encryptedData: data, success: false, error: 'Binary encryption returned empty result' };
-      }
-
-      // 3) Pack the array of encrypted objects into one Uint8Array
-      const payload = JSON.stringify(encryptedChunks);
       return {
-        encryptedData: new TextEncoder().encode(payload),
+        encryptedData: encryptedChunks[0],
         success: true
       };
 
@@ -158,42 +136,10 @@ export class VaultEncryption {
         return { decryptedData: encryptedData, success: false, error: 'Authentication required for decryption' };
       }
 
-      // 1) Decode the JSON payload into an array of encryption-result objects
-      const json = new TextDecoder().decode(encryptedData);
-      const encryptedChunks: any[] = JSON.parse(json);
-
-      // 2) Prepare inputs for doDecrypt
-      const decryptInputs = encryptedChunks.map(chunk => ({
-        encrypted: chunk,      // entire encrypted-object as returned by doEncrypt
-        tags: ['vault-file']
-      }));
-
       // 3) Decrypt each chunk, getting back an array of base64 strings
-      const b64Chunks: string[] = await this.doDecrypt(decryptInputs);
-      if (!b64Chunks?.length) {
-        return { decryptedData: encryptedData, success: false, error: 'Binary decryption returned empty result' };
-      }
+      const file = await this.doDecrypt([{encrypted: encryptedData, tags:["vault-file"]}]);
 
-      // 4) For each base64‑chunk: atob → binary string → Uint8Array
-      const outChunks: Uint8Array[] = b64Chunks.map(b64 => {
-        const binStr = atob(b64);
-        const arr = new Uint8Array(binStr.length);
-        for (let i = 0; i < binStr.length; i++) {
-          arr[i] = binStr.charCodeAt(i);
-        }
-        return arr;
-      });
-
-      // 5) Concatenate all the Uint8Arrays into one
-      const totalLen = outChunks.reduce((sum, c) => sum + c.length, 0);
-      const result = new Uint8Array(totalLen);
-      let pos = 0;
-      for (const chunk of outChunks) {
-        result.set(chunk, pos);
-        pos += chunk.length;
-      }
-
-      return { decryptedData: result, success: true };
+      return { decryptedData: file[0], success: true };
 
     } catch (error) {
       console.error('Binary decryption failed:', error);
