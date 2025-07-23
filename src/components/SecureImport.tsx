@@ -449,50 +449,90 @@ export function SecureImport() {
               )}
 
               {importing && (
-                <Card className="border-nexus-blue/30 bg-nexus-blue/5">
-                  <CardContent className="pt-6">
-                    <div className="space-y-4">
-                      {/* Main Progress */}
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-nexus-blue font-medium">Import Progress</span>
-                          <span className="text-nexus-blue font-bold">{importProgress}%</span>
+                <div className="space-y-6 p-6 bg-gradient-to-br from-tidecloak-blue/5 to-tidecloak-purple/5 rounded-xl border border-tidecloak-blue/20 animate-fade-up">
+                  {/* Main Progress Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="relative">
+                        <div className="w-10 h-10 bg-tidecloak-blue rounded-full flex items-center justify-center animate-glow-pulse">
+                          <Shield className="w-5 h-5 text-white" />
                         </div>
-                        <Progress value={importProgress} className="w-full h-3" />
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-tidecloak-green rounded-full animate-pulse"></div>
                       </div>
-
-                      {/* Current Step */}
-                      <div className="flex items-center space-x-3 py-2">
-                        <div className="w-2 h-2 bg-nexus-blue rounded-full animate-pulse"></div>
-                        <span className="text-sm font-medium text-nexus-blue">{currentStep}</span>
+                      <div>
+                        <h3 className="text-lg font-semibold text-tidecloak-blue">NEXUS Import Active</h3>
+                        <p className="text-sm text-muted-foreground">Quantum data transfer in progress</p>
                       </div>
-
-                      {/* Item Progress */}
-                      {itemProgress.total > 0 && (
-                        <div className="space-y-2 p-3 bg-nexus-blue/10 rounded-lg">
-                          <div className="flex justify-between text-xs">
-                            <span className="text-nexus-blue capitalize">Processing {itemProgress.type}</span>
-                            <span className="text-nexus-blue font-medium">
-                              {itemProgress.current} / {itemProgress.total}
-                            </span>
-                          </div>
-                          <Progress 
-                            value={(itemProgress.current / itemProgress.total) * 100} 
-                            className="w-full h-2" 
-                          />
-                        </div>
-                      )}
-
-                      {/* Warning */}
-                      <Alert className="border-amber-200 bg-amber-50/50">
-                        <AlertCircle className="h-4 w-4 text-amber-600" />
-                        <AlertDescription className="text-amber-700 text-sm">
-                          <strong>Import in progress.</strong> Please do not close this tab or navigate away.
-                        </AlertDescription>
-                      </Alert>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-tidecloak-blue">{importProgress}%</div>
+                      <div className="text-xs text-muted-foreground">Complete</div>
+                    </div>
+                  </div>
+
+                  {/* Main Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-tidecloak-blue">Overall Progress</span>
+                      <span className="text-xs text-tidecloak-blue/70">{importProgress}/100</span>
+                    </div>
+                    <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-tidecloak-blue to-tidecloak-purple rounded-full transition-all duration-500 ease-out shadow-glow-primary"
+                        style={{ width: `${importProgress}%` }}
+                      />
+                      <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                    </div>
+                  </div>
+
+                  {/* Current Step with Animation */}
+                  <div className="flex items-center space-x-3 p-4 bg-white/50 dark:bg-tidecloak-blue/10 rounded-lg border border-tidecloak-blue/20">
+                    <div className="flex-shrink-0">
+                      <div className="w-3 h-3 bg-tidecloak-blue rounded-full animate-pulse shadow-glow-primary"></div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-tidecloak-blue mb-1">Current Operation</div>
+                      <div className="text-sm text-foreground animate-fade-in">{currentStep}</div>
+                    </div>
+                  </div>
+
+                  {/* Item Progress */}
+                  {itemProgress.total > 0 && (
+                    <div className="space-y-3 p-4 bg-tidecloak-cyan/5 rounded-lg border border-tidecloak-cyan/20 animate-scale-in">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-tidecloak-cyan rounded-full animate-pulse"></div>
+                          <span className="text-sm font-medium text-tidecloak-cyan capitalize">
+                            Processing {itemProgress.type}
+                          </span>
+                        </div>
+                        <span className="text-sm font-bold text-tidecloak-cyan">
+                          {itemProgress.current} / {itemProgress.total}
+                        </span>
+                      </div>
+                      <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-tidecloak-cyan to-tidecloak-green rounded-full transition-all duration-300 ease-out"
+                          style={{ width: `${(itemProgress.current / itemProgress.total) * 100}%` }}
+                        />
+                      </div>
+                      <div className="text-xs text-tidecloak-cyan/70">
+                        {Math.round((itemProgress.current / itemProgress.total) * 100)}% of {itemProgress.type} processed
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Security Warning */}
+                  <div className="flex items-start space-x-3 p-4 bg-amber-50/50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800/30">
+                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-sm font-medium text-amber-800 dark:text-amber-200">Security Protocol Active</div>
+                      <div className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                        Do not close this window or navigate away during the import process. TideCloak encryption is being applied to all data.
+                      </div>
+                    </div>
+                  </div>
+                </div>
               )}
 
               {importResult && (
