@@ -536,8 +536,11 @@ export function SecureImport() {
               <div className="flex space-x-2">
                 {!importing && !importResult && !showConflictOptions && (
                   <Button 
-                    onClick={prepareImport} 
-                    className="flex-1 bg-gradient-nexus hover:shadow-glow-nexus"
+                    onClick={() => {
+                      console.log('Import button clicked!');
+                      prepareImport();
+                    }}
+                    className="flex-1"
                   >
                     <Shield className="w-4 h-4 mr-2" />
                     Analyze & Import
@@ -549,7 +552,6 @@ export function SecureImport() {
                     variant="outline" 
                     onClick={resetImport} 
                     disabled={importing}
-                    className="border-nexus-blue text-nexus-blue hover:bg-nexus-blue/10"
                   >
                     {importResult ? 'Import Another' : 'Cancel'}
                   </Button>
