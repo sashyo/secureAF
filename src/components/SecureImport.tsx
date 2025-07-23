@@ -24,7 +24,6 @@ export function SecureImport() {
     success: boolean;
     message: string;
     details?: {
-      folders: number;
       notes: number;
       files: number;
       skipped: number;
@@ -68,14 +67,13 @@ export function SecureImport() {
       const parsedData = JSON.parse(fileContent);
       
       if (!validateImportData(parsedData)) {
-        throw new Error('Invalid NEXUS backup format - corrupted or unsupported version');
+        throw new Error('Invalid backup format - corrupted or unsupported version');
       }
 
-      // Check for existing data conflicts
+      // Initialize database and check for existing data conflicts
       await db.initialize();
       const existingNotes = await db.getAllNotes();
       const existingFiles = await db.getAllFiles();
-      const existingFolders = await db.getAllFolders();
 
       const hasConflicts = 
         (parsedData.notes?.some((note: any) => 
@@ -83,9 +81,6 @@ export function SecureImport() {
         )) ||
         (parsedData.files?.some((file: any) => 
           existingFiles.some(existing => existing.name === file.name)
-        )) ||
-        (parsedData.folders?.some((folder: any) => 
-          existingFolders.some(existing => existing.name === folder.name)
         ));
 
       setImportData(parsedData);
@@ -117,67 +112,18 @@ export function SecureImport() {
       setImportProgress(10);
       setCurrentStep('Connecting to NEXUS database...');
 
-      let imported = { folders: 0, notes: 0, files: 0, skipped: 0, replaced: 0 };
+      let imported = { notes: 0, files: 0, skipped: 0, replaced: 0 };
 
       // Get existing data for conflict checking
       const existingNotes = await db.getAllNotes();
       const existingFiles = await db.getAllFiles();
-      const existingFolders = await db.getAllFolders();
 
       setImportProgress(20);
       setCurrentStep('Analyzing data for conflicts...');
 
       // Calculate total items to process
-      const totalItems = (data.folders?.length || 0) + (data.notes?.length || 0) + (data.files?.length || 0);
+      const totalItems = (data.notes?.length || 0) + (data.files?.length || 0);
       let processedItems = 0;
-
-      // Import folders first (if any)
-      if (data.folders?.length) {
-        setCurrentStep('Importing folders...');
-        setItemProgress({ current: 0, total: data.folders.length, type: 'folders' });
-        
-        for (let i = 0; i < data.folders.length; i++) {
-          const folder = data.folders[i];
-          setItemProgress({ current: i + 1, total: data.folders.length, type: 'folders' });
-          
-          try {
-            const existingFolder = existingFolders.find(f => f.name === folder.name);
-            
-            if (existingFolder) {
-              if (conflictResolution === 'skip') {
-                imported.skipped++;
-                continue;
-              } else {
-                // Replace existing folder
-                await db.folders.update(existingFolder.id!, {
-                  description: folder.description || '',
-                  encrypted: folder.encrypted !== false,
-                  tags: Array.isArray(folder.tags) ? folder.tags : [],
-                  updatedAt: new Date()
-                });
-                imported.replaced++;
-              }
-            } else {
-              await db.saveFolder({
-                name: folder.name || 'Imported Folder',
-                description: folder.description || '',
-                encrypted: folder.encrypted !== false,
-                tags: Array.isArray(folder.tags) ? folder.tags : [],
-                userId: 'current-user',
-                isPrivate: folder.isPrivate || false
-              });
-              imported.folders++;
-            }
-            
-            processedItems++;
-            const baseProgress = 20 + (processedItems / totalItems) * 60;
-            setImportProgress(Math.min(baseProgress, 80));
-            
-          } catch (error) {
-            console.error('Error importing folder:', error);
-          }
-        }
-      }
 
       // Import notes
       if (data.notes?.length) {
@@ -312,7 +258,7 @@ export function SecureImport() {
         details: imported
       });
 
-      const totalNew = imported.folders + imported.notes + imported.files;
+      const totalNew = imported.notes + imported.files;
       const totalProcessed = totalNew + imported.skipped + imported.replaced;
 
       toast({
@@ -559,11 +505,7 @@ export function SecureImport() {
                         {importResult.message}
                       </p>
                       {importResult.details && (
-                        <div className="grid grid-cols-5 gap-2 mt-3 text-center">
-                          <div>
-                            <div className="text-lg font-bold text-nexus-blue">{importResult.details.folders}</div>
-                            <div className="text-xs text-muted-foreground">New Folders</div>
-                          </div>
+                        <div className="grid grid-cols-4 gap-2 mt-3 text-center">
                           <div>
                             <div className="text-lg font-bold text-nexus-cyan">{importResult.details.notes}</div>
                             <div className="text-xs text-muted-foreground">New Notes</div>
