@@ -50,21 +50,25 @@ export function SecureImport() {
   };
 
   const validateImportData = (data: any): boolean => {
+    console.log('Validating import data:', data);
     return (
       typeof data === 'object' &&
       data !== null &&
       data.version &&
-      (Array.isArray(data.notes) || Array.isArray(data.files) || Array.isArray(data.folders))
+      (Array.isArray(data.notes) || Array.isArray(data.files))
     );
   };
 
   const prepareImport = async () => {
+    console.log('prepareImport called with file:', selectedFile);
     if (!selectedFile) return;
 
     try {
       // Read and parse file
       const fileContent = await selectedFile.text();
+      console.log('File content read:', fileContent.substring(0, 200) + '...');
       const parsedData = JSON.parse(fileContent);
+      console.log('Parsed data:', parsedData);
       
       if (!validateImportData(parsedData)) {
         throw new Error('Invalid backup format - corrupted or unsupported version');
