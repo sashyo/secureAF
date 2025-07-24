@@ -576,9 +576,9 @@ export function SecureImport() {
               <div className="flex space-x-2">
                 {!importing && !importResult && !showConflictOptions && (
                   <Button 
-                    onClick={() => {
+                    onClick={async () => {
                       console.log('Import button clicked!');
-                      prepareImport();
+                      await prepareImport();
                     }}
                     className="flex-1"
                   >
