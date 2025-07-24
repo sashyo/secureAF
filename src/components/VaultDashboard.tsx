@@ -279,12 +279,7 @@ export function VaultDashboard() {
                 type="file"
                 accept=".json"
                 style={{ display: 'none' }}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    console.log('Import backup:', file);
-                  }
-                }}
+                onChange={handleImportFile}
               />
               <Button
                 onClick={() => setShowVaultExport(true)}
