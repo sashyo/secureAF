@@ -573,8 +573,35 @@ export function SecureImport() {
                 </Alert>
               )}
 
+              {/* Hidden file input */}
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleFileSelect}
+                style={{ display: 'none' }}
+                ref={(input) => {
+                  if (input) {
+                    (input as any)._triggerClick = () => input.click();
+                  }
+                }}
+                id="backup-file-input"
+              />
+
               <div className="flex space-x-2">
                 {!importing && !importResult && !showConflictOptions && (
+                  <Button 
+                    onClick={() => {
+                      const input = document.getElementById('backup-file-input') as HTMLInputElement;
+                      input?.click();
+                    }}
+                    className="flex-1"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Select Backup File
+                  </Button>
+                )}
+
+                {selectedFile && !importing && !importResult && !showConflictOptions && (
                   <Button 
                     onClick={async () => {
                       console.log('Import button clicked!');
