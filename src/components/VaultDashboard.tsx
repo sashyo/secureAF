@@ -24,6 +24,8 @@ export function VaultDashboard() {
   const { logout } = useTideCloak();
   const {
     state,
+    createNote,
+    uploadFile,
     deleteNote,
     deleteFile,
     downloadFile,
@@ -37,7 +39,8 @@ export function VaultDashboard() {
     setSearchTerm: contextSetSearchTerm,
     setSelectedTags,
     toggleNoteFavorite,
-    toggleFileFavorite
+    toggleFileFavorite,
+    refreshData
   } = useVault();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -178,22 +181,79 @@ export function VaultDashboard() {
     setShowBackupConfig(false);
   };
 
-  const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && file.type === 'application/json') {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const importData = JSON.parse(e.target?.result as string);
-          console.log('Import data:', importData);
-          // TODO: Implement actual import logic here
-          alert('Import functionality coming soon!');
-        } catch (error) {
-          alert('Invalid backup file format.');
-        }
-      };
-      reader.readAsText(file);
+    if (!file || file.type !== 'application/json') {
+      alert('Please select a valid JSON backup file.');
+      return;
     }
+
+    try {
+      const fileContent = await file.text();
+      const data = JSON.parse(fileContent);
+      
+      // Validate backup format
+      if (!data.version || (!data.notes && !data.files)) {
+        alert('Invalid backup format - corrupted or unsupported version');
+        return;
+      }
+
+      let imported = { notes: 0, files: 0, skipped: 0, replaced: 0 };
+      
+      // Import notes using the context method
+      if (data.notes?.length) {
+        for (const note of data.notes) {
+          try {
+            await createNote(
+              note.title || 'Imported Note',
+              note.content || '',
+              Array.isArray(note.tags) ? note.tags : []
+            );
+            imported.notes++;
+          } catch (error) {
+            console.error('Error importing note:', error);
+          }
+        }
+      }
+
+      // For files, we need to convert the data back to File objects
+      if (data.files?.length) {
+        for (const fileData of data.files) {
+          try {
+            // Convert stored data back to File object
+            const fileBytes = Array.isArray(fileData.data) 
+              ? new Uint8Array(fileData.data) 
+              : new Uint8Array();
+            
+            const fileBlob = new Blob([fileBytes], { type: fileData.type || 'application/octet-stream' });
+            const recreatedFile = new File([fileBlob], fileData.name || 'Imported File', {
+              type: fileData.type || 'application/octet-stream'
+            });
+
+            await uploadFile(
+              recreatedFile,
+              Array.isArray(fileData.tags) ? fileData.tags : []
+            );
+            imported.files++;
+          } catch (error) {
+            console.error('Error importing file:', error);
+          }
+        }
+      }
+
+      const totalNew = imported.notes + imported.files;
+      alert(`Import successful! Added ${imported.notes} notes and ${imported.files} files (${totalNew} total items).`);
+      
+      // Refresh data to show imported items
+      await refreshData();
+      
+    } catch (error) {
+      console.error('Import error:', error);
+      alert('Import failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+    
+    // Clear the input
+    event.target.value = '';
   };
 
   // Set up backup reminder check on component mount
