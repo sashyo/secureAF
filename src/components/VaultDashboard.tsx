@@ -200,15 +200,25 @@ export function VaultDashboard() {
 
       let imported = { notes: 0, files: 0, skipped: 0, replaced: 0 };
       
-      // Import notes using the context method
+      // Import notes - use database directly to preserve encryption state
       if (data.notes?.length) {
+        const { db } = await import('@/lib/database');
+        await db.initialize();
+        
         for (const note of data.notes) {
           try {
-            await createNote(
-              note.title || 'Imported Note',
-              note.content || '',
-              Array.isArray(note.tags) ? note.tags : []
-            );
+            // Save directly to database to preserve encryption state
+            await db.saveNote({
+              title: note.title || 'Imported Note',
+              content: note.content || '', // Keep as-is (encrypted or plain)
+              encrypted: note.encrypted !== false,
+              tags: Array.isArray(note.tags) ? note.tags : [],
+              userId: 'current-user',
+              favorite: note.favorite || false,
+              category: note.category || 'imported',
+              folderId: note.folderId || undefined,
+              isPrivate: note.isPrivate || false
+            });
             imported.notes++;
           } catch (error) {
             console.error('Error importing note:', error);
@@ -216,24 +226,30 @@ export function VaultDashboard() {
         }
       }
 
-      // For files, we need to convert the data back to File objects
+      // Import files - use database directly to preserve encryption state
       if (data.files?.length) {
+        const { db } = await import('@/lib/database');
+        
         for (const fileData of data.files) {
           try {
-            // Convert stored data back to File object
+            // Convert stored data back to Uint8Array
             const fileBytes = Array.isArray(fileData.data) 
               ? new Uint8Array(fileData.data) 
               : new Uint8Array();
-            
-            const fileBlob = new Blob([fileBytes], { type: fileData.type || 'application/octet-stream' });
-            const recreatedFile = new File([fileBlob], fileData.name || 'Imported File', {
-              type: fileData.type || 'application/octet-stream'
-            });
 
-            await uploadFile(
-              recreatedFile,
-              Array.isArray(fileData.tags) ? fileData.tags : []
-            );
+            // Save directly to database to preserve encryption state
+            await db.saveFile({
+              name: fileData.name || 'Imported File',
+              type: fileData.type || 'application/octet-stream',
+              size: fileData.size || fileBytes.length,
+              data: fileBytes, // Keep as-is (encrypted or plain)
+              encrypted: fileData.encrypted !== false,
+              tags: Array.isArray(fileData.tags) ? fileData.tags : [],
+              userId: 'current-user',
+              favorite: fileData.favorite || false,
+              category: fileData.category || 'imported',
+              folderId: fileData.folderId || undefined
+            });
             imported.files++;
           } catch (error) {
             console.error('Error importing file:', error);
